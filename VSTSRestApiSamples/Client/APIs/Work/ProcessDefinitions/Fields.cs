@@ -24,14 +24,14 @@ namespace VstsRestApiSamples.Client.APIs.Work.ProcessDefinitions
 
         public HttpStatusCode CreatePickListField(string processId, string picklistId)
         {
+            //create field object and set values
             FieldsPost.Field data = new FieldsPost.Field()
             {
                 Name = "Favorite Color",
                 Type = "String",
                 Description = "These are my favorite colors",
-                ListId = picklistId
-            };
-           
+                ListId = picklistId //Id from when we created a picklist
+            };           
 
             using (var client = new HttpClient())
             {

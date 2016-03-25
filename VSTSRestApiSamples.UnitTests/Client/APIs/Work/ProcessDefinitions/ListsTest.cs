@@ -24,7 +24,7 @@ namespace VSTSRestApiSamples.UnitTests.Client.APIs.Work.ProcessDefinitions
             _auth = null;
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]        
         public void ProcessDefinitions_Work_Lists_CreatePickList_Success()
         {
             //arrange
