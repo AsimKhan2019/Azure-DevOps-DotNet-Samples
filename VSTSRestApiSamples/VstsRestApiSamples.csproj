@@ -56,8 +56,11 @@
     <Compile Include="Client\Helpers\IAuth.cs" />
     <Compile Include="Client\APIs\Wit\Queries.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\Process\GetProcessResponse.cs" />
     <Compile Include="ViewModels\Process\ListofProcessesResponse.cs" />
+    <Compile Include="ViewModels\Wit\BatchOfWorkItemLinksResponse.cs" />
+    <Compile Include="ViewModels\Wit\BatchOfWorkItemRevisionsResponse.cs" />
     <Compile Include="ViewModels\Wit\ListofQueriesResponse.cs" />
     <Compile Include="ViewModels\Wit\ListofWorkItemFieldsResponse.cs" />
     <Compile Include="ViewModels\Wit\ListofWorkItemsResponse.cs" />
