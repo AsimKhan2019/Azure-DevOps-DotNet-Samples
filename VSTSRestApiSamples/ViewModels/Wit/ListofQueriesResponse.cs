@@ -1,10 +1,8 @@
 ﻿namespace VstsRestApiSamples.ViewModels.Wit.Queries
 {
-
-    public class ListofQueriesResponse
+    public class ListofQueriesResponse 
     {
-
-        public class Queries
+        public class Queries : BaseViewModel
         {
             public int count { get; set; }
             public Value[] value { get; set; }

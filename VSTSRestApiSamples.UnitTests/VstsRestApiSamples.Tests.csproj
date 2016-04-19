@@ -64,6 +64,7 @@
     <Compile Include="Client\APIs\Process\ProcessesTest.cs" />
     <Compile Include="Client\APIs\Wit\QueriesTest.cs" />
     <Compile Include="Client\APIs\Wit\FieldsTest.cs" />
+    <Compile Include="Client\APIs\Wit\AttachmentsTest.cs" />
     <Compile Include="Client\APIs\Wit\WorkItemsTest.cs" />
     <Compile Include="Client\APIs\Work\ProcessDefinitions\ListsTest.cs" />
     <Compile Include="Client\APIs\Work\ProcessDefinitions\FieldsTest.cs" />

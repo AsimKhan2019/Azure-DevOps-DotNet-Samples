@@ -70,6 +70,30 @@ namespace VstsRestApiSamples.Client.APIs.Wit
             }
         }
 
+        public GetWorkItemExpandAllResponse.WorkItem GetWorkItem(string id)
+        {
+            GetWorkItemExpandAllResponse.WorkItem viewModel = new GetWorkItemExpandAllResponse.WorkItem();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_account);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _login);
+
+                HttpResponseMessage response = client.GetAsync("_apis/wit/workitems/" + id + "?$expand=all&api-version=1.0").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<GetWorkItemExpandAllResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
         public BatchOfWorkItemLinksResponse.WorkItemLinks GetBatchOfWorkItemLinks(string project, DateTime startDateTime)
         {
             BatchOfWorkItemLinksResponse.WorkItemLinks viewModel = new BatchOfWorkItemLinksResponse.WorkItemLinks();
@@ -175,8 +199,6 @@ namespace VstsRestApiSamples.Client.APIs.Wit
                 viewModel.HttpStatusCode = response.StatusCode;
 
                 return viewModel;
-
-
             }
         }
         
@@ -229,7 +251,6 @@ namespace VstsRestApiSamples.Client.APIs.Wit
                 }                
             }
         }
-
     }
 }
 

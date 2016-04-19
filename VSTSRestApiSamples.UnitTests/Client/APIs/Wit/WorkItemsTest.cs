@@ -71,7 +71,22 @@ namespace vstsrestapisamples.tests.Client.APIs.Wit
         }
 
         [TestMethod]
-        public void Wit_WorkItems_GetBatchOfWorkItemLinksForAll_Success()
+        public void Wit_WorkItems_GetWorkItemExpandAll_Success()
+        {
+            //arrange
+            WorkItems request = new WorkItems(_auth);
+
+            //act
+            var result = request.GetWorkItem("2583");
+
+            //assert
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod]
+        public void Wit_WorkItems_Reporting_GetBatchOfWorkItemLinksForAll_Success()
         {
             //arrange
             WorkItems request = new WorkItems(_auth);
@@ -84,13 +99,13 @@ namespace vstsrestapisamples.tests.Client.APIs.Wit
         }
 
         [TestMethod]
-        public void Wit_WorkItems_GetBatchOfWorkItemRevisionsByProjectAndDate_Success()
+        public void Wit_WorkItems_Reporting_GetBatchOfWorkItemRevisionsByProjectAndDate_Success()
         {
             //arrange
             WorkItems request = new WorkItems(_auth);
 
             //act
-            BatchOfWorkItemRevisionsResponse.WorkItemRevisions result = request.GetBatchOfWorkItemRevisionsByDate(_auth.Project, new DateTime(2016, 4, 7));
+            BatchOfWorkItemRevisionsResponse.WorkItemRevisions result = request.GetBatchOfWorkItemRevisionsByDate(_auth.Project, new DateTime(2016, 4, 17));
 
             //assert
             Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
@@ -100,7 +115,7 @@ namespace vstsrestapisamples.tests.Client.APIs.Wit
         }
 
         [TestMethod]
-        public void Wit_WorkItems_GetBatchOfWorkItemRevisionsForAll_Success()
+        public void Wit_WorkItems_Reporting_GetBatchOfWorkItemRevisionsForAll_Success()
         {
             //arrange
             WorkItems request = new WorkItems(_auth);
@@ -114,5 +129,6 @@ namespace vstsrestapisamples.tests.Client.APIs.Wit
             request = null;
             result = null;
         }
+      
     }
 }
