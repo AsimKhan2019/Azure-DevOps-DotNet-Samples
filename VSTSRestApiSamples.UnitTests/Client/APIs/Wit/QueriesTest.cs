@@ -59,16 +59,15 @@ namespace VSTSRestApiSamples.UnitTests.Client.APIs.Wit
         public void Wit_Queries_GetQueryById_Success()
         {
             //arrange
-            Queries request = new Queries(_auth);
-            string id = "7ce684a1-09b8-47b6-ad68-96217cb5bccf";
+            Queries request = new Queries(_auth);                    
 
             //act
-            GetQueryByIdResponse.Queries response = request.GetQueryById(_auth.Project, id);
+            GetQueryByIdResponse.Queries response = request.GetQueryById(_auth.Project, _auth.QueryId);
 
             //assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
 
             request = null;
-        }
+        }       
     }
 }

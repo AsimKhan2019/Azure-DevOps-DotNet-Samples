@@ -129,6 +129,21 @@ namespace vstsrestapisamples.tests.Client.APIs.Wit
             request = null;
             result = null;
         }
+
+        [TestMethod]
+        public void Wit_WorkItems_UpdateWorkItem_Success()
+        {
+            //arrange
+            WorkItems request = new WorkItems(_auth);
+
+            //act
+            WorkItemPatchResponse.WorkItem result = request.UpdateWorkItemFields(_auth.WorkItemId);
+
+            //assert
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
+
+            request = null;
+        }
       
     }
 }

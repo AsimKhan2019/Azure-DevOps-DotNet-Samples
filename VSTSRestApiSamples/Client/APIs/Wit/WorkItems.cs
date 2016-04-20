@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -86,6 +87,38 @@ namespace VstsRestApiSamples.Client.APIs.Wit
                 if (response.IsSuccessStatusCode)
                 {
                     viewModel = response.Content.ReadAsAsync<GetWorkItemExpandAllResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemFields(string id)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[4];
+
+            fields[0] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.History", value = "adding some history" };
+            fields[1] = new WorkItemPatch.Field() { op = "add", path = "/fields/Microsoft.VSTS.Common.Priority", value = "2" };
+            fields[2] = new WorkItemPatch.Field() { op = "add", path = "/fields/Microsoft.VSTS.Common.BusinessValue", value = "100" };
+            fields[3] = new WorkItemPatch.Field() { op = "add", path = "/fields/Microsoft.VSTS.Common.ValueArea", value = "Architectural" };
+                      
+            using (var client = new HttpClient())
+            {               
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _login);
+                          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json");
+                var method = new HttpMethod("PATCH");
+                var request = new HttpRequestMessage(method, _account + "_apis/wit/workitems/" + id + "?api-version=1.0") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+                               
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
                 }
 
                 viewModel.HttpStatusCode = response.StatusCode;

@@ -3,3 +3,7 @@
 ################################################################################
 
 /VSTSRestApiSamples/bin/Debug
+/VSTSRestApiSamples.UnitTests/bin/Debug
+/VSTSRestApiSamples.UnitTests/obj/Debug
+/VSTSRestApiSamples/packages
+/VSTSRestApiSamples/obj/Debug

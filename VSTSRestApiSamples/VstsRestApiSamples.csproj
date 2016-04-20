@@ -51,6 +51,7 @@
     <Compile Include="Client\APIs\Process\Processes.cs" />
     <Compile Include="Client\APIs\Wit\Attachments.cs" />
     <Compile Include="Client\APIs\Wit\Fields.cs" />
+    <Compile Include="Client\APIs\Wit\WIQL.cs" />
     <Compile Include="Client\APIs\Wit\WorkItems.cs" />
     <Compile Include="Client\APIs\Work\ProcessDefinitions\Fields.cs" />
     <Compile Include="Client\APIs\Work\ProcessDefinitions\Lists.cs" />
@@ -62,12 +63,15 @@
     <Compile Include="ViewModels\Process\ListofProcessesResponse.cs" />
     <Compile Include="ViewModels\Wit\BatchOfWorkItemLinksResponse.cs" />
     <Compile Include="ViewModels\Wit\BatchOfWorkItemRevisionsResponse.cs" />
+    <Compile Include="ViewModels\Wit\GetWIQLRunStoredQueryResponse.cs" />
     <Compile Include="ViewModels\Wit\GetWorkItemExpandAllResponse.cs" />
     <Compile Include="ViewModels\Wit\ListofQueriesByFolderPath.cs" />
     <Compile Include="ViewModels\Wit\ListofQueriesByIdResponse.cs" />
     <Compile Include="ViewModels\Wit\ListofQueriesResponse.cs" />
     <Compile Include="ViewModels\Wit\ListofWorkItemFieldsResponse.cs" />
     <Compile Include="ViewModels\Wit\ListofWorkItemsResponse.cs" />
+    <Compile Include="ViewModels\Wit\WorkItemPatch.cs" />
+    <Compile Include="ViewModels\Wit\WorkItemPatchResponse.cs" />
     <Compile Include="ViewModels\Work\DownloadAttachmentResponse.cs" />
     <Compile Include="ViewModels\Work\FieldsPost.cs" />
     <Compile Include="ViewModels\Work\FieldsPostResponse.cs" />

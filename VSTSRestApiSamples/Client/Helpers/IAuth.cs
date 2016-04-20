@@ -7,5 +7,7 @@
         string Project { get; }
         string ProcessId { get; }
         string PickListId { get; }
+        string QueryId { get; }
+        string WorkItemId { get; }
     }
 }

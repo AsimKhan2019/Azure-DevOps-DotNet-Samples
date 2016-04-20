@@ -5,18 +5,18 @@ namespace VstsRestApiSamples.Tests.Client.Helpers
 {
     public class Auth : IAuth
     {
-        private string _account;
-        private string _login;
-        private string _project;
-        private string _processId;
-        private string _picklistId;
+        private string _account = "https://accountname.visualstudio.com/DefaultCollection/";
+        private string _login = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", "<personal access token>")));
+        private string _project = "<project name>";
+        private string _processId = "<process id>";
+        private string _picklistId = "<picklist id>";
+        private string _queryId = "<query id>";
+        private string _workItemId = "<work item id>";
 
         public string Account
         {
             get
             {
-                _account = "https://danhellem.visualstudio.com/DefaultCollection/";
-
                 return _account;
             }
         }
@@ -25,8 +25,6 @@ namespace VstsRestApiSamples.Tests.Client.Helpers
         {
             get
             {
-                _login = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", "4tjp7stxlnjm6pd2tcyj2re2pzqawei45eiqziywf6b3sspeeeiq")));
-
                 return _login;
             }
         }
@@ -35,8 +33,6 @@ namespace VstsRestApiSamples.Tests.Client.Helpers
         {
             get
             {
-                _project = "MedIntake";
-
                 return _project;
             }
         }
@@ -45,7 +41,6 @@ namespace VstsRestApiSamples.Tests.Client.Helpers
         {
             get
             {
-                _processId = "f11f0070-2d42-41c4-a01b-892cd0183dd3";
                 return _processId;
             }
         }
@@ -53,9 +48,24 @@ namespace VstsRestApiSamples.Tests.Client.Helpers
         public string PickListId
         {
             get
-            {
-                _picklistId = "710e528c-54e1-4591-8d7f-51b3e5862bfe";
+            {              
                 return _picklistId;
+            }
+        }
+
+        public string QueryId
+        {
+            get
+            {               
+                return _queryId;
+            }
+        }
+
+        public string WorkItemId
+        {
+            get
+            {
+                return _workItemId;
             }
         }
     }
