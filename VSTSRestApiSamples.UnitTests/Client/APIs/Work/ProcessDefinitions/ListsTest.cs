@@ -31,10 +31,10 @@ namespace VSTSRestApiSamples.UnitTests.Client.APIs.Work.ProcessDefinitions
             Lists request = new Lists(_auth);
 
             //act
-            var statusCode = request.CreatePickList(_auth.ProcessId);
+            var result = request.CreatePickList(_auth.ProcessId);
 
             //assert
-            Assert.AreEqual(HttpStatusCode.OK, statusCode);
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
 
             request = null;
         }
@@ -46,10 +46,10 @@ namespace VSTSRestApiSamples.UnitTests.Client.APIs.Work.ProcessDefinitions
             Lists request = new Lists(_auth);
 
             //act
-            var statusCode = request.UpdatePickList(_auth.ProcessId, _auth.PickListId);
+            var result = request.UpdatePickList(_auth.ProcessId, _auth.PickListId);
 
             //assert
-            Assert.AreEqual(HttpStatusCode.OK, statusCode);
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
 
             request = null;
         }
@@ -61,10 +61,10 @@ namespace VSTSRestApiSamples.UnitTests.Client.APIs.Work.ProcessDefinitions
             Lists request = new Lists(_auth);
 
             //act
-            var statusCode = request.GetListOfPickLists(_auth.ProcessId);
+            var result = request.GetListOfPickLists(_auth.ProcessId);
 
             //assert
-            Assert.AreEqual(HttpStatusCode.OK, statusCode);
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
 
             request = null;
         }
@@ -76,10 +76,10 @@ namespace VSTSRestApiSamples.UnitTests.Client.APIs.Work.ProcessDefinitions
             Lists request = new Lists(_auth);
 
             //act
-            var statusCode = request.GetPickList(_auth.ProcessId, _auth.PickListId);
+            var result = request.GetPickList(_auth.ProcessId, _auth.PickListId);
 
             //assert
-            Assert.AreEqual(HttpStatusCode.OK, statusCode);
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
 
             request = null;
         }

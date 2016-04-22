@@ -22,8 +22,14 @@ namespace VstsRestApiSamples.Client.APIs.Wit
             _login = auth.Login;
         }
 
-        public HttpStatusCode GetListOfWorkItemFields()
+        /// <summary>
+        /// get list of all the fields in the account
+        /// </summary>
+        /// <returns>ListofWorkItemFieldsResponse.Fields</returns>
+        public ListofWorkItemFieldsResponse.Fields GetListOfWorkItemFields()
         {
+            ListofWorkItemFieldsResponse.Fields viewModel = new ListofWorkItemFieldsResponse.Fields();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_account);
@@ -35,10 +41,12 @@ namespace VstsRestApiSamples.Client.APIs.Wit
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var vm = response.Content.ReadAsAsync<ListofWorkItemFieldsResponse.Fields>().Result;
+                    viewModel = response.Content.ReadAsAsync<ListofWorkItemFieldsResponse.Fields>().Result;
                 }
 
-                return response.StatusCode;
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
             }
         }
     }

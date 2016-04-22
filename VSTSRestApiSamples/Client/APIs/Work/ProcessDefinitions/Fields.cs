@@ -22,15 +22,23 @@ namespace VstsRestApiSamples.Client.APIs.Work.ProcessDefinitions
             _login = auth.Login;
         }
 
-        public HttpStatusCode CreatePickListField(string processId, string picklistId)
+        /// <summary>
+        /// add fields to a picklist
+        /// </summary>
+        /// <param name="processId">process id</param>
+        /// <param name="picklistId">picklist id</param>
+        /// <returns>FieldsPostResponse.Field</returns>
+        public FieldsPostResponse.Field CreatePickListField(string processId, string picklistId)
         {
+            FieldsPostResponse.Field viewModel = new FieldsPostResponse.Field();
+
             //create field object and set values
             FieldsPost.Field data = new FieldsPost.Field()
             {
                 Name = "Favorite Color",
                 Type = "String",
                 Description = "These are my favorite colors",
-                ListId = picklistId //Id from when we created a picklist
+                ListId = picklistId //id from when we created a picklist
             };           
 
             using (var client = new HttpClient())
@@ -44,10 +52,12 @@ namespace VstsRestApiSamples.Client.APIs.Work.ProcessDefinitions
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var vm = response.Content.ReadAsAsync<FieldsPostResponse.Field>().Result;
+                    viewModel = response.Content.ReadAsAsync<FieldsPostResponse.Field>().Result;
                 }
 
-                return response.StatusCode;
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
             }
         }
     }

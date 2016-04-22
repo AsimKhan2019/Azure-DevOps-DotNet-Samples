@@ -18,8 +18,14 @@ namespace VstsRestApiSamples.Client.APIs.Process
             _login = auth.Login;
         }
 
-        public HttpStatusCode GetListOfProcesses()
+        /// <summary>
+        /// get list of all processes
+        /// </summary>
+        /// <returns>ListofProcessesResponse.Processes</returns>
+        public ListofProcessesResponse.Processes GetListOfProcesses()
         {
+            ListofProcessesResponse.Processes viewModel = new ListofProcessesResponse.Processes();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_account);
@@ -31,15 +37,24 @@ namespace VstsRestApiSamples.Client.APIs.Process
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var vm = response.Content.ReadAsAsync<ListofProcessesResponse.Processes>().Result;
+                    viewModel = response.Content.ReadAsAsync<ListofProcessesResponse.Processes>().Result;
                 }
 
-                return response.StatusCode;
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
             }
         }
 
-        public HttpStatusCode GetProcess(string processId)
+        /// <summary>
+        /// get process by id
+        /// </summary>
+        /// <param name="processId"></param>
+        /// <returns>GetProcessResponse.Process</returns>
+        public GetProcessResponse.Process GetProcess(string processId)
         {
+            GetProcessResponse.Process viewModel = new GetProcessResponse.Process();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_account);
@@ -51,10 +66,12 @@ namespace VstsRestApiSamples.Client.APIs.Process
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var vm = response.Content.ReadAsAsync<GetProcessResponse.Process>().Result;
+                    viewModel = response.Content.ReadAsAsync<GetProcessResponse.Process>().Result;
                 }
 
-                return response.StatusCode;
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
             }
         }
     }

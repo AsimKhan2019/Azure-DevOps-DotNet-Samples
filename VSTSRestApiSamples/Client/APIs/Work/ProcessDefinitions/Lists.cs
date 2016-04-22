@@ -24,11 +24,19 @@ namespace VstsRestApiSamples.Client.APIs.Work.ProcessDefinitions
             _login = auth.Login;
         }
 
-        public HttpStatusCode CreatePickList(string processId)
+        /// <summary>
+        /// create a picklist to the process
+        /// </summary>
+        /// <param name="processId">process id</param>
+        /// <returns></returns>
+        public PickListPostResponse.PickList CreatePickList(string processId)
         {
+            PickListPostResponse.PickList viewModel = new PickListPostResponse.PickList();
+
             PickListPost.PickList data = new PickListPost.PickList();
             PickListPost.Item[] items = new PickListPost.Item[4];
 
+            //create a bunch of values
             items[0] = new PickListPost.Item() { value = "Red" };
             items[1] = new PickListPost.Item() { value = "Blue" };
             items[2] = new PickListPost.Item() { value = "Yellow" };
@@ -49,19 +57,29 @@ namespace VstsRestApiSamples.Client.APIs.Work.ProcessDefinitions
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var vm = response.Content.ReadAsAsync<PickListPostResponse.PickList>().Result;
+                    viewModel = response.Content.ReadAsAsync<PickListPostResponse.PickList>().Result;
                 }
 
-                return response.StatusCode;
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
             }
         }
 
-        public HttpStatusCode UpdatePickList(string processId, string picklistId)
+        /// <summary>
+        /// update picklist values
+        /// </summary>
+        /// <param name="processId">process id</param>
+        /// <param name="picklistId">picklist id</param>
+        /// <returns>PickListPostResponse.PickList</returns>
+        public PickListPostResponse.PickList UpdatePickList(string processId, string picklistId)
         {
+            PickListPostResponse.PickList viewModel = new PickListPostResponse.PickList();
+
             PickListPost.PickList data = new PickListPost.PickList();
             PickListPost.Item[] items = new PickListPost.Item[5];
 
-            //build picklist itms
+            //build picklist items and add a few new ones
             items[0] = new PickListPost.Item() { value = "Red" };
             items[1] = new PickListPost.Item() { value = "Blue" };
             items[2] = new PickListPost.Item() { value = "Yellow" };
@@ -69,9 +87,9 @@ namespace VstsRestApiSamples.Client.APIs.Work.ProcessDefinitions
             items[4] = new PickListPost.Item() { value = "Black" };
 
             //set post picklist object values
-            data.Name = "Sample Picklist";
-            data.Type = "string";
-            data.Items = items;
+            data.Name = "Sample Picklist";  //name
+            data.Type = "string";           //type
+            data.Items = items;             //all the item values
 
             using (var client = new HttpClient())
             {           
@@ -84,15 +102,24 @@ namespace VstsRestApiSamples.Client.APIs.Work.ProcessDefinitions
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var vm = response.Content.ReadAsAsync<PickListPostResponse.PickList>().Result;
+                    viewModel = response.Content.ReadAsAsync<PickListPostResponse.PickList>().Result;
                 }
 
-                return response.StatusCode;
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
             }
         }
 
-        public HttpStatusCode GetListOfPickLists(string processId)
+        /// <summary>
+        /// get list of picklists we have in a process
+        /// </summary>
+        /// <param name="processId">process id</param>
+        /// <returns>ListPickListResponse.PickList</returns>
+        public ListPickListResponse.PickList GetListOfPickLists(string processId)
         {
+            ListPickListResponse.PickList viewModel = new ListPickListResponse.PickList();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_account);
@@ -104,15 +131,26 @@ namespace VstsRestApiSamples.Client.APIs.Work.ProcessDefinitions
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var vm = response.Content.ReadAsAsync<ListPickListResponse.PickList>().Result;               
-                }              
-               
-                return response.StatusCode;
+                    viewModel = response.Content.ReadAsAsync<ListPickListResponse.PickList>().Result;               
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
             }
         }
 
-        public HttpStatusCode GetPickList(string processId, string picklistId)
+        /// <summary>
+        /// get a specific picklist
+        /// </summary>
+        /// <param name="processId">process id</param>
+        /// <param name="picklistId">picklist id</param>
+        /// <returns>PickListResponse.PickList</returns>
+
+        public PickListResponse.PickList GetPickList(string processId, string picklistId)
         {
+            PickListResponse.PickList viewModel = new PickListResponse.PickList();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_account);
@@ -124,10 +162,12 @@ namespace VstsRestApiSamples.Client.APIs.Work.ProcessDefinitions
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var vm = response.Content.ReadAsAsync<PickListResponse.PickList>().Result;
+                    viewModel = response.Content.ReadAsAsync<PickListResponse.PickList>().Result;
                 }
 
-                return response.StatusCode;
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
             }
         }
     }

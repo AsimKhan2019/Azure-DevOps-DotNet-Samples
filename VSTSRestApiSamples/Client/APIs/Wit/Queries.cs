@@ -18,7 +18,12 @@ namespace VstsRestApiSamples.Client.APIs.Wit
             _account = auth.Account;
             _login = auth.Login;
         }
-        
+
+        /// <summary>
+        /// get list of queries by project
+        /// </summary>
+        /// <param name="project">project name or id</param>
+        /// <returns>ListofQueriesResponse.Queries</returns>
         public ListofQueriesResponse.Queries GetListOfQueries(string project)
         {
             ListofQueriesResponse.Queries viewModel = new ListofQueriesResponse.Queries();
@@ -30,6 +35,7 @@ namespace VstsRestApiSamples.Client.APIs.Wit
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _login);
 
+                //$depth=2 is the maximum level deep you can go
                 HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/queries?$depth=2&api-version=1.0").Result;
 
                 if (response.IsSuccessStatusCode)
@@ -43,6 +49,12 @@ namespace VstsRestApiSamples.Client.APIs.Wit
             }
         }
 
+        /// <summary>
+        /// get list of queries by a specific folder path
+        /// </summary>
+        /// <param name="project">project name or id</param>
+        /// <param name="folderPath">folder path that must be url encoded</param>
+        /// <returns>ListofQueriesByFolderPath.Queries</returns>
         public ListofQueriesByFolderPath.Queries GetListOfQueriesByFolderPath(string project, string folderPath)
         {
             ListofQueriesByFolderPath.Queries viewModel = new ListofQueriesByFolderPath.Queries();
@@ -67,6 +79,12 @@ namespace VstsRestApiSamples.Client.APIs.Wit
             }
         }
 
+        /// <summary>
+        /// get query or folder by id
+        /// </summary>
+        /// <param name="project">project name or id</param>
+        /// <param name="id">query id</param>
+        /// <returns>GetQueryByIdResponse.Queries</returns>
         public GetQueryByIdResponse.Queries GetQueryById(string project, string id)
         {
             GetQueryByIdResponse.Queries viewModel = new GetQueryByIdResponse.Queries();

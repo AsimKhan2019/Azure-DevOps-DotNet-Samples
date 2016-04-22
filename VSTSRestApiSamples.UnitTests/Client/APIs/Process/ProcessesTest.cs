@@ -30,10 +30,10 @@ namespace VSTSRestApiSamples.UnitTests.Client.APIs.Process
             Processes request = new Processes(_auth);
 
             //act
-            var statusCode = request.GetListOfProcesses();
+            var result = request.GetListOfProcesses();
 
             //assert
-            Assert.AreEqual(HttpStatusCode.OK, statusCode);
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
 
             request = null;
         }
@@ -46,10 +46,10 @@ namespace VSTSRestApiSamples.UnitTests.Client.APIs.Process
             string processId = "adcc42ab-9882-485e-a3ed-7678f01f66bc";
 
             //act
-            var statusCode = request.GetProcess(processId);
+            var result = request.GetProcess(processId);
 
             //assert
-            Assert.AreEqual(HttpStatusCode.OK, statusCode);
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
 
             request = null;
         }

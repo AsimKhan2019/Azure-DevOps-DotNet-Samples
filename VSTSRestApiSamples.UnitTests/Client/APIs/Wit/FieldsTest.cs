@@ -31,10 +31,10 @@ namespace vstsrestapisamples.tests.Client.APIs.Wit
             Fields request = new Fields(_auth);
 
             //act
-            var statusCode = request.GetListOfWorkItemFields();
+            var result = request.GetListOfWorkItemFields();
 
             //assert
-            Assert.AreEqual(HttpStatusCode.OK, statusCode);
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
 
             request = null;
         }       

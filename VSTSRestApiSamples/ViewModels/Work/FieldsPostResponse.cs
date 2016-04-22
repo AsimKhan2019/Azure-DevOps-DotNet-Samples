@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace VstsRestApiSamples.ViewModels.Work
 {
-    class FieldsPostResponse
+    public class FieldsPostResponse
     {
-        public class Field
+        public class Field : BaseViewModel
         {
             public string id { get; set; }
             public string name { get; set; }

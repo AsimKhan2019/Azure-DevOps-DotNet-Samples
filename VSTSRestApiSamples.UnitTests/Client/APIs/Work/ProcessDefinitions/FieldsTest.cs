@@ -23,17 +23,17 @@ namespace vstsrestapisamples.tests.Client.APIs.Work.ProcessDefinitions
             _auth = null;
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         public void ProcessDefinitions_Work_Fields_CreatePickListField()
         {
             //arrange
             Fields request = new Fields(_auth);
 
             //act
-            var statusCode = request.CreatePickListField(_auth.ProcessId, _auth.PickListId);
+            var result = request.CreatePickListField(_auth.ProcessId, _auth.PickListId);
 
             //assert
-            Assert.AreEqual(HttpStatusCode.Created, statusCode);
+            Assert.AreEqual(HttpStatusCode.Created, result.HttpStatusCode);
 
             request = null;
         }     

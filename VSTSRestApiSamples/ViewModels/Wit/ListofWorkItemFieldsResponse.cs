@@ -8,7 +8,7 @@ namespace VstsRestApiSamples.ViewModels.Wit
 {
     public class ListofWorkItemFieldsResponse
     {
-        public class Fields
+        public class Fields : BaseViewModel
         {
             public int count { get; set; }
             public Value[] value { get; set; }

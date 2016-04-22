@@ -9,7 +9,7 @@ namespace VstsRestApiSamples.ViewModels.Work
     public class PickListPostResponse
     {
 
-        public class PickList
+        public class PickList : BaseViewModel
         {
             public Item[] items { get; set; }
             public string id { get; set; }

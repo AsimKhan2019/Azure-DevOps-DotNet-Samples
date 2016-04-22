@@ -9,7 +9,7 @@ namespace VstsRestApiSamples.ViewModels.Process
 
     public class GetProcessResponse
     {
-        public class Process
+        public class Process : BaseViewModel
         {
             public string id { get; set; }
             public string description { get; set; }

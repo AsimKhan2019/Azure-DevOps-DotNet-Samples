@@ -21,6 +21,12 @@ namespace VstsRestApiSamples.Client.APIs.Wit
             _login = auth.Login;
         }
 
+        /// <summary>
+        /// execute a query that already exists (see queries code to get query id)
+        /// </summary>
+        /// <param name="project">project name or id</param>
+        /// <param name="id">query id</param>
+        /// <returns>GetWIQLRunStoredQueryResponse.WIQLResult</returns>
         public GetWIQLRunStoredQueryResponse.WIQLResult RunStoredQuery(string project, string id)
         {
             GetWIQLRunStoredQueryResponse.WIQLResult viewModel = new GetWIQLRunStoredQueryResponse.WIQLResult();

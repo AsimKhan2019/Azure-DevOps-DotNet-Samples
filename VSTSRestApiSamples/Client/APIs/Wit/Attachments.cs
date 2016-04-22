@@ -22,7 +22,12 @@ namespace VstsRestApiSamples.Client.APIs.Wit
             _login = auth.Login;
         }
 
-
+        /// <summary>
+        /// download an attachment from the work item
+        /// </summary>
+        /// <param name="url">url supplied from get work item</param>
+        /// <param name="saveToFile">location you want to save the attachment to</param>
+        /// <returns>DownloadAttachmentResponse</returns>
         public DownloadAttachmentResponse DownloadAttachment(string url, string saveToFile)
         {             
             DownloadAttachmentResponse viewModel = new DownloadAttachmentResponse();
@@ -43,10 +48,14 @@ namespace VstsRestApiSamples.Client.APIs.Wit
                     int bytesRead;
                     Byte[] buffer = new Byte[length];
 
+                    //read to stream
                     Stream readStream = response.Content.ReadAsStreamAsync().Result;
+
+                    //save the file to location
                     FileStream writeStream = new FileStream(@saveToFile, FileMode.Create, FileAccess.ReadWrite);                                                           
                     bytesRead = readStream.Read(buffer, 0, length);
 
+                    //read data write stream
                     while (bytesRead > 0)
                     {
                         writeStream.Write(buffer, 0, bytesRead);
@@ -63,21 +72,6 @@ namespace VstsRestApiSamples.Client.APIs.Wit
 
                 return viewModel;
             }
-        }
-
-        private void ReadWriteStream(Stream readStream, Stream writeStream)
-        {
-            int Length = 256;
-            Byte[] buffer = new Byte[Length];
-            int bytesRead = readStream.Read(buffer, 0, Length);
-            // write the required bytes
-            while (bytesRead > 0)
-            {
-                writeStream.Write(buffer, 0, bytesRead);
-                bytesRead = readStream.Read(buffer, 0, Length);
-            }
-            readStream.Close();
-            writeStream.Close();
         }
     }
 }

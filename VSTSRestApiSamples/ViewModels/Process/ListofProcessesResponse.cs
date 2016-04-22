@@ -8,7 +8,7 @@ namespace VstsRestApiSamples.ViewModels.Process
 {
     public class ListofProcessesResponse
     {
-        public class Processes
+        public class Processes : BaseViewModel  
         {
             public int count { get; set; }
             public Value[] value { get; set; }
