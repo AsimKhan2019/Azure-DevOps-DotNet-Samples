@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\APIs\Build2\Build.cs" />
     <Compile Include="Client\APIs\Process\Processes.cs" />
     <Compile Include="Client\APIs\Wit\Attachments.cs" />
     <Compile Include="Client\APIs\Wit\Fields.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Client\APIs\Wit\Queries.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Build\BuildGetListofBuildDefinitionsResponse.cs" />
     <Compile Include="ViewModels\Process\GetProcessResponse.cs" />
     <Compile Include="ViewModels\Process\ListofProcessesResponse.cs" />
     <Compile Include="ViewModels\Wit\BatchOfWorkItemLinksResponse.cs" />

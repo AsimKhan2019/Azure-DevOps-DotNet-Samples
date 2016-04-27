@@ -61,6 +61,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Client\APIs\Build2\BuildTest.cs" />
     <Compile Include="Client\APIs\Process\ProcessesTest.cs" />
     <Compile Include="Client\APIs\Wit\WIQLTest.cs" />
     <Compile Include="Client\APIs\Wit\QueriesTest.cs" />
