@@ -5,13 +5,13 @@ namespace VstsRestApiSamples.Tests.Client.Helpers
 {
     public class Auth : IAuth
     {
-        private string _account = "https://accountname.visualstudio.com/DefaultCollection/";
-        private string _login = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", "<personal access token>")));
-        private string _project = "<project name>";
-        private string _processId = "<process id>";
-        private string _picklistId = "<picklist id>";
-        private string _queryId = "<query id>";
-        private string _workItemId = "<work item id>";
+        private string _account = "https://danhellem.visualstudio.com/DefaultCollection/";
+        private string _login = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", "4tjp7stxlnjm6pd2tcyj2re2pzqawei45eiqziywf6b3sspeeeiq")));
+        private string _project = "MedIntake";
+        private string _processId = "f11f0070-2d42-41c4-a01b-892cd0183dd3";
+        private string _picklistId = "710e528c-54e1-4591-8d7f-51b3e5862bfe";
+        private string _queryId = "c5699578-595d-409c-a5ea-e4cf549e0ba3";
+        private string _workItemId = "2768";
 
         public string Account
         {
@@ -48,7 +48,7 @@ namespace VstsRestApiSamples.Tests.Client.Helpers
         public string PickListId
         {
             get
-            {              
+            {
                 return _picklistId;
             }
         }
@@ -56,7 +56,7 @@ namespace VstsRestApiSamples.Tests.Client.Helpers
         public string QueryId
         {
             get
-            {               
+            {
                 return _queryId;
             }
         }

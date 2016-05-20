@@ -144,6 +144,54 @@ namespace vstsrestapisamples.tests.Client.APIs.Wit
 
             request = null;
         }
-      
+
+        [TestMethod]
+        public void Wit_WorkItems_AddAndUpdateWorkItemTags_Success()
+        {
+            //arrange
+            WorkItems request = new WorkItems(_auth);
+
+            //act
+            WorkItemPatchResponse.WorkItem result = request.AddWorkItemTags(_auth.WorkItemId, "Technical Debt; Spike Needed");
+
+            //assert
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod]
+        public void Wit_WorkItems_MoveWorkItem_Success()
+        {
+            //arrange
+            WorkItems request = new WorkItems(_auth);
+            string areaPath = "Temp Agile";
+            string iterationPath = "Temp Agile";
+
+            //act
+            WorkItemPatchResponse.WorkItem result = request.MoveWorkItem("2776", "Temp Agile", areaPath, iterationPath);
+
+            //assert
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
+            Assert.AreEqual(result.fields.SystemAreaPath, areaPath);
+            Assert.AreEqual(result.fields.SystemIterationPath, iterationPath);
+
+            request = null;
+        }
+
+        [TestMethod]
+        public void Wit_WorkItems_MoveWorkItemAndChangeType_Success()
+        {
+            //arrange
+            WorkItems request = new WorkItems(_auth);
+
+            //act
+            WorkItemPatchResponse.WorkItem result = request.MoveWorkItemAndChangeType("2776", "Temp Scrum", "Temp Scrum", "Temp Scrum");
+
+            //assert
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
+
+            request = null;
+        }
     }
 }
