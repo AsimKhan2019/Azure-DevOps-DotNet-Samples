@@ -115,6 +115,51 @@ namespace VstsRestApiSamples.Client.APIs.Wit
         }
 
         /// <summary>
+        /// create a work item using bypass rules
+        /// </summary>
+        /// <param name="projectName">name of project</param>
+        /// <returns>WorkItemPatchResponse.WorkItem</returns>
+        public WorkItemPatchResponse.WorkItem CreateWorkItemUsingByPassRules(string projectName)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[2];
+
+            //add a title and add a field you normally cant add such as CreatedDate
+            fields[1] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.Title", value = "hello world!" };
+            fields[0] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.CreatedDate", value = "6/1/2016" };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _login);
+
+                //serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); //mediaType needs to be application/json-patch+json for a patch call
+
+                //set the httpmethod to Patch
+                var method = new HttpMethod("PATCH");
+
+                var url = _account + projectName + "/_apis/wit/workitems/$UserStory?api-version=1.0";
+
+                //send the request
+                var request = new HttpRequestMessage(method, _account + projectName + "/_apis/wit/workitems/$User Story?bypassRules=true&api-version=1.0") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                var me = response.ToString();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
+        /// <summary>
         /// update a specific work item by id and return that changed worked item
         /// </summary>
         /// <param name="id"></param>
@@ -156,7 +201,47 @@ namespace VstsRestApiSamples.Client.APIs.Wit
                 return viewModel;
             }
         }
-        
+
+        /// <summary>
+        /// update fields on work item using bypass rules
+        /// </summary>
+        /// <param name="id">work item id</param>
+        /// <returns>WorkItemPatchResponse.WorkItem</returns>
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemFieldsWithByPassRules(string id)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[1];
+
+            //replace value on a field that you normally cannot change, like system.createdby
+            fields[0] = new WorkItemPatch.Field() { op = "replace", path = "/fields/System.CreatedBy", value = "Foo <Foo@hotmail.com>" };
+                      
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _login);
+
+                //serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); //mediaType needs to be application/json-patch+json for a patch call
+
+                //set the httpmethod to Patch
+                var method = new HttpMethod("PATCH");
+
+                //send the request
+                var request = new HttpRequestMessage(method, _account + "_apis/wit/workitems/" + id + "?bypassRules=true&api-version=1.0") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
         /// <summary>
         /// get a batch of work item links starting at a specific start date and scoped to a project
         /// </summary>

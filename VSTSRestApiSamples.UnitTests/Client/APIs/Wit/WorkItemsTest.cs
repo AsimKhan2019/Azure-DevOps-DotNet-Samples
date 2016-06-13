@@ -131,6 +131,21 @@ namespace vstsrestapisamples.tests.Client.APIs.Wit
         }
 
         [TestMethod]
+        public void Wit_WorkItems_CreateWorkItem_Success()
+        {
+            //arrange
+            WorkItems request = new WorkItems(_auth);
+
+            //act
+            WorkItemPatchResponse.WorkItem result = request.CreateWorkItemUsingByPassRules(_auth.Project);
+
+            //assert
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod]
         public void Wit_WorkItems_UpdateWorkItem_Success()
         {
             //arrange
@@ -138,6 +153,21 @@ namespace vstsrestapisamples.tests.Client.APIs.Wit
 
             //act
             WorkItemPatchResponse.WorkItem result = request.UpdateWorkItemFields(_auth.WorkItemId);
+
+            //assert
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod]
+        public void Wit_WorkItems_UpdateWorkItemWithByPassRules_Success()
+        {
+            //arrange
+            WorkItems request = new WorkItems(_auth);
+
+            //act
+            WorkItemPatchResponse.WorkItem result = request.UpdateWorkItemFieldsWithByPassRules(_auth.WorkItemId);
 
             //assert
             Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
