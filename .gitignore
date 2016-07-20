@@ -7,3 +7,8 @@
 /VSTSRestApiSamples.UnitTests/obj/Debug
 /VSTSRestApiSamples/packages
 /VSTSRestApiSamples/obj/Debug
+/VstsClientLibrariesSamples/bin/Debug
+/VstsClientLibrariesSamples/obj/Debug
+/VSTSRestApiSamples/VstsClientLibrariesSamples.Tests/bin/Debug
+/VSTSRestApiSamples/VstsClientLibrariesSamples.Tests/obj/Debug
+/VSTSRestApiSamples/VstsClientLibrariesSamples.Tests/ConfigurationLocal.cs
