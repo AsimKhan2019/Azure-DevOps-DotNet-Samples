@@ -120,7 +120,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\..\VstsClientLibrariesSamples\VstsClientLibrariesSamples.csproj">
+    <ProjectReference Include="..\VstsClientLibrariesSamples\VstsClientLibrariesSamples.csproj">
       <Project>{545851e1-9bd9-4939-8af4-9a8910cf5c34}</Project>
       <Name>VstsClientLibrariesSamples</Name>
     </ProjectReference>
