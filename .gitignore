@@ -15,3 +15,6 @@
 /VstsClientLibrariesSamples.Tests/obj/Debug
 /VstsClientLibrariesSamples.Tests/bin/Debug
 *.suo
+/packages
+/VstsClientLibrariesSamples.Tests/app.Debug.config
+/VstsClientLibrariesSamples.Tests/app.Release.config

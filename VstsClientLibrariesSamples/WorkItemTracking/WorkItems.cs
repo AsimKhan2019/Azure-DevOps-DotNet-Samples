@@ -8,27 +8,32 @@ using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.VisualStudio.Services.WebApi.Patch;
 using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
+using Microsoft.VisualStudio.Services.Common;
 
-namespace VstsClientLibrariesSamples.QueryAndUpdateWorkItems
+namespace VstsClientLibrariesSamples.WorkItemTracking
 {
     public class WorkItems
     {
         readonly IConfiguration _configuration;
+        private VssBasicCredential _credentials;
+        private Uri _uri;
 
         public WorkItems(IConfiguration configuration)
         {
             _configuration = configuration;
+            _credentials = new VssBasicCredential("", _configuration.PersonalAccessToken);
+            _uri = new Uri(_configuration.UriString);
         }
 
-        public void UpdateWorkItemsByQueryResults(WorkItemQueryResult workItemQueryResult, string changedBy)
+        public string UpdateWorkItemsByQueryResults(WorkItemQueryResult workItemQueryResult, string changedBy)
         {
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
             patchDocument.Add(
                 new JsonPatchOperation()
                 {
-                    Operation = Operation.Replace,
-                    Path = "Microsoft.VSTS.Common.BacklogPriority",
+                    Operation = Operation.Add,
+                    Path = "/fields/Microsoft.VSTS.Common.BacklogPriority",
                     Value = "2",
                     From = changedBy
                 }
@@ -44,15 +49,27 @@ namespace VstsClientLibrariesSamples.QueryAndUpdateWorkItems
                 }
             );
 
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_configuration.Uri, _configuration.Credentials))
+            patchDocument.Add(
+               new JsonPatchOperation()
+               {
+                   Operation = Operation.Add,
+                   Path = "/fields/System.State",
+                   Value = "Active",
+                   From = changedBy
+               }
+           );
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
                 foreach (WorkItemReference workItemReference in workItemQueryResult.WorkItems)
                 {
                     WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, workItemReference.Id).Result;                   
                 }
-            }
+            }            
 
             patchDocument = null;
+
+            return "success";
         }
     }
 }

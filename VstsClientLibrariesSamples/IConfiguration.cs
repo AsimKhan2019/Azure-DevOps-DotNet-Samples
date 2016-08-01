@@ -4,11 +4,12 @@ using Microsoft.VisualStudio.Services.Common;
 namespace VstsClientLibrariesSamples
 {
     public interface IConfiguration
-    {
-        VssBasicCredential Credentials { get; }
-        string ProjectName { get; }
-        Uri Uri { get; }
-        string QueryName { get; }
-        string Identity { get; }
+    {        
+        string PersonalAccessToken { get; set; }
+        string Project { get; set; }
+        string UriString { get; set; }        
+        string Query { get; set; }
+        string Identity { get; set; }
+        string WorkItemIds { get; set; }
     }
 }

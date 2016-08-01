@@ -6,23 +6,28 @@ using System.Threading.Tasks;
 
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
+using Microsoft.VisualStudio.Services.Common;
 
-namespace VstsClientLibrariesSamples.QueryAndUpdateWorkItems
+namespace VstsClientLibrariesSamples.WorkItemTracking
 {
     public class Queries
     {
         readonly IConfiguration _configuration;
+        private VssBasicCredential _credentials;
+        private Uri _uri;
 
         public Queries(IConfiguration configuration)
         {
             _configuration = configuration;
+            _credentials = new VssBasicCredential("", _configuration.PersonalAccessToken);
+            _uri = new Uri(_configuration.UriString);
         }
 
-        public QueryHierarchyItem GetQueryByName(Guid projectId, string queryName)
+        public QueryHierarchyItem GetQueryByName(string project, string queryName)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_configuration.Uri, _configuration.Credentials))
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                QueryHierarchyItem query = workItemTrackingHttpClient.GetQueryAsync(projectId, queryName).Result;
+                QueryHierarchyItem query = workItemTrackingHttpClient.GetQueryAsync(project, queryName).Result;
 
                 if (query != null)
                 {
@@ -37,7 +42,7 @@ namespace VstsClientLibrariesSamples.QueryAndUpdateWorkItems
 
         public WorkItemQueryResult ExecuteQuery(Guid queryId)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_configuration.Uri, _configuration.Credentials))
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
 
                 WorkItemQueryResult queryResult = workItemTrackingHttpClient.QueryByIdAsync(queryId).Result;
@@ -53,11 +58,11 @@ namespace VstsClientLibrariesSamples.QueryAndUpdateWorkItems
             }
         }
 
-        public WorkItemQueryResult ExecuteByWiql(Wiql wiql)
+        public WorkItemQueryResult ExecuteByWiql(Wiql wiql, string project)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_configuration.Uri, _configuration.Credentials))
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                WorkItemQueryResult queryResult = workItemTrackingHttpClient.QueryByWiqlAsync(wiql).Result;
+                WorkItemQueryResult queryResult = workItemTrackingHttpClient.QueryByWiqlAsync(wiql, project).Result;
 
                 if (queryResult != null && queryResult.WorkItems.Count() > 0)
                 {

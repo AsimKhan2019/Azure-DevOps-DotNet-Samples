@@ -10,10 +10,11 @@ namespace VstsClientLibrariesSamples
 {
     public class Configuration : IConfiguration
     {
-        public Uri Uri { get; }
-        public VssBasicCredential Credentials { get; }
-        public string ProjectName { get; }
-        public string QueryName { get; }
-        public string Identity { get; }
+        public string UriString { get; set; }
+        public string PersonalAccessToken { get; set; }
+        public string Project { get; set; }
+        public string Query { get; set; }
+        public string Identity { get; set; }
+        public string WorkItemIds { get; set; }
     }
 }
