@@ -10,18 +10,18 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
     [TestClass]
     public class WorkItemsTest
     {
-        private IConfiguration _config = new Configuration();
+        private IConfiguration _configuration = new Configuration();
 
         [TestInitialize]
         public void TestInitialize()
         {
-            InitHelper.GetConfiguration(_config);
+            InitHelper.GetConfiguration(_configuration);
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
-            _config = null;
+            _configuration = null;
         }
 
         [TestMethod, TestCategory("Client Libraries")]
@@ -29,7 +29,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         {
             //arrange
             IList<WorkItemReference> workItemsList = new List<WorkItemReference>();
-            string[] workItemsArr = _config.WorkItemIds.Split(','); //get the list of ids from our app.config
+            string[] workItemsArr = _configuration.WorkItemIds.Split(','); //get the list of ids from our app.config
 
             //build a list of work item references for ids we know exist
             foreach (string item in workItemsArr)
@@ -41,8 +41,8 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             workItemQueryResult.WorkItems = workItemsList;
 
             //act
-            WorkItems workItems = new WorkItems(_config);
-            var result = workItems.UpdateWorkItemsByQueryResults(workItemQueryResult, _config.Identity);
+            WorkItems workItems = new WorkItems(_configuration);
+            var result = workItems.UpdateWorkItemsByQueryResults(workItemQueryResult, _configuration.Identity);
 
             //assert
             Assert.AreEqual("success", result);

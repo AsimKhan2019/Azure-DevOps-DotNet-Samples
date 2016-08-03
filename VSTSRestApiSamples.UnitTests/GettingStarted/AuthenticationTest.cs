@@ -1,8 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VstsClientLibrariesSamples.GettingStarted;
+using VstsRestApiSamples.GettingStarted;
+using System.Net;
 
-namespace VstsClientLibrariesSamples.Tests.GettingStarted
+namespace VstsRestApiSamples.Tests.GettingStarted
 {
     [TestClass]
     public class AuthenticationTest
@@ -21,17 +22,19 @@ namespace VstsClientLibrariesSamples.Tests.GettingStarted
             _configuration = null;
         }
 
-        [TestMethod, TestCategory("Client Libraries")]
+        [TestMethod, TestCategory("REST API")]
         public void GettingStarted_Authentication_PersonalAccessToken_Success()
         {
             //arrange
-            Authentication authentication = new Authentication(_configuration);
+            Authentication request = new Authentication();
 
             //act
-            var result = authentication.PersonalAccessToken(_configuration.UriString, _configuration.PersonalAccessToken);
+            var response = request.PersonalAccessToken(_configuration.UriString, _configuration.PersonalAccessToken);
 
             //assert
-            Assert.IsNotNull(result.Name);
+            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+
+            request = null;
         }
     }
 }

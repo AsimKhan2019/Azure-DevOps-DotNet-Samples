@@ -9,37 +9,37 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
     [TestClass]
     public class ProjectsTest
     {
-        private IConfiguration _config = new Configuration();
+        private IConfiguration _configuration = new Configuration();
 
         [TestInitialize]
         public void TestInitialize()
         {
-            InitHelper.GetConfiguration(_config);
+            InitHelper.GetConfiguration(_configuration);
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
-            _config = null;
+            _configuration = null;
         }
 
         [TestMethod, TestCategory("Client Libraries")]
         public void WorkItemTracking_ProjectsAndTeams_GetProjectByName_Success()
         {
             //arrange
-            Projects projects = new Projects(_config);
+            Projects projects = new Projects(_configuration);
 
             //act
             try
             {
-                TeamProjectReference result = projects.GetProjectByName(_config.Project);
+                TeamProjectReference result = projects.GetProjectByName(_configuration.Project);
 
                 //assert
-                Assert.AreEqual(_config.Project, result.Name); 
+                Assert.AreEqual(_configuration.Project, result.Name); 
             }
             catch (System.AggregateException ex)
             {
-                Assert.Inconclusive("project '" + _config.Project + "' not found");
+                Assert.Inconclusive("project '" + _configuration.Project + "' not found");
             }           
         }
     }

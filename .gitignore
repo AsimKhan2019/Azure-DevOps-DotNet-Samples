@@ -18,3 +18,5 @@
 /packages
 /VstsClientLibrariesSamples.Tests/app.Debug.config
 /VstsClientLibrariesSamples.Tests/app.Release.config
+/VSTSRestApiSamples.UnitTests/app.Debug.config
+/VSTSRestApiSamples.UnitTests/app.Release.config

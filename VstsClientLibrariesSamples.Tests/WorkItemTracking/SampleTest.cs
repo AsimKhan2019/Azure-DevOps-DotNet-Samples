@@ -7,25 +7,25 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
     [TestClass]
     public class SampleTest
     {
-        private IConfiguration _config = new Configuration();
+        private IConfiguration _configuration = new Configuration();
 
         [TestInitialize]
         public void TestInitialize()
         {           
-            InitHelper.GetConfiguration(_config);
+            InitHelper.GetConfiguration(_configuration);
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
-            _config = null;
+            _configuration = null;
         }
 
         [TestMethod, TestCategory("Client Libraries")]
         public void WorkItemTracking_QueryAndUpdateWorkItems_Sample_Success()
         {
             //arrange
-            Sample sample = new Sample(_config);
+            Sample sample = new Sample(_configuration);
 
             try
             {

@@ -10,28 +10,28 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
     [TestClass]
     public class QueriesTest
     {
-        private IConfiguration _config = new Configuration();
+        private IConfiguration _configuration = new Configuration();
 
         [TestInitialize]
         public void TestInitialize()
         {
-            InitHelper.GetConfiguration(_config);
+            InitHelper.GetConfiguration(_configuration);
         }
 
         [TestCleanup]
         public void TestCleanup()
         {
-            _config = null;
+            _configuration = null;
         }
 
         [TestMethod, TestCategory("Client Libraries")]
         public void WorkItemTracking_Queries_GetQueryByName_Success()
         {
             //arrange
-            Queries queries = new Queries(_config);
+            Queries queries = new Queries(_configuration);
 
             //act
-            var result = queries.GetQueryByName(_config.Project, _config.Query);
+            var result = queries.GetQueryByName(_configuration.Project, _configuration.Query);
 
             //assert
             Assert.IsInstanceOfType(result, typeof(QueryHierarchyItem));
@@ -42,10 +42,10 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         public void WorkItemTracking_Queries_ExecuteQuery_Success()
         {
             //arrange
-            Queries queries = new Queries(_config);
+            Queries queries = new Queries(_configuration);
 
             //act
-            var queryResult = queries.GetQueryByName(_config.Project, _config.Query);
+            var queryResult = queries.GetQueryByName(_configuration.Project, _configuration.Query);
             var queryId = queryResult.Id;
 
             try
@@ -65,7 +65,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         public void WorkItemTracking_Queries_ExecuteByWiql_Success()
         {
             //arrange
-            Queries queries = new Queries(_config);
+            Queries queries = new Queries(_configuration);
 
             //create a query to get your list of work items needed
             Wiql wiql = new Wiql()
@@ -80,7 +80,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             try
             {
                 //act
-                var result = queries.ExecuteByWiql(wiql, _config.Project);
+                var result = queries.ExecuteByWiql(wiql, _configuration.Project);
 
                 //assert
                 Assert.IsInstanceOfType(result, typeof(WorkItemQueryResult));
