@@ -47,5 +47,17 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             //assert
             Assert.AreEqual("success", result);
         }
+
+        [TestMethod, TestCategory("Client Libraries")]
+        public void WorkItemTracking_WorkItems_CreatWorkItem_Success()
+        {
+            //arrange
+            WorkItems workItems = new WorkItems(_configuration);
+
+            //act
+            var result = workItems.CreateWorkItem(_configuration.Project);
+
+            Assert.AreEqual("success", result);
+        }
     }
 }

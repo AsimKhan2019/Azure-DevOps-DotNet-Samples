@@ -56,6 +56,7 @@
     <Compile Include="ViewModels\ProjectsAndTeams\ListofProjectsResponse.cs" />
     <Compile Include="WorkItemTracking\Attachments.cs" />
     <Compile Include="WorkItemTracking\Fields.cs" />
+    <Compile Include="WorkItemTracking\Samples.cs" />
     <Compile Include="WorkItemTracking\WIQL.cs" />
     <Compile Include="WorkItemTracking\WorkItems.cs" />
     <Compile Include="Work\ProcessConfiguration\Fields.cs" />

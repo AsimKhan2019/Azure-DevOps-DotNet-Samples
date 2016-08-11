@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
@@ -26,17 +21,69 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             _uri = new Uri(_configuration.UriString);
         }
 
+        public string CreateBug(string projectName)
+        {
+            JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            //add fields to your patch document
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.Title",
+                    Value = "Authorization Errors"
+                }
+            );
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/Microsoft.VSTS.TCM.ReproSteps",
+                    Value = "Our authorization logic needs to allow for users with Microsoft accounts (formerly Live Ids) - http://msdn.microsoft.com/en-us/library/live/hh826547.aspx"
+                }
+            );
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/Microsoft.VSTS.Common.Priority",
+                    Value = "1"
+                }
+            );
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/Microsoft.VSTS.Common.Severity",
+                    Value = "2 - High"
+                }
+            );
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                //create the bug
+                WorkItem result = workItemTrackingHttpClient.CreateWorkItemAsync(patchDocument, projectName, "Bug").Result;
+            }
+
+            patchDocument = null;
+
+            return "success";
+        }    
+
         public string QueryAndUpdateWorkItems()
         {
             //create a query to get your list of work items needed
             Wiql wiql = new Wiql()
             {
                 Query = "Select [State], [Title] " +
-                       "From WorkItems " +
-                       "Where [Work Item Type] = 'Bug' " +
-                       "And [System.TeamProject] = '" + _configuration.Project + "' " +
-                       "And [System.State] = 'New' " +
-                       "Order By [State] Asc, [Changed Date] Desc"
+                        "From WorkItems " +
+                        "Where [Work Item Type] = 'Bug' " +
+                        "And [System.TeamProject] = '" + _configuration.Project + "' " +
+                        "And [System.State] = 'New' " +
+                        "Order By [State] Asc, [Changed Date] Desc"
             };
 
             //create a patchDocument that is used to update the work items
@@ -55,13 +102,13 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             //move the state to active
             patchDocument.Add(
-               new JsonPatchOperation()
-               {
-                   Operation = Operation.Add,
-                   Path = "/fields/System.State",
-                   Value = "Active",
-                   From = _configuration.Identity
-               }
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.State",
+                    Value = "Active",
+                    From = _configuration.Identity
+                }
             );
 
             //add some comments
@@ -99,6 +146,5 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             return "success";           
         }
-
     }
 }

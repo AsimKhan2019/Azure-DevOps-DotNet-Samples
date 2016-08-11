@@ -136,13 +136,28 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_CreateWorkItem_Success()
+        public void WorkItemTracking_WorkItems_CreateWorkItemWithByPassRules_Success()
         {
             //arrange
             WorkItems request = new WorkItems(_configuration);
 
             //act
             WorkItemPatchResponse.WorkItem response = request.CreateWorkItemUsingByPassRules(_configuration.Project);
+
+            //assert
+            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_CreateBug_Success()
+        {
+            //arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            //act
+            WorkItemPatchResponse.WorkItem response = request.CreateBug(_configuration.Project);
 
             //assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);

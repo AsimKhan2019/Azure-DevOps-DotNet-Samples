@@ -31,7 +31,7 @@ namespace VstsClientLibrariesSamples.Tests.GettingStarted
             var result = authentication.PersonalAccessToken(_configuration.UriString, _configuration.PersonalAccessToken);
 
             //assert
-            Assert.IsNotNull(result.Name);
+            Assert.IsNotNull(result);
         }
     }
 }

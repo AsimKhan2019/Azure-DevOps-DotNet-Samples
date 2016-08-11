@@ -22,7 +22,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_QueryAndUpdateWorkItems_Sample_Success()
+        public void WorkItemTracking_Sample_QueryAndUpdateWorkItems_Success()
         {
             //arrange
             Sample sample = new Sample(_configuration);
@@ -39,5 +39,17 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
                 Assert.Inconclusive(ex.Message);
             }           
         }
+
+        [TestMethod, TestCategory("Client Libraries")]
+        public void WorkItemTracking_Sample_CreateBug_Success()
+        {
+            //arrange
+            Sample sample = new Sample(_configuration);
+
+            //act
+            var result = sample.CreateBug(_configuration.Project);
+
+            Assert.AreEqual("success", result);           
+        }       
     }
 }

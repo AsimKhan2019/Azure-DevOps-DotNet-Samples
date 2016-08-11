@@ -18,7 +18,7 @@ namespace VstsClientLibrariesSamples.GettingStarted
             _configuration = configuration;
         }
 
-        public TeamProjectReference PersonalAccessToken(string url, string personalAccessToken)
+        public IEnumerable<TeamProjectReference> PersonalAccessToken(string url, string personalAccessToken)
         {
             //create uri and VssBasicCredential variables
             Uri uri = new Uri(url);
@@ -26,16 +26,16 @@ namespace VstsClientLibrariesSamples.GettingStarted
 
             using (ProjectHttpClient projectHttpClient = new ProjectHttpClient(uri, credentials))
             {
-                TeamProjectReference project = projectHttpClient.GetProject(_configuration.Project).Result;
+                IEnumerable<TeamProjectReference> projects = projectHttpClient.GetProjects().Result;
 
-                if (project != null)
+                if (projects != null)
                 {
-                    return project;
+                    return projects;
                 }
                 else
                 {
-                    throw new ProjectDoesNotExistException(_configuration.Project);
-                }
+                    return null;
+                }                
             }
         }
     }

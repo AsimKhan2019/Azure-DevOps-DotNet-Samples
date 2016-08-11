@@ -71,5 +71,55 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             return "success";
         }
+
+        public string CreateWorkItem(string projectName)
+        {
+            JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.Title",
+                    Value = "Authorization Errors"
+                }
+            );
+
+            patchDocument.Add(
+               new JsonPatchOperation()
+               {
+                   Operation = Operation.Add,
+                   Path = "/fields/Microsoft.VSTS.TCM.ReproSteps",
+                   Value = "Our authorization logic needs to allow for users with Microsoft accounts (formerly Live Ids) - http://msdn.microsoft.com/en-us/library/live/hh826547.aspx"
+               }
+            );
+
+            patchDocument.Add(
+               new JsonPatchOperation()
+               {
+                   Operation = Operation.Add,
+                   Path = "/fields/Microsoft.VSTS.Common.Priority",
+                   Value = "1"
+               }
+            );
+
+            patchDocument.Add(
+               new JsonPatchOperation()
+               {
+                   Operation = Operation.Add,
+                   Path = "/fields/Microsoft.VSTS.Common.Severity",
+                   Value = "2 - High"
+               }
+            );
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {              
+                WorkItem result = workItemTrackingHttpClient.CreateWorkItemAsync(patchDocument, projectName, "Bug").Result;               
+            }
+
+            patchDocument = null;
+
+            return "success";
+        }
     }
 }
