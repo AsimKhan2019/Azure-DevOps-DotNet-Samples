@@ -66,6 +66,7 @@
     <Compile Include="GettingStarted\AuthenticationTest.cs" />
     <Compile Include="InitHelper.cs" />
     <Compile Include="ProjectsAndTeams\ProcessesTest.cs" />
+    <Compile Include="WorkItemTracking\SamplesTest.cs" />
     <Compile Include="WorkItemTracking\WIQLTest.cs" />
     <Compile Include="WorkItemTracking\QueriesTest.cs" />
     <Compile Include="WorkItemTracking\FieldsTest.cs" />

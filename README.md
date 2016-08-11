@@ -1,8 +1,6 @@
-Team Services REST API Sample Code
+Team Services REST API and .Net Client Library Sample Code
 ===================
 
-This repo will eventually be chuck of code samples when using the REST API's in Team Services. Code is specifically optimized to be simple to read and understands.
+This repo contains code samples for using the REST API's and .Net Client Libraries in Team Services. Code is optimized to be simple and easy to understand.
 
-This is an active repo and we will be adding new code samples weekly. Feel free to contribute and/or provide feedback. 
-
-Let us know if you have any questions.
+Feel free to contribute and/or provide feedback. 
