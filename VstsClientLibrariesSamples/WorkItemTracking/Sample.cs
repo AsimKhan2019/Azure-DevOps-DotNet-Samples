@@ -71,7 +71,50 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             patchDocument = null;
 
             return "success";
-        }    
+        }
+
+        public string UpdateBug()
+        {
+            var _id = _configuration.WorkItemId;
+
+            JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.History",
+                    Value = "Tracking that we changed the priority and severity of this bug to high"
+                }
+            );
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/Microsoft.VSTS.Common.Priority",
+                    Value = "1"
+                }
+            );
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/Microsoft.VSTS.Common.Severity",
+                    Value = "1 - Critical"
+                }
+            );
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, _id).Result;
+            }
+
+            patchDocument = null;
+
+            return "success";
+        }
 
         public string QueryAndUpdateWorkItems()
         {

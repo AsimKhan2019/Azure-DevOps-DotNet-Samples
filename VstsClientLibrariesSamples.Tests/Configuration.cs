@@ -15,6 +15,7 @@ namespace VstsClientLibrariesSamples.Tests
         public string Project { get; set; }
         public string Query { get; set; }
         public string Identity { get; set; }
-        public string WorkItemIds { get; set; }        
+        public string WorkItemIds { get; set; }
+        public Int32 WorkItemId { get; set; }
     }
 }

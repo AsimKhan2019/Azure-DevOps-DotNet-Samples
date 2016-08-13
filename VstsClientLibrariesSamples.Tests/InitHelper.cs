@@ -17,6 +17,7 @@ namespace VstsClientLibrariesSamples.Tests
             configuration.Identity = ConfigurationSettings.AppSettings["appsetting.identity"].ToString();
             configuration.UriString = ConfigurationSettings.AppSettings["appsetting.uri"].ToString();   
             configuration.WorkItemIds = ConfigurationSettings.AppSettings["appsetting.workitemids"].ToString();
+            configuration.WorkItemId = Convert.ToInt32(ConfigurationSettings.AppSettings["appsetting.workitemid"].ToString());
 
             return configuration;
         }

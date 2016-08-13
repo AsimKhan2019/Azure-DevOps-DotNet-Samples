@@ -28,12 +28,27 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             Samples samples = new Samples(_configuration);
 
             //act
-            var response = samples.CreateNewBug();
+            var response = samples.CreateBug();
 
             //assert
             Assert.AreEqual("success", response);
 
             samples = null;
-        }       
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_Samples_UpdateBug_Success()
+        {
+            //arrange
+            Samples samples = new Samples(_configuration);
+
+            //act
+            var response = samples.UpdateBug();
+
+            //assert
+            Assert.AreEqual("success", response);
+
+            samples = null;
+        }
     }
 }
