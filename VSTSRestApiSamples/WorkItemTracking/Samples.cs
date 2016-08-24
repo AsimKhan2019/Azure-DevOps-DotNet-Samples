@@ -23,10 +23,7 @@ namespace VstsRestApiSamples.WorkItemTracking
         {
             var project = _configuration.Project;
             var path = _configuration.Query;    //path to the query   
-
-            //create a new QuearyResults object that we defined above
-            QueryResults queryResult = new QueryResults();
-
+                        
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_configuration.UriString);
@@ -35,21 +32,21 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
 
                 //if you already know the query id, then you can skip this step
-                HttpResponseMessage queryResponse = client.GetAsync(project + "/_apis/wit/queries/" + path + "?api-version=2.2").Result;
+                HttpResponseMessage queryHttpResponseMessage = client.GetAsync(project + "/_apis/wit/queries/" + path + "?api-version=2.2").Result;
 
-                if (queryResponse.IsSuccessStatusCode)
+                if (queryHttpResponseMessage.IsSuccessStatusCode)
                 {
                     //bind the response content to the queryResult object
-                    queryResult = queryResponse.Content.ReadAsAsync<QueryResults>().Result;
+                    QueryResults queryResult = queryHttpResponseMessage.Content.ReadAsAsync<QueryResults>().Result;
                     string queryId = queryResult.id;
 
                     //using the queryId in the url, we can execute the query
-                    HttpResponseMessage wiResponse = client.GetAsync(project + "/_apis/wit/wiql/" + queryId + "?api-version=1.0").Result;
+                    HttpResponseMessage httpResponseMessage = client.GetAsync(project + "/_apis/wit/wiql/" + queryId + "?api-version=2.2").Result;
 
-                    if (queryResponse.IsSuccessStatusCode)
+                    if (httpResponseMessage.IsSuccessStatusCode)
                     {
                         //do something with the results
-                        var results = wiResponse.Content.ReadAsStringAsync().Result;
+                        var results = httpResponseMessage.Content.ReadAsStringAsync().Result;
                         return "success";
                     }
 
@@ -60,47 +57,47 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
 
-public string GetWorkItemsByWiql()
-{
-    string project = _configuration.Project;
-            
-    //create wiql object
-    Object wiql = new
-    {
-        query = "Select [State], [Title] " +
-                "From WorkItems " +
-                "Where [Work Item Type] = 'Bug' " +
-                "And [System.TeamProject] = '" + project + "' " +
-                "And [System.State] = 'New' " +
-                "Order By [State] Asc, [Changed Date] Desc"
-    };
-
-    using (var client = new HttpClient())
-    {
-        client.DefaultRequestHeaders.Accept.Clear();
-        client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
-
-        //serialize the wiql object into a json string   
-        var postValue = new StringContent(JsonConvert.SerializeObject(wiql), Encoding.UTF8, "application/json"); //mediaType needs to be application/json for a post call
-
-        //set the httpmethod to PPOST
-        var method = new HttpMethod("POST");
-
-        //send the request               
-        var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/wiql?api-version=1.0") { Content = postValue };
-        var response = client.SendAsync(request).Result;
-
-        if (response.IsSuccessStatusCode)
+        public string GetWorkItemsByWiql()
         {
-            var result = response.Content.ReadAsStringAsync().Result;
-            return "success";
-        }
+            string project = _configuration.Project;
+            
+            //create wiql object
+            var wiql = new
+            {
+                query = "Select [State], [Title] " +
+                        "From WorkItems " +
+                        "Where [Work Item Type] = 'Bug' " +
+                        "And [System.TeamProject] = '" + project + "' " +
+                        "And [System.State] = 'New' " +
+                        "Order By [State] Asc, [Changed Date] Desc"
+            };
 
-        return "failed";
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                //serialize the wiql object into a json string   
+                var postValue = new StringContent(JsonConvert.SerializeObject(wiql), Encoding.UTF8, "application/json"); //mediaType needs to be application/json for a post call
+
+                //set the httpmethod to PPOST
+                var method = new HttpMethod("POST");
+
+                //send the request               
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/wiql?api-version=2.2") { Content = postValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    return "success";
+                }
+
+                return "failed";
                                
-    }
-}
+            }
+        }
 
         public string CreateBug()
         {
