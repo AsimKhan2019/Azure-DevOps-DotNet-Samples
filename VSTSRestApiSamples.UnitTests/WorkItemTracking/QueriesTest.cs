@@ -61,7 +61,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             Queries request = new Queries(_configuration);                    
 
             //act
-            GetQueryByIdResponse.Queries response = request.GetQueryById(_configuration.Project, _configuration.QueryId);
+            GetQueryResponse.Queries response = request.GetQueryById(_configuration.Project, _configuration.QueryId);
 
             //assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
@@ -74,6 +74,29 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             }
             
             request = null;
-        }       
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_Queries_GetQueryByPath_Success()
+        {
+            //arrange
+            Queries request = new Queries(_configuration);           
+
+            //act
+            GetQueryResponse.Queries response = request.GetQueryByPath(_configuration.Project, _configuration.Query);
+
+            //assert
+            if (response.HttpStatusCode == HttpStatusCode.NotFound)
+            {
+                Assert.Inconclusive("query '" + _configuration.Query + "' not found");
+            }
+            else
+            {
+                Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+            }
+
+            request = null;
+        }
+
     }
 }

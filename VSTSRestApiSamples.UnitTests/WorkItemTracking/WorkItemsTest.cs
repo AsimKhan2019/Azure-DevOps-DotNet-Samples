@@ -30,7 +30,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             WorkItems request = new WorkItems(_configuration);
 
             //act
-            ListofWorkItemsResponse.WorkItems response = request.GetListOfWorkItemsByIDs(_configuration.WorkItemIds);
+            ListofWorkItemsResponse.WorkItems response = request.GetListOfWorkItems_ByIDs(_configuration.WorkItemIds);
 
             //assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
@@ -46,20 +46,20 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_GetListOfWorkItemsByIDsWithSpecificFields_Success()
+        public void WorkItemTracking_WorkItems_GetListOfWorkItemsByIDs_WithSpecificFields_Success()
         {
             //arrange
             WorkItems request = new WorkItems(_configuration);
 
             //act
-            ListofWorkItemsResponse.WorkItems response = request.GetListOfWorkItemsByIDsWithSpecificFields("2247, 2473");
+            ListofWorkItemsResponse.WorkItems response = request.GetListOfWorkItems_ByIDsWithSpecificFields("2247, 2473");
 
             //assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
 
             request = null;
         }
-
+        
         [TestMethod, TestCategory("REST API")]  
         public void WorkItemTracking_WorkItems_GetBatchOfWorkItemLinksByProjectAndDate_Success()
         {
@@ -104,7 +104,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_Reporting_GetBatchOfWorkItemRevisionsByProjectAndDate_Success()
+        public void WorkItemTracking_WorkItems_Reporting_GetBatchOfWorkItemRevisions_ByProjectAndDate_Success()
         {
             //arrange
             WorkItems request = new WorkItems(_configuration);
@@ -120,7 +120,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_Reporting_GetBatchOfWorkItemRevisionsForAll_Success()
+        public void WorkItemTracking_WorkItems_Reporting_GetBatchOfWorkItemRevisions_ForAll_Success()
         {
             //arrange
             WorkItems request = new WorkItems(_configuration);

@@ -2,9 +2,9 @@
 
 namespace VstsRestApiSamples.ViewModels.WorkItemTracking
 {
-    public class GetWIQLRunStoredQueryResponse
+    public class GetWorkItemsResponse
     {
-        public class WIQLResult : BaseViewModel
+        public class Results : BaseViewModel
         {
             public string queryType { get; set; }
             public string queryResultType { get; set; }

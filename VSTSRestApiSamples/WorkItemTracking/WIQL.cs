@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using VstsRestApiSamples.ViewModels.WorkItemTracking;
 
 namespace VstsRestApiSamples.WorkItemTracking
@@ -17,14 +19,13 @@ namespace VstsRestApiSamples.WorkItemTracking
         }
 
         /// <summary>
-        /// execute a query that already exists (see queries code to get query id)
+        /// get list of work item by query id
         /// </summary>
-        /// <param name="project">project name or id</param>
         /// <param name="id">query id</param>
-        /// <returns>GetWIQLRunStoredQueryResponse.WIQLResult</returns>
-        public GetWIQLRunStoredQueryResponse.WIQLResult RunStoredQuery(string project, string id)
+        /// <returns></returns>
+        public GetWorkItemsResponse.Results GetListOfWorkItems_ByQueryId(string project, string id)
         {
-            GetWIQLRunStoredQueryResponse.WIQLResult viewModel = new GetWIQLRunStoredQueryResponse.WIQLResult();
+            GetWorkItemsResponse.Results viewModel = new GetWorkItemsResponse.Results();
 
             using (var client = new HttpClient())
             {
@@ -37,7 +38,52 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 if (response.IsSuccessStatusCode)
                 {
-                    viewModel = response.Content.ReadAsAsync<GetWIQLRunStoredQueryResponse.WIQLResult>().Result;                    
+                    viewModel = response.Content.ReadAsAsync<GetWorkItemsResponse.Results>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="project"></param>
+        /// <returns></returns>
+        public GetWorkItemsResponse.Results GetListOfWorkItems_ByWiql(string project)
+        {
+            GetWorkItemsResponse.Results viewModel = new GetWorkItemsResponse.Results();
+
+            //create wiql object
+            Object wiql = new {
+                query = "Select [State], [Title] " +
+                        "From WorkItems " +
+                        "Where [Work Item Type] = 'Bug' " +
+                        "And [System.TeamProject] = '" + project + "' " +
+                        "And [System.State] = 'New' " +
+                        "Order By [State] Asc, [Changed Date] Desc"
+            };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                var postValue = new StringContent(JsonConvert.SerializeObject(wiql), Encoding.UTF8, "application/json"); //mediaType needs to be application/json-patch+json for a patch call
+
+                //set the httpmethod to Patch
+                var method = new HttpMethod("POST");
+
+                //send the request               
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/wiql?api-version=1.0") { Content = postValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<GetWorkItemsResponse.Results>().Result;
                 }
 
                 viewModel.HttpStatusCode = response.StatusCode;

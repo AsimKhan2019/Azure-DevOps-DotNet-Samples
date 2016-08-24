@@ -78,14 +78,44 @@ namespace VstsRestApiSamples.WorkItemTracking
         }
 
         /// <summary>
+        /// get queries for a specific query path
+        /// </summary>
+        /// <param name="project">project name or id</param>
+        /// <param name="path">full query path</param>
+        /// <returns>ListofQueriesByFolderPath.Queries</returns>
+        public GetQueryResponse.Queries GetQueryByPath(string project, string path)
+        {
+            GetQueryResponse.Queries viewModel = new GetQueryResponse.Queries();
+            
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_configuration.UriString);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/queries/" + path + "?api-version=2.2").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<GetQueryResponse.Queries>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
+        /// <summary>
         /// get query or folder by id
         /// </summary>
         /// <param name="project">project name or id</param>
         /// <param name="id">query id</param>
         /// <returns>GetQueryByIdResponse.Queries</returns>
-        public GetQueryByIdResponse.Queries GetQueryById(string project, string id)
+        public GetQueryResponse.Queries GetQueryById(string project, string id)
         {
-            GetQueryByIdResponse.Queries viewModel = new GetQueryByIdResponse.Queries();
+            GetQueryResponse.Queries viewModel = new GetQueryResponse.Queries();
             
             using (var client = new HttpClient())
             {
@@ -98,7 +128,7 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 if (response.IsSuccessStatusCode)
                 {
-                    viewModel = response.Content.ReadAsAsync<GetQueryByIdResponse.Queries>().Result;
+                    viewModel = response.Content.ReadAsAsync<GetQueryResponse.Queries>().Result;
                 }
 
                 viewModel.HttpStatusCode = response.StatusCode;

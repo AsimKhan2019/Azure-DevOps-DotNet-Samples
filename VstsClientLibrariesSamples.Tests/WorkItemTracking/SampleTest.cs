@@ -47,9 +47,53 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
             Sample sample = new Sample(_configuration);
 
             //act
-            var result = sample.CreateBug(_configuration.Project);
+            var result = sample.CreateBug();
 
             Assert.AreEqual("success", result);           
         }       
+
+        [TestMethod, TestCategory("Client Libraries")]
+        public void WorkItemTracking_Sample_QueryWorkItems_Query_Success()
+        {
+            //arrange
+            Sample sample = new Sample(_configuration);
+
+            //act
+            var result = sample.QueryWorkItems_Query();
+
+            Assert.AreEqual("success", result);
+        }
+
+        [TestMethod, TestCategory("Client Libraries")]
+        public void WorkItemTracking_Sample_QueryWorkItems_Query_QueryNotFound()
+        {
+            //arrange
+            Sample sample = new Sample(_configuration);
+            _configuration.Query = "bad query";
+
+            //act
+            var result = sample.QueryWorkItems_Query();
+
+            Assert.IsTrue(result.Contains("TF401243"));
+        }
+
+        [TestMethod, TestCategory("Client Libraries")]
+        public void WorkItemTracking_Sample_QueryWorkItems_Wiql_Success()
+        {
+            //arrange
+            Sample sample = new Sample(_configuration);                     
+           
+            //act
+            var result = sample.QueryWorkItems_Wiql();
+
+            if (result.Contains("did not find any results"))
+            {
+                Assert.Inconclusive("no results found for query");
+            }
+            else
+            {
+                Assert.AreEqual("success", result);
+            }           
+        }
     }
 }

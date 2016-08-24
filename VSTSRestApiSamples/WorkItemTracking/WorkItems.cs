@@ -25,7 +25,7 @@ namespace VstsRestApiSamples.WorkItemTracking
         /// </summary>
         /// <param name="ids"></param>
         /// <returns>ListofWorkItemsResponse.WorkItems</returns>
-        public ListofWorkItemsResponse.WorkItems GetListOfWorkItemsByIDs(string ids)
+        public ListofWorkItemsResponse.WorkItems GetListOfWorkItems_ByIDs(string ids)
         {
             ListofWorkItemsResponse.WorkItems viewModel = new ListofWorkItemsResponse.WorkItems();
 
@@ -54,7 +54,7 @@ namespace VstsRestApiSamples.WorkItemTracking
         /// </summary>
         /// <param name="ids"></param>
         /// <returns>ListofWorkItemsResponse.WorkItems</returns>
-        public ListofWorkItemsResponse.WorkItems GetListOfWorkItemsByIDsWithSpecificFields(string ids)
+        public ListofWorkItemsResponse.WorkItems GetListOfWorkItems_ByIDsWithSpecificFields(string ids)
         {
             ListofWorkItemsResponse.WorkItems viewModel = new ListofWorkItemsResponse.WorkItems();
 
@@ -80,7 +80,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return viewModel;
             }
         }
-
+        
         /// <summary>
         /// get a work item by id
         /// </summary>

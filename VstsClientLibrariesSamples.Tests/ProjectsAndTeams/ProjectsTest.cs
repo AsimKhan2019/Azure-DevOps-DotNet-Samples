@@ -37,7 +37,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
                 //assert
                 Assert.AreEqual(_configuration.Project, result.Name); 
             }
-            catch (System.AggregateException ex)
+            catch (System.AggregateException)
             {
                 Assert.Inconclusive("project '" + _configuration.Project + "' not found");
             }           

@@ -22,14 +22,14 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             _configuration = null;
         }
 
-        [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WIQL_RunStoredQuery_Success()
+        [TestMethod, TestCategory("REST API")]
+        public void WIQL_GetListOfWorkItemsByQueryId_Success()
         {
             //arrange
             WIQL request = new WIQL(_configuration);
 
             //act
-            GetWIQLRunStoredQueryResponse.WIQLResult response = request.RunStoredQuery(_configuration.Project, _configuration.QueryId);
+            GetWorkItemsResponse.Results response = request.GetListOfWorkItems_ByQueryId(_configuration.Project, _configuration.QueryId);
 
             //assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
@@ -42,6 +42,29 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             }
 
             request = null;
-        }      
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WIQL_GetListOfWorkItemsByWiql_Success()
+        {
+            //arrange
+            WIQL request = new WIQL(_configuration);
+
+            //act
+            GetWorkItemsResponse.Results response = request.GetListOfWorkItems_ByWiql(_configuration.Project);
+
+            //assert
+            if (response.HttpStatusCode == HttpStatusCode.NotFound)
+            {
+                Assert.Inconclusive("no query results found");
+            }
+            else
+            {
+                Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+            }
+
+            request = null;
+        }
+
     }
 }

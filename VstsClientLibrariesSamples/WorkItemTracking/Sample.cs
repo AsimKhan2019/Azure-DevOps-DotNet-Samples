@@ -21,8 +21,10 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             _uri = new Uri(_configuration.UriString);
         }
 
-        public string CreateBug(string projectName)
+        public string CreateBug()
         {
+            string project = _configuration.Project;
+            
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
             //add fields to your patch document
@@ -65,7 +67,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
                 //create the bug
-                WorkItem result = workItemTrackingHttpClient.CreateWorkItemAsync(patchDocument, projectName, "Bug").Result;
+                WorkItem result = workItemTrackingHttpClient.CreateWorkItemAsync(patchDocument, project, "Bug").Result;
             }
 
             patchDocument = null;
@@ -75,7 +77,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
         public string UpdateBug()
         {
-            var _id = _configuration.WorkItemId;
+            var id = _configuration.WorkItemId;
 
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
@@ -108,7 +110,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, _id).Result;
+                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, id).Result;
             }
 
             patchDocument = null;
@@ -116,18 +118,92 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             return "success";
         }
 
-        public string QueryAndUpdateWorkItems()
+        public string QueryWorkItems_Query()
         {
+            string project = _configuration.Project;
+            string query = _configuration.Query;
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                QueryHierarchyItem queryItem;
+
+                try
+                {
+                    //get the query object based on the query name and project
+                    queryItem = workItemTrackingHttpClient.GetQueryAsync(project, query).Result;                    
+                }                
+                catch (Exception ex)
+                {
+                    return ex.InnerException.Message;
+                }             
+               
+                //now we have the query id, so lets execute the query and get the results
+                WorkItemQueryResult queryResult = workItemTrackingHttpClient.QueryByIdAsync(queryItem.Id).Result;
+                
+                //some error han                
+                if (queryResult == null)
+                {
+                    return "failure";
+                }                  
+                else if (queryResult.WorkItems.Count() == 0)
+                {
+                    return "no records found for query '" + query + "'";
+                } 
+                else 
+                {
+                    return "success";
+                }                              
+            }
+        }
+
+        public string QueryWorkItems_Wiql()
+        {
+            string project = _configuration.Project;
+
             //create a query to get your list of work items needed
             Wiql wiql = new Wiql()
             {
                 Query = "Select [State], [Title] " +
                         "From WorkItems " +
                         "Where [Work Item Type] = 'Bug' " +
-                        "And [System.TeamProject] = '" + _configuration.Project + "' " +
+                        "And [System.TeamProject] = '" + project + "' " +
                         "And [System.State] = 'New' " +
                         "Order By [State] Asc, [Changed Date] Desc"
             };
+
+            //create instance of work item tracking http client
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                //execute the query
+                WorkItemQueryResult workItemQueryResult = workItemTrackingHttpClient.QueryByWiqlAsync(wiql).Result;
+
+                //check to make sure we have some results
+                if (workItemQueryResult == null || workItemQueryResult.WorkItems.Count() == 0)
+                {
+                    return "Wiql '" + wiql.Query + "' did not find any results";
+                }
+                else
+                {
+                    return "success";
+                }
+            }
+        }
+
+        public string QueryAndUpdateWorkItems()
+        {
+            string project = _configuration.Project;
+
+            //create a query to get your list of work items needed
+            Wiql wiql = new Wiql()
+            {
+                Query = "Select [State], [Title] " +
+                        "From WorkItems " +
+                        "Where [Work Item Type] = 'Bug' " +
+                        "And [System.TeamProject] = '" + project + "' " +
+                        "And [System.State] = 'New' " +
+                        "Order By [State] Asc, [Changed Date] Desc"
+            };
+
 
             //create a patchDocument that is used to update the work items
             JsonPatchDocument patchDocument = new JsonPatchDocument();

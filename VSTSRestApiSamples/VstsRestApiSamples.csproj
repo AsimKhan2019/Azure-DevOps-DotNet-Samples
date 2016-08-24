@@ -69,7 +69,7 @@
     <Compile Include="ViewModels\ProjectsAndTeams\ListofProcessesResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\BatchOfWorkItemLinksResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\BatchOfWorkItemRevisionsResponse.cs" />
-    <Compile Include="ViewModels\WorkItemTracking\GetWIQLRunStoredQueryResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetWorkItemsResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\GetWorkItemExpandAllResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\ListofQueriesByFolderPath.cs" />
     <Compile Include="ViewModels\WorkItemTracking\ListofQueriesByIdResponse.cs" />

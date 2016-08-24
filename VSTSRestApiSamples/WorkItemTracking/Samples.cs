@@ -19,6 +19,89 @@ namespace VstsRestApiSamples.WorkItemTracking
             _credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _configuration.PersonalAccessToken)));
         }
 
+        public string GetWorkItemsByQuery()
+        {
+            var project = _configuration.Project;
+            var path = _configuration.Query;    //path to the query   
+
+            //create a new QuearyResults object that we defined above
+            QueryResults queryResult = new QueryResults();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_configuration.UriString);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                //if you already know the query id, then you can skip this step
+                HttpResponseMessage queryResponse = client.GetAsync(project + "/_apis/wit/queries/" + path + "?api-version=2.2").Result;
+
+                if (queryResponse.IsSuccessStatusCode)
+                {
+                    //bind the response content to the queryResult object
+                    queryResult = queryResponse.Content.ReadAsAsync<QueryResults>().Result;
+                    string queryId = queryResult.id;
+
+                    //using the queryId in the url, we can execute the query
+                    HttpResponseMessage wiResponse = client.GetAsync(project + "/_apis/wit/wiql/" + queryId + "?api-version=1.0").Result;
+
+                    if (queryResponse.IsSuccessStatusCode)
+                    {
+                        //do something with the results
+                        var results = wiResponse.Content.ReadAsStringAsync().Result;
+                        return "success";
+                    }
+
+                    return "failed";
+                }
+
+                return "failed";                            
+            }
+        }
+
+public string GetWorkItemsByWiql()
+{
+    string project = _configuration.Project;
+            
+    //create wiql object
+    Object wiql = new
+    {
+        query = "Select [State], [Title] " +
+                "From WorkItems " +
+                "Where [Work Item Type] = 'Bug' " +
+                "And [System.TeamProject] = '" + project + "' " +
+                "And [System.State] = 'New' " +
+                "Order By [State] Asc, [Changed Date] Desc"
+    };
+
+    using (var client = new HttpClient())
+    {
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+        //serialize the wiql object into a json string   
+        var postValue = new StringContent(JsonConvert.SerializeObject(wiql), Encoding.UTF8, "application/json"); //mediaType needs to be application/json for a post call
+
+        //set the httpmethod to PPOST
+        var method = new HttpMethod("POST");
+
+        //send the request               
+        var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/wiql?api-version=1.0") { Content = postValue };
+        var response = client.SendAsync(request).Result;
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = response.Content.ReadAsStringAsync().Result;
+            return "success";
+        }
+
+        return "failed";
+                               
+    }
+}
+
         public string CreateBug()
         {
             var projectName = _configuration.Project;
@@ -92,7 +175,13 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return "success";
             }
         }
+    }
 
-
+    public class QueryResults
+    {
+        public string id { get; set; }
+        public string name { get; set; }
+        public string path { get; set; }           
+        public string url { get; set; }
     }
 }
