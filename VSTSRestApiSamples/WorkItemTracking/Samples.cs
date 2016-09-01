@@ -126,14 +126,19 @@ namespace VstsRestApiSamples.WorkItemTracking
                 var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$Bug?api-version=1.0") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
+                patchDocument = null;
+
                 if (response.IsSuccessStatusCode)
                 {
                     var result = response.Content.ReadAsStringAsync().Result;
+                    return "success";
                 }
-
-                patchDocument = null;
-
-                return "success";
+                else
+                {
+                    dynamic responseForInvalidStatusCode = response.Content.ReadAsAsync<dynamic>();
+                    Newtonsoft.Json.Linq.JContainer msg = responseForInvalidStatusCode.Result;
+                    return(msg.ToString());
+                }               
             }
         }
 
