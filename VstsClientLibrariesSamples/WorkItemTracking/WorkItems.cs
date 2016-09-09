@@ -153,5 +153,15 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             return "success";
         }
+
+        public string GetWorkItem(int id)
+        {
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                WorkItem result = workItemTrackingHttpClient.GetWorkItemAsync(id, null, null, WorkItemExpand.All).Result;
+            }
+
+            return "success";
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 if (queryHttpResponseMessage.IsSuccessStatusCode)
                 {
                     //bind the response content to the queryResult object
-                    QueryResults queryResult = queryHttpResponseMessage.Content.ReadAsAsync<QueryResults>().Result;
+                    QueryResult queryResult = queryHttpResponseMessage.Content.ReadAsAsync<QueryResult>().Result;
                     string queryId = queryResult.id;
 
                     //using the queryId in the url, we can execute the query
@@ -45,9 +45,23 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                     if (httpResponseMessage.IsSuccessStatusCode)
                     {
-                        //do something with the results
-                        var results = httpResponseMessage.Content.ReadAsStringAsync().Result;
-                        return "success";
+                        QueryWorkItemsResult queryWorkItemsResult = httpResponseMessage.Content.ReadAsAsync<QueryWorkItemsResult>().Result;
+
+                        //now that I have a bunch of work item id's, i can get the individual work items
+                        foreach (var item in queryWorkItemsResult.workItems)
+                        {
+                            HttpResponseMessage getWorkItemHttpResponse = client.GetAsync("_apis/wit/workitems/" + item.id + "?$expand=all&api-version=1.0").Result;
+
+                            if (getWorkItemHttpResponse.IsSuccessStatusCode)
+                            {
+                                var result = getWorkItemHttpResponse.Content.ReadAsStringAsync().Result;
+                                return "success";
+                            }
+
+                            return "failed";
+                        }
+
+                        return "failed";
                     }
 
                     return "failed";
@@ -74,6 +88,7 @@ namespace VstsRestApiSamples.WorkItemTracking
 
             using (var client = new HttpClient())
             {
+                client.BaseAddress = new Uri(_configuration.UriString);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
@@ -90,12 +105,26 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = response.Content.ReadAsStringAsync().Result;
-                    return "success";
+                    QueryWorkItemsResult queryWorkItemsResult = response.Content.ReadAsAsync<QueryWorkItemsResult>().Result;
+
+                    //now that I have a bunch of work item id's, i can get the individual work items
+                    foreach(var item in queryWorkItemsResult.workItems)
+                    {
+                        HttpResponseMessage getWorkItemHttpResponse = client.GetAsync("_apis/wit/workitems/" + item.id + "?$expand=all&api-version=1.0").Result;
+
+                        if (getWorkItemHttpResponse.IsSuccessStatusCode)
+                        {
+                            var result = getWorkItemHttpResponse.Content.ReadAsStringAsync().Result;
+                            return "success";
+                        }
+
+                        return "failed";
+                    }
+
+                    return "failed";               
                 }
 
-                return "failed";
-                               
+                return "failed";                               
             }
         }
 
@@ -177,13 +206,61 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return "success";
             }
         }
+
+        public string AddCommentToBug()
+        {
+            string _id = _configuration.WorkItemId;
+
+            Object[] patchDocument = new Object[1];
+
+            //change some values on a few fields
+            patchDocument[0] = new { op = "add", path = "/fields/System.History", value = "Adding 'hello world' comment to this bug" };
+          
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                //serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); //mediaType needs to be application/json-patch+json for a patch call
+
+                //set the httpmethod to Patch
+                var method = new HttpMethod("PATCH");
+
+                //send the request
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + _id + "?api-version=1.0") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                }
+
+                return "success";
+            }
+        }
     }
 
-    public class QueryResults
+    public class QueryResult
     {
         public string id { get; set; }
         public string name { get; set; }
         public string path { get; set; }           
         public string url { get; set; }
     }
+
+    public class QueryWorkItemsResult 
+    {
+        public string queryType { get; set; }
+        public string queryResultType { get; set; }
+        public DateTime asOf { get; set; }       
+        public Workitem[] workItems { get; set; }
+    }   
+
+public class Workitem
+{
+    public int id { get; set; }
+    public string url { get; set; }
+}
 }

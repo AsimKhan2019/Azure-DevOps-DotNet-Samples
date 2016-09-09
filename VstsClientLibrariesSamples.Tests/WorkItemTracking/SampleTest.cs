@@ -50,7 +50,31 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
             var result = sample.CreateBug();
 
             Assert.AreEqual("success", result);           
-        }       
+        }
+
+        [TestMethod, TestCategory("Client Libraries")]
+        public void WorkItemTracking_Sample_UpdateBug_Success()
+        {
+            //arrange
+            Sample sample = new Sample(_configuration);
+
+            //act
+            var result = sample.UpdateBug();
+
+            Assert.AreEqual("success", result);
+        }
+
+        [TestMethod, TestCategory("Client Libraries")]
+        public void WorkItemTracking_Sample_AddCommentsToBug_Success()
+        {
+            //arrange
+            Sample sample = new Sample(_configuration);
+
+            //act
+            var result = sample.AddCommentsToBug();
+
+            Assert.AreEqual("success", result);
+        }
 
         [TestMethod, TestCategory("Client Libraries")]
         public void WorkItemTracking_Sample_QueryWorkItems_Query_Success()

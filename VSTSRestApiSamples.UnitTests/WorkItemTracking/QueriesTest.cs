@@ -36,7 +36,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
 
             request = null;
-        }
+        }        
 
         [TestMethod, TestCategory("REST API")]  
         public void WorkItemTracking_Queries_GetListOfQueriesForFolder_Success()

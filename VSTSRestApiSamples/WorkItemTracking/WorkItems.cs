@@ -156,6 +156,11 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
 
+        /// <summary>
+        /// Create a bug
+        /// </summary>
+        /// <param name="projectName"></param>
+        /// <returns>WorkItemPatchResponse.WorkItem</returns>
         public WorkItemPatchResponse.WorkItem CreateBug(string projectName)
         {
             WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();

@@ -80,5 +80,20 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
 
             samples = null;
         }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_Samples_AddCommentToBug_Success()
+        {
+            //arrange
+            Samples samples = new Samples(_configuration);
+
+            //act
+            var response = samples.AddCommentToBug();
+
+            //assert
+            Assert.AreEqual("success", response);
+
+            samples = null;
+        }
     }
 }

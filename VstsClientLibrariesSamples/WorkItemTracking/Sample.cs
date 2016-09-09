@@ -117,6 +117,31 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             return "success";
         }
+        
+        public string AddCommentsToBug()
+        {
+            var id = _configuration.WorkItemId;
+
+            JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.History",
+                    Value = "Adding 'hello world' comment to this bug"
+                }
+            );
+            
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, id).Result;
+            }
+
+            patchDocument = null;
+
+            return "success";
+        }
 
         public string QueryWorkItems_Query()
         {
@@ -138,20 +163,27 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 }             
                
                 //now we have the query id, so lets execute the query and get the results
-                WorkItemQueryResult queryResult = workItemTrackingHttpClient.QueryByIdAsync(queryItem.Id).Result;
+                WorkItemQueryResult workItemQueryResult = workItemTrackingHttpClient.QueryByIdAsync(queryItem.Id).Result;
                 
-                //some error han                
-                if (queryResult == null)
+                //some error handling                
+                if (workItemQueryResult == null)
                 {
                     return "failure";
                 }                  
-                else if (queryResult.WorkItems.Count() == 0)
+                else if (workItemQueryResult.WorkItems.Count() == 0)
                 {
                     return "no records found for query '" + query + "'";
                 } 
                 else 
                 {
-                    return "success";
+                    //loop through the results and get the individual work item
+                    foreach(var item in workItemQueryResult.WorkItems)
+                    {
+                        WorkItem workItem = workItemTrackingHttpClient.GetWorkItemAsync(item.Id).Result;
+                        return "success";
+                    }
+
+                    return "failure";
                 }                              
             }
         }
@@ -184,7 +216,14 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 }
                 else
                 {
-                    return "success";
+                    //loop through the results and get the individual work item
+                    foreach (var item in workItemQueryResult.WorkItems)
+                    {
+                        WorkItem workItem = workItemTrackingHttpClient.GetWorkItemAsync(item.Id).Result;
+                        return "success";
+                    }
+
+                    return "failure";
                 }
             }
         }

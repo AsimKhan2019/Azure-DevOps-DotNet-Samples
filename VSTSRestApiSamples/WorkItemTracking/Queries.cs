@@ -46,7 +46,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return viewModel;
             }
         }
-
+        
         /// <summary>
         /// get list of queries by a specific folder path
         /// </summary>
