@@ -5,6 +5,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
 using Microsoft.VisualStudio.Services.WebApi.Patch;
 using Microsoft.VisualStudio.Services.Common;
+using System.Collections.Generic;
 
 namespace VstsClientLibrariesSamples.WorkItemTracking
 {
@@ -176,14 +177,23 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 } 
                 else 
                 {
-                    //loop through the results and get the individual work item
-                    foreach(var item in workItemQueryResult.WorkItems)
+                    //need to get the list of our work item id's and put them into an array
+                    List<int> list = new List<int>();
+                    foreach (var item in workItemQueryResult.WorkItems)
                     {
-                        WorkItem workItem = workItemTrackingHttpClient.GetWorkItemAsync(item.Id).Result;
-                        return "success";
+                        list.Add(item.Id);
                     }
+                    int[] arr = list.ToArray();
 
-                    return "failure";
+                    //build a list of the fields we want to see
+                    string[] fields = new string[3];
+                    fields[0] = "System.Id";
+                    fields[1] = "System.Title";
+                    fields[2] = "System.State";
+
+                    var workItems = workItemTrackingHttpClient.GetWorkItemsAsync(arr, fields, workItemQueryResult.AsOf).Result;
+
+                    return "success";
                 }                              
             }
         }
@@ -216,14 +226,22 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 }
                 else
                 {
-                    //loop through the results and get the individual work item
+                    //need to get the list of our work item id's and put them into an array
+                    List<int> list = new List<int>();
                     foreach (var item in workItemQueryResult.WorkItems)
                     {
-                        WorkItem workItem = workItemTrackingHttpClient.GetWorkItemAsync(item.Id).Result;
-                        return "success";
+                        list.Add(item.Id);
                     }
+                    int[] arr = list.ToArray();
 
-                    return "failure";
+                    //build a list of the fields we want to see
+                    string[] fields = new string[3];
+                    fields[0] = "System.Id";
+                    fields[1] = "System.Title";
+                    fields[2] = "System.State";
+
+                    var workItems = workItemTrackingHttpClient.GetWorkItemsAsync(arr, fields, workItemQueryResult.AsOf).Result;
+                    return "success";
                 }
             }
         }

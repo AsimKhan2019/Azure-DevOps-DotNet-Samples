@@ -31,7 +31,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
 
-                HttpResponseMessage response = client.GetAsync("_apis/wit/fields?api-version=1.0").Result;
+                HttpResponseMessage response = client.GetAsync("_apis/wit/fields?api-version=2.2").Result;
 
                 if (response.IsSuccessStatusCode)
                 {

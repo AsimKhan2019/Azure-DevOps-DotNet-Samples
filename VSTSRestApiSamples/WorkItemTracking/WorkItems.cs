@@ -36,7 +36,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
 
-                HttpResponseMessage response = client.GetAsync("_apis/wit/workitems?ids=" + ids + "&api-version=1.0").Result;
+                HttpResponseMessage response = client.GetAsync("_apis/wit/workitems?ids=" + ids + "&api-version=2.2").Result;
                             
                 if (response.IsSuccessStatusCode)
                 {
@@ -68,7 +68,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
 
-                HttpResponseMessage response = client.GetAsync("_apis/wit/workitems?ids=" + ids + "&fields=" + fields + "&api-version=1.0").Result;
+                HttpResponseMessage response = client.GetAsync("_apis/wit/workitems?ids=" + ids + "&fields=" + fields + "&api-version=2.2").Result;
                                 
                 if (response.IsSuccessStatusCode)
                 {
@@ -98,7 +98,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
 
                 //use $expand=all to get all fields
-                HttpResponseMessage response = client.GetAsync("_apis/wit/workitems/" + id + "?$expand=all&api-version=1.0").Result;
+                HttpResponseMessage response = client.GetAsync("_apis/wit/workitems/" + id + "?$expand=all&api-version=2.2").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -137,10 +137,10 @@ namespace VstsRestApiSamples.WorkItemTracking
                 //set the httpmethod to Patch
                 var method = new HttpMethod("PATCH");
 
-                var url = _configuration.UriString + projectName + "/_apis/wit/workitems/$UserStory?api-version=1.0";
+                var url = _configuration.UriString + projectName + "/_apis/wit/workitems/$UserStory?api-version=2.2";
 
                 //send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$User Story?bypassRules=true&api-version=1.0") { Content = patchValue };
+                var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$User Story?bypassRules=true&api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
                 var me = response.ToString();
@@ -186,7 +186,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 var method = new HttpMethod("PATCH");
                
                 //send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$Bug?api-version=1.0") { Content = patchValue };
+                var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$Bug?api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
                 var me = response.ToString();
@@ -231,7 +231,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 var method = new HttpMethod("PATCH"); 
 
                 //send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=1.0") { Content = patchValue };
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
                                
                 if (response.IsSuccessStatusCode)
@@ -271,7 +271,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 var method = new HttpMethod("PATCH");
 
                 //send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?bypassRules=true&api-version=1.0") { Content = patchValue };
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?bypassRules=true&api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
                 if (response.IsSuccessStatusCode)
@@ -496,7 +496,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 var method = new HttpMethod("PATCH");
 
                 //send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=1.0") { Content = patchValue };
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
                 if (response.IsSuccessStatusCode)
@@ -541,7 +541,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 var method = new HttpMethod("PATCH");
 
                 //send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=1.0") { Content = patchValue };
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
                 if (response.IsSuccessStatusCode)
@@ -591,7 +591,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 var method = new HttpMethod("PATCH");
 
                 //send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=1.0") { Content = patchValue };
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
                 if (response.IsSuccessStatusCode)
@@ -635,7 +635,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 var method = new HttpMethod("PATCH");
 
                 //send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=1.0") { Content = patchValue };
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
                 var someme = response.ToString();

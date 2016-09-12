@@ -34,7 +34,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
 
                 //$depth=2 is the maximum level deep you can go
-                HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/queries?$depth=2&api-version=1.0").Result;
+                HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/queries?$depth=2&api-version=2.2").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -64,7 +64,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
                                
-                HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/queries/" + folderPath + "?$depth=2&api-version=1.0").Result;
+                HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/queries/" + folderPath + "?$depth=2&api-version=2.2").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -124,7 +124,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
 
-                HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/queries/" + id + "?$depth=2&api-version=1.0").Result;
+                HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/queries/" + id + "?$depth=2&api-version=2.2").Result;
 
                 if (response.IsSuccessStatusCode)
                 {

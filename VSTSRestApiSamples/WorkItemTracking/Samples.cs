@@ -45,21 +45,25 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                     if (httpResponseMessage.IsSuccessStatusCode)
                     {
-                        QueryWorkItemsResult queryWorkItemsResult = httpResponseMessage.Content.ReadAsAsync<QueryWorkItemsResult>().Result;
+                        WorkItemQueryResult workItemQueryResult = httpResponseMessage.Content.ReadAsAsync<WorkItemQueryResult>().Result;
 
-                        //now that I have a bunch of work item id's, i can get the individual work items
-                        foreach (var item in queryWorkItemsResult.workItems)
+                        //now that we have a bunch of work items, build a list of id's so we can get details
+                        var builder = new System.Text.StringBuilder();
+                        foreach (var item in workItemQueryResult.workItems)
                         {
-                            HttpResponseMessage getWorkItemHttpResponse = client.GetAsync("_apis/wit/workitems/" + item.id + "?$expand=all&api-version=1.0").Result;
-
-                            if (getWorkItemHttpResponse.IsSuccessStatusCode)
-                            {
-                                var result = getWorkItemHttpResponse.Content.ReadAsStringAsync().Result;
-                                return "success";
-                            }
-
-                            return "failed";
+                            builder.Append(item.id.ToString()).Append(",");
                         }
+                        
+                        //clean up string of id's
+                        string ids = builder.ToString().TrimEnd(new char[] { ',' });
+                        
+                        HttpResponseMessage getWorkItemsHttpResponse = client.GetAsync("_apis/wit/workitems?ids=" + ids + "&fields=System.Id,System.Title,System.State&asOf=" + workItemQueryResult.asOf + "&api-version=2.2").Result;
+
+                        if (getWorkItemsHttpResponse.IsSuccessStatusCode)
+                        {
+                            var result = getWorkItemsHttpResponse.Content.ReadAsStringAsync().Result;
+                            return "success";
+                        }                
 
                         return "failed";
                     }
@@ -100,25 +104,29 @@ namespace VstsRestApiSamples.WorkItemTracking
                 var method = new HttpMethod("POST");
 
                 //send the request               
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/wiql?api-version=2.2") { Content = postValue };
-                var response = client.SendAsync(request).Result;
+                var httpRequestMessage = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/wiql?api-version=2.2") { Content = postValue };
+                var httpResponseMessage = client.SendAsync(httpRequestMessage).Result;
 
-                if (response.IsSuccessStatusCode)
+                if (httpResponseMessage.IsSuccessStatusCode)
                 {
-                    QueryWorkItemsResult queryWorkItemsResult = response.Content.ReadAsAsync<QueryWorkItemsResult>().Result;
-
-                    //now that I have a bunch of work item id's, i can get the individual work items
-                    foreach(var item in queryWorkItemsResult.workItems)
+                    WorkItemQueryResult workItemQueryResult = httpResponseMessage.Content.ReadAsAsync<WorkItemQueryResult>().Result;
+                                     
+                    //now that we have a bunch of work items, build a list of id's so we can get details
+                    var builder = new System.Text.StringBuilder();
+                    foreach (var item in workItemQueryResult.workItems)
                     {
-                        HttpResponseMessage getWorkItemHttpResponse = client.GetAsync("_apis/wit/workitems/" + item.id + "?$expand=all&api-version=1.0").Result;
+                        builder.Append(item.id.ToString()).Append(",");
+                    }
 
-                        if (getWorkItemHttpResponse.IsSuccessStatusCode)
-                        {
-                            var result = getWorkItemHttpResponse.Content.ReadAsStringAsync().Result;
-                            return "success";
-                        }
+                    //clean up string of id's
+                    string ids = builder.ToString().TrimEnd(new char[] { ',' });
 
-                        return "failed";
+                    HttpResponseMessage getWorkItemsHttpResponse = client.GetAsync("_apis/wit/workitems?ids=" + ids + "&fields=System.Id,System.Title,System.State&asOf=" + workItemQueryResult.asOf + "&api-version=2.2").Result;
+
+                    if (getWorkItemsHttpResponse.IsSuccessStatusCode)
+                    {
+                        var result = getWorkItemsHttpResponse.Content.ReadAsStringAsync().Result;
+                        return "success";
                     }
 
                     return "failed";               
@@ -152,7 +160,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 var method = new HttpMethod("PATCH");
 
                 //send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$Bug?api-version=1.0") { Content = patchValue };
+                var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$Bug?api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
                 patchDocument = null;
@@ -195,7 +203,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 var method = new HttpMethod("PATCH");
 
                 //send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + _id + "?api-version=1.0") { Content = patchValue };
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + _id + "?api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
                 if (response.IsSuccessStatusCode)
@@ -229,7 +237,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 var method = new HttpMethod("PATCH");
 
                 //send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + _id + "?api-version=1.0") { Content = patchValue };
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + _id + "?api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
                 if (response.IsSuccessStatusCode)
@@ -250,17 +258,24 @@ namespace VstsRestApiSamples.WorkItemTracking
         public string url { get; set; }
     }
 
-    public class QueryWorkItemsResult 
+    public class WorkItemQueryResult 
     {
         public string queryType { get; set; }
         public string queryResultType { get; set; }
-        public DateTime asOf { get; set; }       
+        public DateTime asOf { get; set; }
+        public Column[] columns { get; set; }
         public Workitem[] workItems { get; set; }
     }   
 
-public class Workitem
-{
-    public int id { get; set; }
-    public string url { get; set; }
-}
+    public class Workitem
+    {
+        public int id { get; set; }
+        public string url { get; set; }
+    }
+    public class Column
+    {
+        public string referenceName { get; set; }
+        public string name { get; set; }
+        public string url { get; set; }
+    }
 }

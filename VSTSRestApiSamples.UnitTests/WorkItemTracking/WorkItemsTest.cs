@@ -210,7 +210,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             request = null;
         }
 
-        [TestMethod, TestCategory("REST API")]  
+        [TestMethod, TestCategory("REST API"), Ignore]  
         public void WorkItemTracking_WorkItems_MoveWorkItem_Success()
         {
             //arrange
@@ -233,7 +233,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             request = null;
         }
 
-        [TestMethod, TestCategory("REST API")]  
+        [TestMethod, TestCategory("REST API"), Ignore]  
         public void WorkItemTracking_WorkItems_ChangeType_Success()
         {
             //arrange

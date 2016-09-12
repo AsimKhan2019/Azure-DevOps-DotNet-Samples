@@ -34,7 +34,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
 
-                HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/wiql/" + id + "?api-version=1.0").Result;
+                HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/wiql/" + id + "?api-version=2.2").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -78,7 +78,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 var method = new HttpMethod("POST");
 
                 //send the request               
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/wiql?api-version=1.0") { Content = postValue };
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/wiql?api-version=2.2") { Content = postValue };
                 var response = client.SendAsync(request).Result;
 
                 if (response.IsSuccessStatusCode)

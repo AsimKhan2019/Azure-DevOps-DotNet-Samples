@@ -30,7 +30,7 @@ namespace VstsRestApiSamples.GettingStarted
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials); 
 
                 //connect to the REST endpoint            
-                HttpResponseMessage response = client.GetAsync("_apis/projects?stateFilter=All&api-version=1.0").Result;
+                HttpResponseMessage response = client.GetAsync("_apis/projects?stateFilter=All&api-version=2.2").Result;
           
                 //check to see if we have a succesfull respond
                 if (response.IsSuccessStatusCode)

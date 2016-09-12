@@ -31,7 +31,7 @@ namespace VstsRestApiSamples.ProjectsAndTeams
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
 
-                HttpResponseMessage response = client.GetAsync("_apis/process/processes?api-version=1.0").Result;
+                HttpResponseMessage response = client.GetAsync("_apis/process/processes?api-version=2.2").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -60,7 +60,7 @@ namespace VstsRestApiSamples.ProjectsAndTeams
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
 
-                HttpResponseMessage response = client.GetAsync("_apis/process/processes/" + processId + "?api-version=1.0").Result;
+                HttpResponseMessage response = client.GetAsync("_apis/process/processes/" + processId + "?api-version=2.2").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
