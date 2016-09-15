@@ -215,6 +215,87 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
 
+        public string UpdateBugByPassingRules()
+        {
+            string _id = _configuration.WorkItemId;
+
+            Object[] patchDocument = new Object[1];
+
+            //change some values on a few fields             
+            patchDocument[0] = new { op = "add", path = "/fields/System.AssignedTo", value = "Invalid User" };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                //serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); //mediaType needs to be application/json-patch+json for a patch call
+
+                //set the httpmethod to Patch
+                var method = new HttpMethod("PATCH");
+
+                //send the request
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + _id + "?bypassRules=true&api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                }
+
+                return "success";
+            }
+        }
+
+        public string AddLinkToBug()
+        {
+            string _id = _configuration.WorkItemId;
+            string _linkToId = _configuration.WorkItemIds.Split(',')[0];
+
+            Object[] patchDocument = new Object[1];
+
+            //change some values on a few fields
+            patchDocument[0] = new {
+                op = "add",
+                path = "/relations/-",
+                value = new
+                {
+                    rel = "System.LinkTypes.Dependency-forward",
+                    url = _configuration.UriString + "/_apis/wit/workitems/" + _linkToId,
+                    attributes = new
+                    {
+                        comment = "Making a new link for the dependency"
+                    }
+                }
+            };
+        
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                //serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); //mediaType needs to be application/json-patch+json for a patch call
+
+                //set the httpmethod to Patch
+                var method = new HttpMethod("PATCH");
+
+                //send the request
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + _id + "?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                }
+
+                return "success";
+            }
+        }
+
         public string AddCommentToBug()
         {
             string _id = _configuration.WorkItemId;

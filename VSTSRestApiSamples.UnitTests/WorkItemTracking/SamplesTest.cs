@@ -82,6 +82,36 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_Samples_AddLinkToBug_Success()
+        {
+            //arrange
+            Samples samples = new Samples(_configuration);
+
+            //act
+            var response = samples.AddLinkToBug();
+
+            //assert
+            Assert.AreEqual("success", response);
+
+            samples = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_Samples_UpdateBugByPassingRules_Success()
+        {
+            //arrange
+            Samples samples = new Samples(_configuration);
+
+            //act
+            var response = samples.UpdateBugByPassingRules();
+
+            //assert
+            Assert.AreEqual("success", response);
+
+            samples = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_Samples_AddCommentToBug_Success()
         {
             //arrange

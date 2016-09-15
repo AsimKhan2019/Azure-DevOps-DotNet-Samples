@@ -469,6 +469,54 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
 
+        public WorkItemPatchResponse.WorkItem AddLink(string id, string linkToId)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[1];
+
+            //change some values on a few fields
+            fields[0] = new WorkItemPatch.Field()
+            {
+                op = "add",
+                path = "/relations/-",
+                value =  new WorkItemPatch.Value()
+                {
+                    rel = "System.LinkTypes.Dependency-forward",
+                    url = _configuration.UriString + "/_apis/wit/workitems/" + linkToId,
+                    attributes = new WorkItemPatch.Attributes()
+                    {
+                        comment = "Making a new link for the dependency"
+                    }
+                }
+            };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                //serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); //mediaType needs to be application/json-patch+json for a patch call
+
+                //set the httpmethod to Patch
+                var method = new HttpMethod("PATCH");
+
+                //send the request
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
         /// <summary>
         /// manage tags on a work item
         /// </summary>

@@ -195,6 +195,23 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             request = null;
         }
 
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_AddLink_Success()
+        {
+            //arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            string[] arr = _configuration.WorkItemIds.Split(',');
+                        
+            //act
+            WorkItemPatchResponse.WorkItem response = request.AddLink(arr[0].ToString(), arr[1].ToString());
+
+            //assert
+            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+
+            request = null;
+        }
+
         [TestMethod, TestCategory("REST API")]  
         public void WorkItemTracking_WorkItems_AddAndUpdateWorkItemTags_Success()
         {

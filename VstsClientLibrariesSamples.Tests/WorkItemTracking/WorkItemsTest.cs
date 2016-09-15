@@ -84,6 +84,19 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             Assert.AreEqual("success", result);
         }
 
+        [TestMethod, TestCategory("Client Libraries")]
+        public void WorkItemTracking_WorkItems_AddLink_Success()
+        {
+            //arrange
+            WorkItems workItems = new WorkItems(_configuration);
+
+            string[] arr = _configuration.WorkItemIds.Split(',');
+            
+            //act
+            var result = workItems.AddLink(Convert.ToInt32(arr[0]), Convert.ToInt32(arr[1]));
+
+            Assert.AreEqual("success", result);
+        }
 
     }
 }

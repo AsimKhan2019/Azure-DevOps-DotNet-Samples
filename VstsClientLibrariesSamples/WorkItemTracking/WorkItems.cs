@@ -153,12 +153,61 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             return "success";
         }
+        
+        public string UpdateWorkItemUsingByPassRules(int id)
+        {
+            JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.AssignedTo",
+                    Value = "Invalid User"
+                }
+            );
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, id, null, true).Result;
+            }
+
+            patchDocument = null;
+
+            return "success";
+        }
+
 
         public string GetWorkItem(int id)
         {
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
                 WorkItem result = workItemTrackingHttpClient.GetWorkItemAsync(id, null, null, WorkItemExpand.All).Result;
+            }
+
+            return "success";
+        }
+        
+        public string AddLink(int id, int linkToId)
+        {
+            JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/relations/-",
+                    Value = new {
+                        rel = "System.LinkTypes.Dependency-forward",
+                        url = _configuration.UriString + "/_apis/wit/workItems/" + linkToId.ToString(),
+                        attributes = new { comment = "Making a new link for the dependency" }
+                    }
+                }
+            );
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, id).Result;
             }
 
             return "success";
