@@ -119,29 +119,76 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             return "success";
         }
 
-        public string UpdateBugUsingByPassRules()
+        public string CreateBugByPassingRules()
         {
-            var id = _configuration.WorkItemId;
+            string project = _configuration.Project;
 
             JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            //add fields to your patch document
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.Title",
+                    Value = "Imported bug from my other system (client lib)"
+                }
+            );
 
             patchDocument.Add(
                 new JsonPatchOperation()
                 {
                     Operation = Operation.Add,
-                    Path = "/fields/System.AssignedTo",
-                    Value = "Invalid User"
+                    Path = "/fields/Microsoft.VSTS.TCM.ReproSteps",
+                    Value = "Our authorization logic needs to allow for users with Microsoft accounts (formerly Live Ids) - http://msdn.microsoft.com/en-us/library/live/hh826547.aspx"
                 }
-            );         
+            );           
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.CreatedBy",
+                    Value = "Some User"
+                }
+            );
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.ChangedBy",
+                    Value = "Some User"
+                }
+            );
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.CreatedDate",
+                    Value = "4/15/2016"
+                }
+            );            
+
+            patchDocument.Add(
+               new JsonPatchOperation()
+               {
+                   Operation = Operation.Add,
+                   Path = "/fields/System.History",
+                   Value = "Data imported from source"
+               }
+           );
 
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, id, null, true).Result;
+                //create the bug
+                WorkItem result = workItemTrackingHttpClient.CreateWorkItemAsync(patchDocument, project, "Bug", null, true).Result;
             }
 
             patchDocument = null;
 
-            return "success";
+            return "success";           
         }
 
         public string AddCommentsToBug()

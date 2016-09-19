@@ -53,6 +53,18 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
+        public void WorkItemTracking_Sample_CreateBugByPassingRules_Success()
+        {
+            //arrange
+            Sample sample = new Sample(_configuration);
+
+            //act
+            var result = sample.CreateBugByPassingRules();
+
+            Assert.AreEqual("success", result);
+        }
+
+        [TestMethod, TestCategory("Client Libraries")]
         public void WorkItemTracking_Sample_UpdateBug_Success()
         {
             //arrange
@@ -62,19 +74,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
             var result = sample.UpdateBug();
 
             Assert.AreEqual("success", result);
-        }
-
-        [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Sample_UpdateBugUsingByPassRules_Success()
-        {
-            //arrange
-            Sample sample = new Sample(_configuration);
-
-            //act
-            var result = sample.UpdateBugUsingByPassRules();
-
-            Assert.AreEqual("success", result);
-        }
+        }        
 
         [TestMethod, TestCategory("Client Libraries")]
         public void WorkItemTracking_Samples_AddLinkToBug_Success()

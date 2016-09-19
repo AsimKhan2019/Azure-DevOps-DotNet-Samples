@@ -179,6 +179,51 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
 
+        public string CreateBugByPassingRules()
+        {
+            var projectName = _configuration.Project;
+
+            Object[] patchDocument = new Object[6];
+
+            patchDocument[0] = new { op = "add", path = "/fields/System.Title", value = "Imported bug from my other system (rest api)" };
+            patchDocument[1] = new { op = "add", path = "/fields/Microsoft.VSTS.TCM.ReproSteps", value = "Our authorization logic needs to allow for users with Microsoft accounts (formerly Live Ids) - http://msdn.microsoft.com/en-us/library/live/hh826547.aspx" };
+            patchDocument[2] = new { op = "add", path = "/fields/System.CreatedBy", value = "Some User" };
+            patchDocument[3] = new { op = "add", path = "/fields/System.ChangedBy", value = "Some User" };
+            patchDocument[4] = new { op = "add", path = "/fields/System.CreatedDate", value = "4/15/2016" };
+            patchDocument[5] = new { op = "add", path = "/fields/System.History", value = "Data imported from source" };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                //serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); //mediaType needs to be application/json-patch+json for a patch call
+
+                //set the httpmethod to Patch
+                var method = new HttpMethod("PATCH");
+
+                //send the request
+                var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$Bug?bypassRules=true&api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                patchDocument = null;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    return "success";
+                }
+                else
+                {
+                    dynamic responseForInvalidStatusCode = response.Content.ReadAsAsync<dynamic>();
+                    Newtonsoft.Json.Linq.JContainer msg = responseForInvalidStatusCode.Result;
+                    return (msg.ToString());
+                }
+            }
+        }
+
         public string UpdateBug()
         {
             string _id = _configuration.WorkItemId;
@@ -204,40 +249,6 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 //send the request
                 var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + _id + "?api-version=2.2") { Content = patchValue };
-                var response = client.SendAsync(request).Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = response.Content.ReadAsStringAsync().Result;
-                }
-
-                return "success";
-            }
-        }
-
-        public string UpdateBugByPassingRules()
-        {
-            string _id = _configuration.WorkItemId;
-
-            Object[] patchDocument = new Object[1];
-
-            //change some values on a few fields             
-            patchDocument[0] = new { op = "add", path = "/fields/System.AssignedTo", value = "Invalid User" };
-
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
-
-                //serialize the fields array into a json string          
-                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); //mediaType needs to be application/json-patch+json for a patch call
-
-                //set the httpmethod to Patch
-                var method = new HttpMethod("PATCH");
-
-                //send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + _id + "?bypassRules=true&api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
                 if (response.IsSuccessStatusCode)

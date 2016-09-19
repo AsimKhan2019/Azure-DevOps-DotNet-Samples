@@ -67,6 +67,21 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_Samples_CreateBugByPassingRules_Success()
+        {
+            //arrange
+            Samples samples = new Samples(_configuration);
+
+            //act
+            var response = samples.CreateBugByPassingRules();
+
+            //assert
+            Assert.AreEqual("success", response);
+
+            samples = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_Samples_UpdateBug_Success()
         {
             //arrange
@@ -94,22 +109,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             Assert.AreEqual("success", response);
 
             samples = null;
-        }
-
-        [TestMethod, TestCategory("REST API")]
-        public void WorkItemTracking_Samples_UpdateBugByPassingRules_Success()
-        {
-            //arrange
-            Samples samples = new Samples(_configuration);
-
-            //act
-            var response = samples.UpdateBugByPassingRules();
-
-            //assert
-            Assert.AreEqual("success", response);
-
-            samples = null;
-        }
+        }        
 
         [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_Samples_AddCommentToBug_Success()
