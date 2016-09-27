@@ -27,13 +27,13 @@ namespace VstsRestApiSamples.Tests.ProjectsAndTeams
         [TestMethod, TestCategory("REST API")]
         public void ProjectsAndTeams_Processes_GetListOfProcesses_Success()
         {
-            //arrange
+            // arrange
             Processes request = new Processes(_configuration);
 
-            //act
+            // act
             var response = request.GetListOfProcesses();
 
-            //assert
+            // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
 
             request = null;
@@ -42,17 +42,17 @@ namespace VstsRestApiSamples.Tests.ProjectsAndTeams
         [TestMethod, TestCategory("REST API")]
         public void ProjectsAndTeams_Processes_GetProcesses_Success()
         {
-            //arrange
+            // arrange
             Processes request = new Processes(_configuration);
 
-            //act
-            var listResponse = request.GetListOfProcesses();                //get list of processes
-            IList<ListofProcessesResponse.Value> vm = listResponse.value;   //bind to list
-            string processId = vm[0].id;                                    //get a process id so we can look that up
+            // act
+            var listResponse = request.GetListOfProcesses();                // get list of processes
+            IList<ListofProcessesResponse.Value> vm = listResponse.value;   // bind to list
+            string processId = vm[0].id;                                    // get a process id so we can look that up
 
             var response = request.GetProcess(processId);
 
-            //assert
+            // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);          
 
             request = null;

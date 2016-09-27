@@ -12,5 +12,6 @@ namespace VstsClientLibrariesSamples
         string Identity { get; set; }
         string WorkItemIds { get; set; }
         Int32 WorkItemId { get; set; }
+        string FilePath { get; set; }
     }
 }

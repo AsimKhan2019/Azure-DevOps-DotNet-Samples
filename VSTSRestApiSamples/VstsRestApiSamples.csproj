@@ -54,6 +54,7 @@
     <Compile Include="IConfiguration.cs" />
     <Compile Include="ProjectsAndTeams\Processes.cs" />
     <Compile Include="ViewModels\ProjectsAndTeams\ListofProjectsResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\AttachmentReference.cs" />
     <Compile Include="WorkItemTracking\Attachments.cs" />
     <Compile Include="WorkItemTracking\Fields.cs" />
     <Compile Include="WorkItemTracking\Samples.cs" />

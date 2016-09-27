@@ -25,13 +25,13 @@ namespace VstsRestApiSamples.Tests.GettingStarted
         [TestMethod, TestCategory("REST API")]
         public void GettingStarted_Authentication_PersonalAccessToken_Success()
         {
-            //arrange
+            // arrange
             Authentication request = new Authentication();
 
-            //act
+            // act
             var response = request.PersonalAccessToken(_configuration.UriString, _configuration.PersonalAccessToken);
 
-            //assert
+            // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
 
             request = null;

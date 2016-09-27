@@ -18,11 +18,11 @@ namespace VstsRestApiSamples.WorkItemTracking
             _credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _configuration.PersonalAccessToken)));
         }
 
-        /// <summary>
-        /// get list of work item by query id
-        /// </summary>
-        /// <param name="id">query id</param>
-        /// <returns></returns>
+        // / <summary>
+        // / get list of work item by query id
+        // / </summary>
+        // / <param name="id">query id</param>
+        // / <returns></returns>
         public GetWorkItemsResponse.Results GetListOfWorkItems_ByQueryId(string project, string id)
         {
             GetWorkItemsResponse.Results viewModel = new GetWorkItemsResponse.Results();
@@ -47,16 +47,16 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="project"></param>
-        /// <returns></returns>
+        // / <summary>
+        // / 
+        // / </summary>
+        // / <param name="project"></param>
+        // / <returns></returns>
         public GetWorkItemsResponse.Results GetListOfWorkItems_ByWiql(string project)
         {
             GetWorkItemsResponse.Results viewModel = new GetWorkItemsResponse.Results();
 
-            //create wiql object
+            // create wiql object
             Object wiql = new {
                 query = "Select [State], [Title] " +
                         "From WorkItems " +
@@ -72,12 +72,12 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
 
-                var postValue = new StringContent(JsonConvert.SerializeObject(wiql), Encoding.UTF8, "application/json"); //mediaType needs to be application/json-patch+json for a patch call
+                var postValue = new StringContent(JsonConvert.SerializeObject(wiql), Encoding.UTF8, "application/json"); // mediaType needs to be application/json-patch+json for a patch call
 
-                //set the httpmethod to Patch
+                // set the httpmethod to Patch
                 var method = new HttpMethod("POST");
 
-                //send the request               
+                // send the request               
                 var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/wiql?api-version=2.2") { Content = postValue };
                 var response = client.SendAsync(request).Result;
 

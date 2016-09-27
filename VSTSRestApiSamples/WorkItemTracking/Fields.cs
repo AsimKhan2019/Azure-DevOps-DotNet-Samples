@@ -16,10 +16,10 @@ namespace VstsRestApiSamples.WorkItemTracking
             _credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _configuration.PersonalAccessToken)));
         }
 
-        /// <summary>
-        /// get list of all the fields in the account
-        /// </summary>
-        /// <returns>ListofWorkItemFieldsResponse.Fields</returns>
+        // / <summary>
+        // / get list of all the fields in the account
+        // / </summary>
+        // / <returns>ListofWorkItemFieldsResponse.Fields</returns>
         public ListofWorkItemFieldsResponse.Fields GetListOfWorkItemFields()
         {
             ListofWorkItemFieldsResponse.Fields viewModel = new ListofWorkItemFieldsResponse.Fields();

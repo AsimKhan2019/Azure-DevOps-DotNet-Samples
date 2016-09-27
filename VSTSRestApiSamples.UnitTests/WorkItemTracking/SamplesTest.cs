@@ -24,13 +24,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_Samples_GetWorkItemsByQuery()
         {
-            //arrange
+            // arrange
             Samples samples = new Samples(_configuration);
 
-            //act
+            // act
             var response = samples.GetWorkItemsByQuery();
 
-            //assert
+            // assert
             Assert.AreEqual("success", response);
 
             samples = null;
@@ -39,13 +39,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_Samples_GetWorkItemsByWiql()
         {
-            //arrange
+            // arrange
             Samples samples = new Samples(_configuration);
 
-            //act
+            // act
             var response = samples.GetWorkItemsByWiql();
 
-            //assert
+            // assert
             Assert.AreEqual("success", response);
 
             samples = null;
@@ -54,13 +54,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]  
         public void WorkItemTracking_Samples_CreateBug_Success()
         {
-            //arrange
+            // arrange
             Samples samples = new Samples(_configuration);
 
-            //act
+            // act
             var response = samples.CreateBug();
 
-            //assert
+            // assert
             Assert.AreEqual("success", response);
 
             samples = null;
@@ -69,13 +69,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_Samples_CreateBugByPassingRules_Success()
         {
-            //arrange
+            // arrange
             Samples samples = new Samples(_configuration);
 
-            //act
+            // act
             var response = samples.CreateBugByPassingRules();
 
-            //assert
+            // assert
             Assert.AreEqual("success", response);
 
             samples = null;
@@ -84,13 +84,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_Samples_UpdateBug_Success()
         {
-            //arrange
+            // arrange
             Samples samples = new Samples(_configuration);
 
-            //act
+            // act
             var response = samples.UpdateBug();
 
-            //assert
+            // assert
             Assert.AreEqual("success", response);
 
             samples = null;
@@ -99,28 +99,43 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_Samples_AddLinkToBug_Success()
         {
-            //arrange
+            // arrange
             Samples samples = new Samples(_configuration);
 
-            //act
+            // act
             var response = samples.AddLinkToBug();
 
-            //assert
+            // assert
             Assert.AreEqual("success", response);
 
             samples = null;
-        }        
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_Samples_AddAttachmentToBug_Success()
+        {
+            // arrange
+            Samples samples = new Samples(_configuration);
+
+            // act
+            var response = samples.AddAttachmentToBug();
+
+            // assert
+            Assert.AreEqual("success", response);
+
+            samples = null;
+        }
 
         [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_Samples_AddCommentToBug_Success()
         {
-            //arrange
+            // arrange
             Samples samples = new Samples(_configuration);
 
-            //act
+            // act
             var response = samples.AddCommentToBug();
 
-            //assert
+            // assert
             Assert.AreEqual("success", response);
 
             samples = null;

@@ -28,7 +28,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
-            //add fields to your patch document
+            // add fields to your patch document
             patchDocument.Add(
                 new JsonPatchOperation()
                 {
@@ -43,7 +43,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 {
                     Operation = Operation.Add,
                     Path = "/fields/Microsoft.VSTS.TCM.ReproSteps",
-                    Value = "Our authorization logic needs to allow for users with Microsoft accounts (formerly Live Ids) - http://msdn.microsoft.com/en-us/library/live/hh826547.aspx"
+                    Value = "Our authorization logic needs to allow for users with Microsoft accounts (formerly Live Ids) - http:// msdn.microsoft.com/en-us/library/live/hh826547.aspx"
                 }
             );
 
@@ -67,7 +67,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                //create the bug
+                // create the bug
                 WorkItem result = workItemTrackingHttpClient.CreateWorkItemAsync(patchDocument, project, "Bug").Result;
             }
 
@@ -78,7 +78,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
         public string UpdateBug()
         {
-            var id = _configuration.WorkItemId;
+            var _id = _configuration.WorkItemId;
 
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
@@ -111,7 +111,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, id).Result;
+                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, _id).Result;
             }
 
             patchDocument = null;
@@ -125,7 +125,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
-            //add fields to your patch document
+            // add fields to your patch document
             patchDocument.Add(
                 new JsonPatchOperation()
                 {
@@ -140,7 +140,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 {
                     Operation = Operation.Add,
                     Path = "/fields/Microsoft.VSTS.TCM.ReproSteps",
-                    Value = "Our authorization logic needs to allow for users with Microsoft accounts (formerly Live Ids) - http://msdn.microsoft.com/en-us/library/live/hh826547.aspx"
+                    Value = "Our authorization logic needs to allow for users with Microsoft accounts (formerly Live Ids) - http:// msdn.microsoft.com/en-us/library/live/hh826547.aspx"
                 }
             );           
 
@@ -182,7 +182,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                //create the bug
+                // create the bug
                 WorkItem result = workItemTrackingHttpClient.CreateWorkItemAsync(patchDocument, project, "Bug", null, true).Result;
             }
 
@@ -193,7 +193,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
         public string AddCommentsToBug()
         {
-            var id = _configuration.WorkItemId;
+            var _id = _configuration.WorkItemId;
 
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
@@ -208,18 +208,18 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, id).Result;
+                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, _id).Result;
             }
 
             patchDocument = null;
 
             return "success";
         }
-        
+
         public string AddLinkToBug()
         {
-            var id = _configuration.WorkItemId;
-            var linkToId = _configuration.WorkItemIds.Split(',')[0];
+            var _id = _configuration.WorkItemId;
+            var _linkToId = _configuration.WorkItemIds.Split(',')[0];
 
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
@@ -230,14 +230,55 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 Value = new
                 {
                     rel = "System.LinkTypes.Dependency-forward",
-                    url = _configuration.UriString + "/_apis/wit/workItems/" + linkToId.ToString(),
+                    url = _configuration.UriString + "/_apis/wit/workItems/" + _linkToId.ToString(),
                     attributes = new { comment = "Making a new link for the dependency" }
                 }
             });
 
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, id).Result;
+                try
+                {
+                    WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, _id).Result;
+                    return "success";
+                }
+                catch (Microsoft.VisualStudio.Services.Common.VssServiceException ex)
+                {
+                    return ex.Message;
+                }
+                catch (Exception ex)
+                {
+                    return ex.InnerException.Message;
+                }
+            }           
+        }
+
+        public string AddAttachmentToBug()
+        {
+            var _id = _configuration.WorkItemId;
+            var _filePath = _configuration.FilePath;
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                // upload attachment to attachment store and 
+                // get a reference to that file
+                AttachmentReference attachmentReference = workItemTrackingHttpClient.CreateAttachmentAsync(_filePath).Result;
+
+                JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+                patchDocument.Add(new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/relations/-",
+                    Value = new
+                    {
+                        rel = "AttachedFile",
+                        url = attachmentReference.Url,
+                        attributes = new { comment = "adding link to bug" }
+                    }
+                });
+
+                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, _id).Result;
             }
 
             return "success";
@@ -254,7 +295,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
                 try
                 {
-                    //get the query object based on the query name and project
+                    // get the query object based on the query name and project
                     queryItem = workItemTrackingHttpClient.GetQueryAsync(project, query).Result;                    
                 }                
                 catch (Exception ex)
@@ -262,10 +303,10 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                     return ex.InnerException.Message;
                 }             
                
-                //now we have the query id, so lets execute the query and get the results
+                // now we have the query id, so lets execute the query and get the results
                 WorkItemQueryResult workItemQueryResult = workItemTrackingHttpClient.QueryByIdAsync(queryItem.Id).Result;
                 
-                //some error handling                
+                // some error handling                
                 if (workItemQueryResult == null)
                 {
                     return "failure";
@@ -276,7 +317,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 } 
                 else 
                 {
-                    //need to get the list of our work item id's and put them into an array
+                    // need to get the list of our work item id's and put them into an array
                     List<int> list = new List<int>();
                     foreach (var item in workItemQueryResult.WorkItems)
                     {
@@ -284,7 +325,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                     }
                     int[] arr = list.ToArray();
 
-                    //build a list of the fields we want to see
+                    // build a list of the fields we want to see
                     string[] fields = new string[3];
                     fields[0] = "System.Id";
                     fields[1] = "System.Title";
@@ -301,7 +342,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
         {
             string project = _configuration.Project;
 
-            //create a query to get your list of work items needed
+            // create a query to get your list of work items needed
             Wiql wiql = new Wiql()
             {
                 Query = "Select [State], [Title] " +
@@ -312,20 +353,20 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                         "Order By [State] Asc, [Changed Date] Desc"
             };
 
-            //create instance of work item tracking http client
+            // create instance of work item tracking http client
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                //execute the query
+                // execute the query
                 WorkItemQueryResult workItemQueryResult = workItemTrackingHttpClient.QueryByWiqlAsync(wiql).Result;
 
-                //check to make sure we have some results
+                // check to make sure we have some results
                 if (workItemQueryResult == null || workItemQueryResult.WorkItems.Count() == 0)
                 {
                     return "Wiql '" + wiql.Query + "' did not find any results";
                 }
                 else
                 {
-                    //need to get the list of our work item id's and put them into an array
+                    // need to get the list of our work item id's and put them into an array
                     List<int> list = new List<int>();
                     foreach (var item in workItemQueryResult.WorkItems)
                     {
@@ -333,7 +374,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                     }
                     int[] arr = list.ToArray();
 
-                    //build a list of the fields we want to see
+                    // build a list of the fields we want to see
                     string[] fields = new string[3];
                     fields[0] = "System.Id";
                     fields[1] = "System.Title";
@@ -349,7 +390,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
         {
             string project = _configuration.Project;
 
-            //create a query to get your list of work items needed
+            // create a query to get your list of work items needed
             Wiql wiql = new Wiql()
             {
                 Query = "Select [State], [Title] " +
@@ -361,10 +402,10 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             };
 
 
-            //create a patchDocument that is used to update the work items
+            // create a patchDocument that is used to update the work items
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
-            //change the backlog priority
+            // change the backlog priority
             patchDocument.Add(
                 new JsonPatchOperation()
                 {
@@ -375,7 +416,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 }
             );
 
-            //move the state to active
+            // move the state to active
             patchDocument.Add(
                 new JsonPatchOperation()
                 {
@@ -386,7 +427,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 }
             );
 
-            //add some comments
+            // add some comments
             patchDocument.Add(
                 new JsonPatchOperation()
                 {
@@ -397,19 +438,19 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 }
             );
 
-            //create instance of work item tracking http client
+            // create instance of work item tracking http client
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                //execute the query
+                // execute the query
                 WorkItemQueryResult workItemQueryResult = workItemTrackingHttpClient.QueryByWiqlAsync(wiql).Result;
 
-                //check to make sure we have some results
+                // check to make sure we have some results
                 if (workItemQueryResult == null || workItemQueryResult.WorkItems.Count() == 0)
                 {                    
                     throw new NullReferenceException("Wiql '" + wiql.Query + "' did not find any results");                   
                 }
 
-                //loop thru the work item results and update each work item
+                // loop thru the work item results and update each work item
                 foreach (WorkItemReference workItemReference in workItemQueryResult.WorkItems)
                 {
                     WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, workItemReference.Id).Result;

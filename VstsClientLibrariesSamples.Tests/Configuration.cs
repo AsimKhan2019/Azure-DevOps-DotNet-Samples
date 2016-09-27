@@ -17,5 +17,6 @@ namespace VstsClientLibrariesSamples.Tests
         public string Identity { get; set; }
         public string WorkItemIds { get; set; }
         public Int32 WorkItemId { get; set; }
+        public string FilePath { get; set; }
     }
 }

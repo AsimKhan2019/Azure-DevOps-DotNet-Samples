@@ -24,13 +24,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]  
         public void WorkItemTracking_WorkItems_GetListOfWorkItemsByIDs_Success()
         {
-            //arrange
+            // arrange
             Fields request = new Fields(_configuration);
 
-            //act
+            // act
             var response = request.GetListOfWorkItemFields();
 
-            //assert
+            // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
 
             request = null;

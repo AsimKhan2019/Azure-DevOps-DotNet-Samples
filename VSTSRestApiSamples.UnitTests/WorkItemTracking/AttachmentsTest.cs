@@ -25,13 +25,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]  
         public void WorkItemTracking_WorkItems_DownloadAttachment_Success()
         {
-            //arrange
+            // arrange
             string url = "";
             string saveTo = @"D:\Temp\";
             Attachments requestAttachments = new Attachments(_configuration);
             WorkItems requestWorkItems = new WorkItems(_configuration);
 
-            //act
+            // act
             var wiResponse = requestWorkItems.GetWorkItem(_configuration.WorkItemId);
 
             if (wiResponse.HttpStatusCode == HttpStatusCode.NotFound)

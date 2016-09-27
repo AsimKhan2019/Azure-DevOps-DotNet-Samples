@@ -25,13 +25,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]
         public void WIQL_GetListOfWorkItemsByQueryId_Success()
         {
-            //arrange
+            // arrange
             WIQL request = new WIQL(_configuration);
 
-            //act
+            // act
             GetWorkItemsResponse.Results response = request.GetListOfWorkItems_ByQueryId(_configuration.Project, _configuration.QueryId);
 
-            //assert
+            // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
             {
                 Assert.Inconclusive("query '" + _configuration.QueryId + "' not found");
@@ -47,13 +47,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]
         public void WIQL_GetListOfWorkItemsByWiql_Success()
         {
-            //arrange
+            // arrange
             WIQL request = new WIQL(_configuration);
 
-            //act
+            // act
             GetWorkItemsResponse.Results response = request.GetListOfWorkItems_ByWiql(_configuration.Project);
 
-            //assert
+            // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
             {
                 Assert.Inconclusive("no query results found");

@@ -24,13 +24,13 @@ namespace VstsClientLibrariesSamples.Tests.GettingStarted
         [TestMethod, TestCategory("Client Libraries")]
         public void GettingStarted_Authentication_PersonalAccessToken_Success()
         {
-            //arrange
+            // arrange
             Authentication authentication = new Authentication(_configuration);
 
-            //act
+            // act
             var result = authentication.PersonalAccessToken(_configuration.UriString, _configuration.PersonalAccessToken);
 
-            //assert
+            // assert
             Assert.IsNotNull(result);
         }
     }

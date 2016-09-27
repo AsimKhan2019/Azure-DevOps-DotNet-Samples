@@ -16,23 +16,23 @@ namespace VstsRestApiSamples.Work.ProcessConfiguration
             _credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _configuration.PersonalAccessToken)));
         }
 
-        /// <summary>
-        /// add fields to a picklist
-        /// </summary>
-        /// <param name="processId">process id</param>
-        /// <param name="picklistId">picklist id</param>
-        /// <returns>FieldsPostResponse.Field</returns>
+        // / <summary>
+        // / add fields to a picklist
+        // / </summary>
+        // / <param name="processId">process id</param>
+        // / <param name="picklistId">picklist id</param>
+        // / <returns>FieldsPostResponse.Field</returns>
         public FieldsPostResponse.Field CreatePickListField(string processId, string picklistId)
         {
             FieldsPostResponse.Field viewModel = new FieldsPostResponse.Field();
 
-            //create field object and set values
+            // create field object and set values
             FieldsPost.Field data = new FieldsPost.Field()
             {
                 Name = "Favorite Color",
                 Type = "String",
                 Description = "These are my favorite colors",
-                ListId = picklistId //id from when we created a picklist
+                ListId = picklistId // id from when we created a picklist
             };           
 
             using (var client = new HttpClient())

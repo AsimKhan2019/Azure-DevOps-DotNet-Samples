@@ -24,7 +24,7 @@ namespace VstsClientLibrariesSamples.ProjectsAndTeams
 
         public TeamProjectReference GetProjectByName(string name)
         {
-            //create project object
+            // create project object
             using (ProjectHttpClient projectHttpClient = new ProjectHttpClient(_uri, _credentials))
             {
                 TeamProjectReference project = projectHttpClient.GetProject(name).Result;

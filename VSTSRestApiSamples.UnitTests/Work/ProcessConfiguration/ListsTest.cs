@@ -24,13 +24,13 @@ namespace VstsRestApiSamples.Tests.Work.ProcessConfiguration
         [TestMethod, TestCategory("REST API")]        
         public void Work_ProcessConfiguration_Lists_CreatePickList_Success()
         {
-            //arrange
+            // arrange
             Lists request = new Lists(_configuration);
 
-            //act
+            // act
             var response = request.CreatePickList(_configuration.ProcessId);
             
-            //assert
+            // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
             {
                 Assert.Inconclusive("process not found for given processid");
@@ -46,13 +46,13 @@ namespace VstsRestApiSamples.Tests.Work.ProcessConfiguration
         [TestMethod, TestCategory("REST API")]  
         public void ProcessDefinitions_Work_Lists_UpdatePickList_Success()
         {
-            //arrange
+            // arrange
             Lists request = new Lists(_configuration);
 
-            //act
+            // act
             var response = request.UpdatePickList(_configuration.ProcessId, _configuration.PickListId);
 
-            //assert
+            // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
             {
                 Assert.Inconclusive("picklist or process not found");
@@ -68,13 +68,13 @@ namespace VstsRestApiSamples.Tests.Work.ProcessConfiguration
         [TestMethod, TestCategory("REST API")]  
         public void ProcessDefinitions_Work_Lists_GetListOfPickLists_Success()
         {
-            //arrange
+            // arrange
             Lists request = new Lists(_configuration);
 
-            //act
+            // act
             var response = request.GetListOfPickLists(_configuration.ProcessId);
 
-            //assert
+            // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
             {
                 Assert.Inconclusive("process not found");
@@ -90,13 +90,13 @@ namespace VstsRestApiSamples.Tests.Work.ProcessConfiguration
         [TestMethod, TestCategory("REST API")]  
         public void Work_ProcessCustomization_Lists_GetPickList_Success()
         {
-            //arrange
+            // arrange
             Lists request = new Lists(_configuration);
 
-            //act
+            // act
             var response = request.GetPickList(_configuration.ProcessId, _configuration.PickListId);
 
-            //assert
+            // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
             {
                 Assert.Inconclusive("picklist or process not found");

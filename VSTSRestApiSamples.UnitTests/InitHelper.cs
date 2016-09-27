@@ -17,6 +17,7 @@ namespace VstsRestApiSamples.Tests
             configuration.ProcessId = ConfigurationSettings.AppSettings["appsetting.processid"].ToString();
             configuration.PickListId = ConfigurationSettings.AppSettings["appsetting.picklistid"].ToString();
             configuration.QueryId = ConfigurationSettings.AppSettings["appsetting.queryid"].ToString();
+            configuration.FilePath = ConfigurationSettings.AppSettings["appsetting.filepath"].ToString();
 
             return configuration;
         }

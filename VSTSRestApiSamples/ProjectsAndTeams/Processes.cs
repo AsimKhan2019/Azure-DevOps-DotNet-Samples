@@ -16,10 +16,10 @@ namespace VstsRestApiSamples.ProjectsAndTeams
             _credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _configuration.PersonalAccessToken)));
         }
 
-        /// <summary>
-        /// get list of all processes
-        /// </summary>
-        /// <returns>ListofProcessesResponse.Processes</returns>
+        // / <summary>
+        // / get list of all processes
+        // / </summary>
+        // / <returns>ListofProcessesResponse.Processes</returns>
         public ListofProcessesResponse.Projects GetListOfProcesses()
         {
             ListofProcessesResponse.Projects viewModel = new ListofProcessesResponse.Projects();
@@ -44,11 +44,11 @@ namespace VstsRestApiSamples.ProjectsAndTeams
             }
         }
 
-        /// <summary>
-        /// get process by id
-        /// </summary>
-        /// <param name="processId"></param>
-        /// <returns>GetProcessResponse.Process</returns>
+        // / <summary>
+        // / get process by id
+        // / </summary>
+        // / <param name="processId"></param>
+        // / <returns>GetProcessResponse.Process</returns>
         public GetProcessResponse.Process GetProcess(string processId)
         {
             GetProcessResponse.Process viewModel = new GetProcessResponse.Process();

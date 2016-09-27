@@ -26,13 +26,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]  
         public void WorkItemTracking_Queries_GetListOfQueries_Success()
         {
-            //arrange
+            // arrange
             Queries request = new Queries(_configuration);
 
-            //act
+            // act
             ListofQueriesResponse.Queries response = request.GetListOfQueries(_configuration.Project);
 
-            //assert
+            // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
 
             request = null;
@@ -41,14 +41,14 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]  
         public void WorkItemTracking_Queries_GetListOfQueriesForFolder_Success()
         {
-            //arrange
+            // arrange
             Queries request = new Queries(_configuration);
             string folderPath = "Shared%20Queries/Product%20Planning";
 
-            //act
+            // act
             ListofQueriesByFolderPath.Queries response = request.GetListOfQueriesByFolderPath(_configuration.Project, folderPath);
 
-            //assert
+            // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
 
             request = null;
@@ -57,13 +57,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]  
         public void WorkItemTracking_Queries_GetQueryById_Success()
         {
-            //arrange
+            // arrange
             Queries request = new Queries(_configuration);                    
 
-            //act
+            // act
             GetQueryResponse.Queries response = request.GetQueryById(_configuration.Project, _configuration.QueryId);
 
-            //assert
+            // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
             {
                 Assert.Inconclusive("query '" + _configuration.QueryId + "' not found");
@@ -79,13 +79,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_Queries_GetQueryByPath_Success()
         {
-            //arrange
+            // arrange
             Queries request = new Queries(_configuration);           
 
-            //act
+            // act
             GetQueryResponse.Queries response = request.GetQueryByPath(_configuration.Project, _configuration.Query);
 
-            //assert
+            // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
             {
                 Assert.Inconclusive("query '" + _configuration.Query + "' not found");

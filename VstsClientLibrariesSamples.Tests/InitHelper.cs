@@ -18,6 +18,7 @@ namespace VstsClientLibrariesSamples.Tests
             configuration.UriString = ConfigurationSettings.AppSettings["appsetting.uri"].ToString();   
             configuration.WorkItemIds = ConfigurationSettings.AppSettings["appsetting.workitemids"].ToString();
             configuration.WorkItemId = Convert.ToInt32(ConfigurationSettings.AppSettings["appsetting.workitemid"].ToString());
+            configuration.FilePath = ConfigurationSettings.AppSettings["appsetting.filepath"].ToString();
 
             return configuration;
         }

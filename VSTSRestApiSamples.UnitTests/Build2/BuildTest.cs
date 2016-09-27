@@ -24,13 +24,13 @@ namespace VstsRestApiSamples.Tests.Build2
         [TestMethod, TestCategory("REST API")]
         public void Build_Defintions_GetListOfBuildDefinitions_Success()
         {
-            //arrange
+            // arrange
             Build request = new Build(_configuration);
 
-            //act
+            // act
             var response = request.GetListOfBuildDefinitions(_configuration.Project);
 
-            //assert
+            // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
 
             request = null;

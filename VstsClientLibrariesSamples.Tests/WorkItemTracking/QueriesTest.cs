@@ -27,13 +27,13 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("Client Libraries")]
         public void WorkItemTracking_Queries_GetQueryByName_Success()
         {
-            //arrange
+            // arrange
             Queries queries = new Queries(_configuration);
 
-            //act
+            // act
             var result = queries.GetQueryByName(_configuration.Project, _configuration.Query);
 
-            //assert
+            // assert
             Assert.IsInstanceOfType(result, typeof(QueryHierarchyItem));
             Assert.AreEqual("Open User Stories", result.Name);
         }
@@ -41,10 +41,10 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("Client Libraries")]
         public void WorkItemTracking_Queries_ExecuteQuery_Success()
         {
-            //arrange
+            // arrange
             Queries queries = new Queries(_configuration);
 
-            //act
+            // act
             var queryResult = queries.GetQueryByName(_configuration.Project, _configuration.Query);
             var queryId = queryResult.Id;
 
@@ -52,7 +52,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             {
                 var result = queries.ExecuteQuery(queryId);
                 
-                //assert
+                // assert
                 Assert.IsInstanceOfType(result, typeof(WorkItemQueryResult));
             }
             catch (System.NullReferenceException ex)
@@ -64,10 +64,10 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         [TestMethod, TestCategory("Client Libraries")]
         public void WorkItemTracking_Queries_ExecuteByWiql_Success()
         {
-            //arrange
+            // arrange
             Queries queries = new Queries(_configuration);
 
-            //create a query to get your list of work items needed
+            // create a query to get your list of work items needed
             Wiql wiql = new Wiql()
             {
                 Query = "Select [State], [Title] " +
@@ -79,10 +79,10 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
                        
             try
             {
-                //act
+                // act
                 var result = queries.ExecuteByWiql(wiql, _configuration.Project);
 
-                //assert
+                // assert
                 Assert.IsInstanceOfType(result, typeof(WorkItemQueryResult));
             }
             catch (System.NullReferenceException ex)

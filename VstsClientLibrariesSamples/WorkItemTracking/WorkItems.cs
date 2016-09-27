@@ -90,7 +90,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                {
                    Operation = Operation.Add,
                    Path = "/fields/Microsoft.VSTS.TCM.ReproSteps",
-                   Value = "Our authorization logic needs to allow for users with Microsoft accounts (formerly Live Ids) - http://msdn.microsoft.com/en-us/library/live/hh826547.aspx"
+                   Value = "Our authorization logic needs to allow for users with Microsoft accounts (formerly Live Ids) - http:// msdn.microsoft.com/en-us/library/live/hh826547.aspx"
                }
             );
 
@@ -176,8 +176,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             return "success";
         }
-
-
+        
         public string GetWorkItem(int id)
         {
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
@@ -187,7 +186,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             return "success";
         }
-        
+               
         public string AddLink(int id, int linkToId)
         {
             JsonPatchDocument patchDocument = new JsonPatchDocument();

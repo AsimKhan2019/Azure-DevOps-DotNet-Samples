@@ -20,7 +20,7 @@ namespace VstsClientLibrariesSamples.GettingStarted
 
         public IEnumerable<TeamProjectReference> PersonalAccessToken(string url, string personalAccessToken)
         {
-            //create uri and VssBasicCredential variables
+            // create uri and VssBasicCredential variables
             Uri uri = new Uri(url);
             VssBasicCredential credentials = new VssBasicCredential("", personalAccessToken);
 

@@ -26,15 +26,15 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         [TestMethod, TestCategory("Client Libraries")]
         public void WorkItemTracking_ProjectsAndTeams_GetProjectByName_Success()
         {
-            //arrange
+            // arrange
             Projects projects = new Projects(_configuration);
 
-            //act
+            // act
             try
             {
                 TeamProjectReference result = projects.GetProjectByName(_configuration.Project);
 
-                //assert
+                // assert
                 Assert.AreEqual(_configuration.Project, result.Name); 
             }
             catch (System.AggregateException)

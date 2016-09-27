@@ -14,5 +14,6 @@ namespace VstsRestApiSamples
         string ProcessId { get; set; }
         string PickListId { get; set; }
         string QueryId { get; set; }
+        string FilePath { get; set; }
     }
 }
