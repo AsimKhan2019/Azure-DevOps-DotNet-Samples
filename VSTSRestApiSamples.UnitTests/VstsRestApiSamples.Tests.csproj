@@ -71,6 +71,7 @@
     <Compile Include="WorkItemTracking\QueriesTest.cs" />
     <Compile Include="WorkItemTracking\FieldsTest.cs" />
     <Compile Include="WorkItemTracking\AttachmentsTest.cs" />
+    <Compile Include="WorkItemTracking\BatchTest.cs" />
     <Compile Include="WorkItemTracking\WorkItemsTest.cs" />
     <Compile Include="Work\ProcessConfiguration\ListsTest.cs" />
     <Compile Include="Work\ProcessConfiguration\FieldsTest.cs" />

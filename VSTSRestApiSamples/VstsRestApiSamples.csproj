@@ -55,7 +55,10 @@
     <Compile Include="ProjectsAndTeams\Processes.cs" />
     <Compile Include="ViewModels\ProjectsAndTeams\ListofProjectsResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\AttachmentReference.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\WorkItemBatchPost.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\WorkItemBatchPostResponse.cs" />
     <Compile Include="WorkItemTracking\Attachments.cs" />
+    <Compile Include="WorkItemTracking\Batch.cs" />
     <Compile Include="WorkItemTracking\Fields.cs" />
     <Compile Include="WorkItemTracking\Samples.cs" />
     <Compile Include="WorkItemTracking\WIQL.cs" />
