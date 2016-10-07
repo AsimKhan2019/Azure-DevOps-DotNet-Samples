@@ -21,7 +21,7 @@ namespace VstsRestApiSamples.WorkItemTracking
         }
 
         // <summary>
-        // Create a bug
+        // Create work item and link the multiple work items
         // </summary>
         // <param name="projectName"></param>
         // <returns>WorkItemPatchResponse.WorkItem</returns>
@@ -35,19 +35,17 @@ namespace VstsRestApiSamples.WorkItemTracking
             Object[] parentPatchDocumentBody = new Object[2];
             parentPatchDocumentBody[0] = new { op = "add", path = "/fields/System.Title", value = "Customer can sign in using their Microsoft Account" };
             parentPatchDocumentBody[1] = new { op = "add", path = "/id", value = "-1" };
-            batchRequests[0] = new WorkItemBatchPost.BatchRequest
-                {
-                    method = "PATCH",
-                    uri = '/' + projectName + "/_apis/wit/workitems/$User Story?api-version=2.2",
-                    headers = headers,
-                    body = parentPatchDocumentBody
-                };
+            batchRequests[0] = new WorkItemBatchPost.BatchRequest {
+                                    method = "PATCH",
+                                    uri = '/' + projectName + "/_apis/wit/workitems/$User Story?api-version=2.2",
+                                    headers = headers,
+                                    body = parentPatchDocumentBody
+                                };
 
             Object[] childPatchDocumentBody = new Object[3];
             childPatchDocumentBody[0] = new { op = "add", path = "/fields/System.Title", value = "JavaScript implementation for Microsoft Account" };
             childPatchDocumentBody[1] = new { op = "add", path = "/id", value = "-2" };
-            childPatchDocumentBody[2] = new
-            {
+            childPatchDocumentBody[2] = new {
                 op = "add",
                 path = "/relations/-",
                 value = new
@@ -56,24 +54,21 @@ namespace VstsRestApiSamples.WorkItemTracking
                     url = _configuration.UriString + "_apis/wit/workitems/-1"
                 }
             };
-            batchRequests[1] = new WorkItemBatchPost.BatchRequest
-                {
-                    method = "PATCH",
-                    uri = '/' + projectName + "/_apis/wit/workitems/$Task?api-version=2.2",
-                    headers = headers,
-                    body = childPatchDocumentBody
-                };
+
+            batchRequests[1] = new WorkItemBatchPost.BatchRequest {
+                                    method = "PATCH",
+                                    uri = '/' + projectName + "/_apis/wit/workitems/$Task?api-version=2.2",
+                                    headers = headers,
+                                    body = childPatchDocumentBody
+                                };
 
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
-
-                // serialize the fields array into a json string          
-                var batchRequest = new StringContent(JsonConvert.SerializeObject(batchRequests), Encoding.UTF8, "application/json");
-
-                // set the httpmethod to Patch
+                                       
+                var batchRequest = new StringContent(JsonConvert.SerializeObject(batchRequests), Encoding.UTF8, "application/json");                         
                 var method = new HttpMethod("POST");
 
                 // send the request

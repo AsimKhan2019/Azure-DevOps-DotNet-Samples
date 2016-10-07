@@ -64,6 +64,7 @@
     <Compile Include="Build2\BuildTest.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="GettingStarted\AuthenticationTest.cs" />
+    <Compile Include="Git\GitRepositoryTest.cs" />
     <Compile Include="InitHelper.cs" />
     <Compile Include="ProjectsAndTeams\ProcessesTest.cs" />
     <Compile Include="WorkItemTracking\SamplesTest.cs" />
@@ -95,6 +96,7 @@
       <Name>VstsRestApiSamples</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

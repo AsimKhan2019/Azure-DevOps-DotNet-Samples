@@ -18,6 +18,7 @@ namespace VstsRestApiSamples.Tests
             configuration.PickListId = ConfigurationSettings.AppSettings["appsetting.picklistid"].ToString();
             configuration.QueryId = ConfigurationSettings.AppSettings["appsetting.queryid"].ToString();
             configuration.FilePath = ConfigurationSettings.AppSettings["appsetting.filepath"].ToString();
+            configuration.GitRepositoryId = ConfigurationSettings.AppSettings["appsetting.git.repositoryid"].ToString();
 
             return configuration;
         }
