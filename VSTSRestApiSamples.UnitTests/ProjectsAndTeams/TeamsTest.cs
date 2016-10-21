@@ -132,5 +132,27 @@ namespace VstsRestApiSamples.Tests.ProjectsAndTeams
 
             request = null;
         }
+
+        [TestMethod, TestCategory("REST API")]
+        public void ProjectsAndTeams_Teams_DeleteTeam_Success()
+        {
+            // arrange
+            Teams request = new Teams(_configuration);
+
+            // act
+            string response = request.DeleteTeam(_configuration.Project, "My Awesome Team");
+
+            // assert
+            if (response == HttpStatusCode.NotFound.ToString())
+            {
+                Assert.Inconclusive("team '" + _configuration.Team + "' not found");
+            }
+            else
+            {
+                Assert.AreEqual(HttpStatusCode.NoContent.ToString(), response);
+            }
+
+            request = null;
+        }
     }
 }

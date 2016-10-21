@@ -150,5 +150,22 @@ namespace VstsRestApiSamples.ProjectsAndTeams
                 return viewModel;
             }
         }
+
+        public string DeleteTeam(string project, string newTeam)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+                     
+                var method = new HttpMethod("DELETE");
+
+                var request = new HttpRequestMessage(method, _configuration.UriString + "/_apis/projects/" + project + "/teams/" + newTeam + "?api-version=2.2");
+                var response = client.SendAsync(request).Result;
+
+               return response.StatusCode.ToString();
+            }         
+        }
     }
 }
