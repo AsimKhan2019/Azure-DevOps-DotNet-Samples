@@ -122,11 +122,12 @@ namespace VstsRestApiSamples.WorkItemTracking
         public WorkItemPatchResponse.WorkItem CreateWorkItemUsingByPassRules(string projectName)
         {
             WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[2];
+            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[3];
 
             // add a title and add a field you normally cant add such as CreatedDate
-            fields[1] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.Title", value = "hello world!" };
-            fields[0] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.CreatedDate", value = "6/1/2016" };
+            fields[0] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.Title", value = "hello world!" };
+            fields[1] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.CreatedDate", value = "6/1/2016" };
+            fields[2] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.CreatedBy", value = "Art Vandelay" };
 
             using (var client = new HttpClient())
             {
@@ -174,8 +175,7 @@ namespace VstsRestApiSamples.WorkItemTracking
             fields[1] = new WorkItemPatch.Field() { op = "add", path = "/fields/Microsoft.VSTS.TCM.ReproSteps", value = "Our authorization logic needs to allow for users with Microsoft accounts (formerly Live Ids) - http:// msdn.microsoft.com/en-us/library/live/hh826547.aspx" };
             fields[2] = new WorkItemPatch.Field() { op = "add", path = "/fields/Microsoft.VSTS.Common.Priority", value = "1" };
             fields[3] = new WorkItemPatch.Field() { op = "add", path = "/fields/Microsoft.VSTS.Common.Severity", value = "2 - High" };
-
-
+            
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Clear();

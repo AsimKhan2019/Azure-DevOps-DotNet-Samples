@@ -8,6 +8,7 @@ namespace VstsRestApiSamples.Tests
         {
             configuration.PersonalAccessToken = ConfigurationSettings.AppSettings["appsetting.pat"].ToString();
             configuration.Project = ConfigurationSettings.AppSettings["appsetting.project"].ToString();
+            configuration.Team = ConfigurationSettings.AppSettings["appsetting.team"].ToString();
             configuration.MoveToProject = ConfigurationSettings.AppSettings["appsetting.movetoproject"].ToString();
             configuration.Query = ConfigurationSettings.AppSettings["appsetting.query"].ToString();
             configuration.Identity = ConfigurationSettings.AppSettings["appsetting.identity"].ToString();
