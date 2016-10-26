@@ -24,7 +24,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_ProjectsAndTeams_GetProjectByName_Success()
+        public void ProjectsAndTeams_Projects_GetProjectByName_Success()
         {
             // arrange
             Projects projects = new Projects(_configuration);
@@ -32,7 +32,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
             // act
             try
             {
-                TeamProjectReference result = projects.GetProjectByName(_configuration.Project);
+                TeamProjectReference result = projects.GetProject(_configuration.Project);
 
                 // assert
                 Assert.AreEqual(_configuration.Project, result.Name); 

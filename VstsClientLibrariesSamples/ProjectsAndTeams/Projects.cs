@@ -22,7 +22,17 @@ namespace VstsClientLibrariesSamples.ProjectsAndTeams
             _uri = new Uri(_configuration.UriString);            
         }
 
-        public TeamProjectReference GetProjectByName(string name)
+        public IEnumerable<TeamProjectReference> GetProjects()
+        {
+            // create project object
+            using (ProjectHttpClient projectHttpClient = new ProjectHttpClient(_uri, _credentials))
+            {
+                IEnumerable<TeamProjectReference> projects = projectHttpClient.GetProjects().Result;
+                return projects;
+            }
+        }
+
+        public TeamProjectReference GetProject(string name)
         {
             // create project object
             using (ProjectHttpClient projectHttpClient = new ProjectHttpClient(_uri, _credentials))

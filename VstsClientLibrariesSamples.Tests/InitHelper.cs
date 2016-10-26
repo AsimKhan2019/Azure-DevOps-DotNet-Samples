@@ -13,6 +13,7 @@ namespace VstsClientLibrariesSamples.Tests
         {
             configuration.PersonalAccessToken = ConfigurationSettings.AppSettings["appsetting.pat"].ToString();
             configuration.Project = ConfigurationSettings.AppSettings["appsetting.project"].ToString();
+            configuration.Team = ConfigurationSettings.AppSettings["appsetting.team"].ToString();
             configuration.Query = ConfigurationSettings.AppSettings["appsetting.query"].ToString();
             configuration.Identity = ConfigurationSettings.AppSettings["appsetting.identity"].ToString();
             configuration.UriString = ConfigurationSettings.AppSettings["appsetting.uri"].ToString();   

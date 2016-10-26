@@ -21,7 +21,7 @@ namespace VstsRestApiSamples.ProjectsAndTeams
             _credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _configuration.PersonalAccessToken)));
         }
 
-        public ListofTeamsResponse.Teams GetListOfTeams(string project)
+        public ListofTeamsResponse.Teams GetTeams(string project)
         {
             ListofTeamsResponse.Teams viewModel = new ListofTeamsResponse.Teams();
 
@@ -151,7 +151,7 @@ namespace VstsRestApiSamples.ProjectsAndTeams
             }
         }
 
-        public string DeleteTeam(string project, string newTeam)
+        public string DeleteTeam(string project, string team)
         {
             using (var client = new HttpClient())
             {
@@ -161,7 +161,7 @@ namespace VstsRestApiSamples.ProjectsAndTeams
                      
                 var method = new HttpMethod("DELETE");
 
-                var request = new HttpRequestMessage(method, _configuration.UriString + "/_apis/projects/" + project + "/teams/" + newTeam + "?api-version=2.2");
+                var request = new HttpRequestMessage(method, _configuration.UriString + "/_apis/projects/" + project + "/teams/" + team + "?api-version=2.2");
                 var response = client.SendAsync(request).Result;
 
                return response.StatusCode.ToString();

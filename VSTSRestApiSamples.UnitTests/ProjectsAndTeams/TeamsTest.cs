@@ -30,7 +30,7 @@ namespace VstsRestApiSamples.Tests.ProjectsAndTeams
             Teams request = new Teams(_configuration);
 
             // act
-            ListofTeamsResponse.Teams response = request.GetListOfTeams(_configuration.Project);
+            ListofTeamsResponse.Teams response = request.GetTeams(_configuration.Project);
 
             // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
