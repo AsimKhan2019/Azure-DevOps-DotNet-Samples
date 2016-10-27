@@ -115,6 +115,7 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="GettingStarted\Authentication.cs" />
     <Compile Include="IConfiguration.cs" />
+    <Compile Include="ProjectsAndTeams\Processes.cs" />
     <Compile Include="ProjectsAndTeams\Samples.cs" />
     <Compile Include="ProjectsAndTeams\Teams.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -4,8 +4,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using Newtonsoft.Json;
 
-using VstsRestApiSamples.ViewModels.WorkItemTracking;
-
 namespace VstsRestApiSamples.WorkItemTracking
 {
     public class Samples

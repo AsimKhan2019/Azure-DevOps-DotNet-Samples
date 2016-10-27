@@ -22,7 +22,7 @@ namespace VstsRestApiSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("REST API")]
-        public void Teams_Samples_GetTeams_Success()
+        public void Samples_Teams_GetTeams_Success()
         {
             // arrange
             Samples request = new Samples(_configuration);
@@ -42,10 +42,32 @@ namespace VstsRestApiSamples.Tests.ProjectsAndTeams
 
             request = null;
         }
-        
 
         [TestMethod, TestCategory("REST API")]
-        public void Teams_Samples_GetTeamMembers_Success()
+        public void Samples_Teams_GetTeam_Success()
+        {
+            // arrange
+            Samples request = new Samples(_configuration);
+
+            // act
+            string response = request.GetTeam();
+
+            // assert
+            if (response == "not found")
+            {
+                Assert.Inconclusive("team not found");
+            }
+            else
+            {
+                Assert.AreEqual("success", response);
+            }
+
+            request = null;
+        }
+
+
+        [TestMethod, TestCategory("REST API")]
+        public void Samples_Teams_GetTeamMembers_Success()
         {
             // arrange
             Samples request = new Samples(_configuration);
@@ -67,7 +89,7 @@ namespace VstsRestApiSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("REST API")]
-        public void Teams_Samples_CreateTeam_Success()
+        public void Samples_Teams_CreateTeam_Success()
         {
             // arrange
             Samples request = new Samples(_configuration);
@@ -82,7 +104,7 @@ namespace VstsRestApiSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("REST API")]
-        public void Teams_Samples_UpdateTeam_Success()
+        public void Samples_Teams_UpdateTeam_Success()
         {
             // arrange
             Samples request = new Samples(_configuration);
@@ -104,7 +126,7 @@ namespace VstsRestApiSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("REST API")]
-        public void Teams_Samples_DeleteTeam_Success()
+        public void Samples_Teams_DeleteTeam_Success()
         {
             // arrange
             Samples request = new Samples(_configuration);

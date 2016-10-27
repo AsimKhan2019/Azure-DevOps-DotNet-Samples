@@ -1,11 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace VstsRestApiSamples.ProjectsAndTeams
 {
@@ -23,8 +20,7 @@ namespace VstsRestApiSamples.ProjectsAndTeams
         public string GetTeams()
         {
             var project = _configuration.Project;
-            WebApiTeams teams;
-
+            
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_configuration.UriString);
@@ -36,7 +32,36 @@ namespace VstsRestApiSamples.ProjectsAndTeams
 
                 if (response.IsSuccessStatusCode)
                 {
-                    teams = response.Content.ReadAsAsync<WebApiTeams>().Result;
+                    var teams = response.Content.ReadAsAsync<WebApiTeams>().Result;
+                    return "success";
+                }
+
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    return "not found";
+                }
+
+                return "failed";
+            }
+        }
+
+        public string GetTeam()
+        {
+            var project = _configuration.Project;
+            var team = _configuration.Team;
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_configuration.UriString);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                HttpResponseMessage response = client.GetAsync("_apis/projects/" + project + "/teams/" + team + "?api-version=2.2").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var teams = response.Content.ReadAsAsync<WebApiTeams>().Result;
                     return "success";
                 }
 
@@ -82,7 +107,7 @@ namespace VstsRestApiSamples.ProjectsAndTeams
         public string CreateTeam()
         {
             var project = _configuration.Project;
-            Object team = new { name = "My new team" };
+            Object teamData = new { name = "My new team" };
 
             using (var client = new HttpClient())
             {
@@ -91,7 +116,7 @@ namespace VstsRestApiSamples.ProjectsAndTeams
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
 
                 // serialize the fields array into a json string         
-                var patchValue = new StringContent(JsonConvert.SerializeObject(team), Encoding.UTF8, "application/json"); // mediaType needs to be application/json-patch+json for a patch call
+                var patchValue = new StringContent(JsonConvert.SerializeObject(teamData), Encoding.UTF8, "application/json"); // mediaType needs to be application/json-patch+json for a patch call
                 var method = new HttpMethod("POST");
 
                 var request = new HttpRequestMessage(method, _configuration.UriString + "/_apis/projects/" + project + "/teams?api-version=2.2") { Content = patchValue };
@@ -139,7 +164,6 @@ namespace VstsRestApiSamples.ProjectsAndTeams
                 
                 return "failed";
             }
-
         }
 
         public string DeleteTeam()
