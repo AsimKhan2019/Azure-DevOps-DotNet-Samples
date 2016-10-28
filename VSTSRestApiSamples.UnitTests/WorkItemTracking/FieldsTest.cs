@@ -22,7 +22,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_GetListOfWorkItemsByIDs_Success()
+        public void WorkItemTracking_Fields_GetListOfWorkItemFields_Success()
         {
             // arrange
             Fields request = new Fields(_configuration);

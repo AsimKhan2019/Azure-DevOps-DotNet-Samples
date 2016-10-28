@@ -110,7 +110,6 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
             Assert.AreEqual("success", result);
         }
 
-
         [TestMethod, TestCategory("Client Libraries")]
         public void WorkItemTracking_Sample_AddCommentsToBug_Success()
         {
@@ -165,6 +164,19 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
             {
                 Assert.AreEqual("success", result);
             }           
+        }
+
+        [TestMethod, TestCategory("Client Libraries")]
+        public void WorkItemTracking_Sample_GetListOfWorkItemFields_Success()
+        {
+            // arrange
+            Sample sample = new Sample(_configuration);
+
+            // act
+            var result = sample.GetListOfWorkItemFields("Title");
+
+            //assert
+            Assert.AreEqual("System.Title", result);           
         }
     }
 }

@@ -140,5 +140,20 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
 
             samples = null;
         }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_Samples_GetListOfWorkItemFields()
+        {
+            // arrange
+            Samples samples = new Samples(_configuration);
+
+            // act
+            var response = samples.GetListOfWorkItemFields("Title");
+
+            // assert
+            Assert.AreEqual("System.Title", response);
+
+            samples = null;
+        }
     }
 }

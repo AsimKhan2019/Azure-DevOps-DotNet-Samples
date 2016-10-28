@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace VstsRestApiSamples.WorkItemTracking
 {
@@ -414,9 +415,37 @@ namespace VstsRestApiSamples.WorkItemTracking
                 if (response.IsSuccessStatusCode)
                 {
                     var result = response.Content.ReadAsStringAsync().Result;
+                    return "success";
                 }
 
-                return "success";
+                return "failure";
+                
+            }
+        }
+
+        public string GetListOfWorkItemFields(string fieldName)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_configuration.UriString);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                HttpResponseMessage response = client.GetAsync("_apis/wit/fields?api-version=2.2").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    WorkItemFields result = response.Content.ReadAsAsync<WorkItemFields>().Result;
+
+                    List<WorkItemField> list = new List<WorkItemField>(result.value);
+
+                    var item = list.Find(x => x.name == fieldName);
+
+                    return item.referenceName;
+                }
+
+                return "failure";
             }
         }
     }
@@ -428,6 +457,7 @@ namespace VstsRestApiSamples.WorkItemTracking
         public string path { get; set; }           
         public string url { get; set; }
     }
+
     public class WorkItemQueryResult 
     {
         public string queryType { get; set; }
@@ -436,20 +466,38 @@ namespace VstsRestApiSamples.WorkItemTracking
         public Column[] columns { get; set; }
         public Workitem[] workItems { get; set; }
     }   
+
     public class Workitem
     {
         public int id { get; set; }
         public string url { get; set; }
     }
+
     public class Column
     {
         public string referenceName { get; set; }
         public string name { get; set; }
         public string url { get; set; }
     }
+
     public class AttachmentReference
     {
         public string id { get; set; }
+        public string url { get; set; }
+    }
+
+    public class WorkItemFields 
+    {
+        public int count { get; set; }
+        public WorkItemField[] value { get; set; }
+    }
+
+    public class WorkItemField
+    {
+        public string name { get; set; }
+        public string referenceName { get; set; }
+        public string type { get; set; }
+        public bool readOnly { get; set; }        
         public string url { get; set; }
     }
 }

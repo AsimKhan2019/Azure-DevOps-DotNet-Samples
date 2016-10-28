@@ -14,11 +14,11 @@
             public string referenceName { get; set; }
             public string type { get; set; }
             public bool readOnly { get; set; }
-            public Supportedoperation[] supportedOperations { get; set; }
+            public SupportedOperation[] supportedOperations { get; set; }
             public string url { get; set; }
         }
 
-        public class Supportedoperation
+        public class SupportedOperation
         {
             public string referenceName { get; set; }
             public string name { get; set; }

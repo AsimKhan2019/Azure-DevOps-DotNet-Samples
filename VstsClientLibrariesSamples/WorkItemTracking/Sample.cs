@@ -462,5 +462,24 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             return "success";           
         }
+
+        public string GetListOfWorkItemFields(string fieldName)
+        {
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                List<WorkItemField> result = workItemTrackingHttpClient.GetFieldsAsync(null).Result;
+
+                var item = result.Find(x => x.Name == fieldName);
+
+                if (item == null)
+                {
+                    return "field not found";
+                }
+                else
+                {
+                    return item.ReferenceName;
+                }
+            }
+        }
     }
 }
