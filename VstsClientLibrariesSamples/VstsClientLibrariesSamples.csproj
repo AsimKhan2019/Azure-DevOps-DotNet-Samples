@@ -123,6 +123,7 @@
     <Compile Include="WorkItemTracking\Fields.cs" />
     <Compile Include="WorkItemTracking\Queries.cs" />
     <Compile Include="WorkItemTracking\Sample.cs" />
+    <Compile Include="WorkItemTracking\ClassificationNodes.cs" />
     <Compile Include="WorkItemTracking\WorkItems.cs" />
   </ItemGroup>
   <ItemGroup>

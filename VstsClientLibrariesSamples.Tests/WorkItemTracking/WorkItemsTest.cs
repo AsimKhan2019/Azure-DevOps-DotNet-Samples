@@ -35,7 +35,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             foreach (string item in workItemsArr)
             {
                 workItemsList.Add(new WorkItemReference() { Id = Convert.ToInt32(item) });
-            }   
+            }
 
             WorkItemQueryResult workItemQueryResult = new WorkItemQueryResult();
             workItemQueryResult.WorkItems = workItemsList;
@@ -65,7 +65,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         {
             // arrange
             WorkItems workItems = new WorkItems(_configuration);
-          
+
             // act
             var result = workItems.UpdateWorkItem(_configuration.WorkItemId);
 
@@ -85,18 +85,41 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("Client Libraries")]
+        public void WorkItemTracking_WorkItems_GetWorkItemHistory_Success()
+        {
+            // arrange
+            WorkItems workItems = new WorkItems(_configuration);
+
+            // act
+            var result = workItems.GetWorkItemHistory(_configuration.WorkItemId);
+
+            Assert.AreEqual("success", result);
+        }
+
+        [TestMethod, TestCategory("Client Libraries")]
         public void WorkItemTracking_WorkItems_AddLink_Success()
         {
             // arrange
             WorkItems workItems = new WorkItems(_configuration);
 
             string[] arr = _configuration.WorkItemIds.Split(',');
-            
+
             // act
             var result = workItems.AddLink(Convert.ToInt32(arr[0]), Convert.ToInt32(arr[1]));
 
             Assert.AreEqual("success", result);
         }
 
+        [TestMethod, TestCategory("Client Libraries")]
+        public void WorkItemTracking_WorkItems_ChangeType_Success()
+        {
+            // arrange
+            WorkItems workItems = new WorkItems(_configuration);
+
+            // act
+            var result = workItems.ChangeType(_configuration.WorkItemId);
+
+            Assert.AreEqual("success", result);
+        }
     }
 }

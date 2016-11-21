@@ -5,6 +5,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.VisualStudio.Services.WebApi.Patch;
 using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
 using Microsoft.VisualStudio.Services.Common;
+using System.Collections.Generic;
 
 namespace VstsClientLibrariesSamples.WorkItemTracking
 {
@@ -182,7 +183,17 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             return "success";
         }
-               
+
+        public string GetWorkItemHistory(int id)
+        {
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                List<WorkItemHistory> results = workItemTrackingHttpClient.GetHistoryAsync(id).Result;
+            }
+
+            return "success";
+        }
+
         public string AddLink(int id, int linkToId)
         {
             JsonPatchDocument patchDocument = new JsonPatchDocument();
@@ -204,6 +215,29 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             {
                 WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, id).Result;
             }
+
+            return "success";
+        }
+
+        public string ChangeType(int id)
+        {
+            JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.WorkItemType",
+                    Value = "Bug"
+                }
+            );                      
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, id).Result;
+            }
+
+            patchDocument = null;
 
             return "success";
         }
