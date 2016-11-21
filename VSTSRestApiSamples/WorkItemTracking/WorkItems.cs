@@ -717,13 +717,11 @@ namespace VstsRestApiSamples.WorkItemTracking
         public WorkItemPatchResponse.WorkItem ChangeType(string id, string type)
         {
             WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[3];
+            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[1];
            
             // change the work item type, state and reason values in order to change the work item type
             fields[0] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.WorkItemType", value = type };
-            fields[1] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.State", value = "New" };
-            fields[2] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.Reason", value = "New" };
-
+       
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Clear();

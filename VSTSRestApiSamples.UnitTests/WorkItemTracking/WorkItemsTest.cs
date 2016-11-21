@@ -269,14 +269,14 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             request = null;
         }
 
-        [TestMethod, TestCategory("REST API"), Ignore]  
+        [TestMethod, TestCategory("REST API")]  
         public void WorkItemTracking_WorkItems_ChangeType_Success()
         {
             // arrange
             WorkItems request = new WorkItems(_configuration);
 
             // act
-            WorkItemPatchResponse.WorkItem response = request.ChangeType(_configuration.WorkItemId, "Bug");
+            WorkItemPatchResponse.WorkItem response = request.ChangeType(_configuration.WorkItemId, "User Story");
             var someme = response.ToString();
 
             // assert
