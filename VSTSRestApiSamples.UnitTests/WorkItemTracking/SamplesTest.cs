@@ -112,6 +112,28 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_Samples_AddHyperLinkToBug_Success()
+        {
+            // arrange
+            Samples samples = new Samples(_configuration);
+
+            // act
+            var response = samples.AddHyperLinkToBug();
+
+            // assert
+            if (response.ToLower().Contains("relation already exists"))
+            {
+                Assert.Inconclusive("Link already exists on bug");
+            }
+            else
+            {
+                Assert.AreEqual("success", response);
+            }
+
+            samples = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_Samples_AddAttachmentToBug_Success()
         {
             // arrange
@@ -120,9 +142,16 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             // act
             var response = samples.AddAttachmentToBug();
 
-            // assert
-            Assert.AreEqual("success", response);
-
+            //assert
+            if (response.ToLower().Contains("file not found"))
+            {
+                Assert.Inconclusive(response);
+            }
+            else
+            {
+                Assert.AreEqual("success", response);
+            }
+            
             samples = null;
         }
 

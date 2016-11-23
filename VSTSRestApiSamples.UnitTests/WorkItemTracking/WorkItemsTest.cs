@@ -213,6 +213,28 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_AddHyperLink_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            // act
+            WorkItemPatchResponse.WorkItem response = request.AddHyperLink(_configuration.WorkItemId);
+
+            // assert
+            if (response.Message.ToLower().Contains("relation already exists"))
+            {
+                Assert.Inconclusive("Link already exists on bug");
+            }
+            else
+            {
+                Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+            }          
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_WorkItems_UploadAttachment_Success()
         {
             // arrange

@@ -98,6 +98,26 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
+        public void WorkItemTracking_Samples_AddHyperLinkToBug_Success()
+        {
+            // arrange
+            Sample sample = new Sample(_configuration);
+
+            // act
+            var result = sample.AddHyperLinkToBug();
+
+            // assert
+            if (result.ToLower().Contains("relation already exists"))
+            {
+                Assert.Inconclusive("Link already exists on bug");
+            }
+            else
+            {                
+                Assert.AreEqual("success", result);
+            }
+        }
+
+        [TestMethod, TestCategory("Client Libraries")]
         public void WorkItemTracking_Samples_AddAttachmentToBug_Success()
         {
             // arrange

@@ -11,7 +11,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 {
     public class WorkItems
     {
-        readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
         private VssBasicCredential _credentials;
         private Uri _uri;
 
@@ -219,6 +219,39 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             return "success";
         }
 
+        public string AddHyperLink(int id)
+        {
+            JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/relations/-",
+                    Value = new
+                    {
+                        rel = "Hyperlink",
+                        url = "http://www.visualstudio.com/team-services",
+                        attributes = new { comment = "Visaul Studio Team Services" }
+                    }
+                }
+            );
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                try
+                {
+                    WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, id).Result;
+                }               
+                catch (AggregateException ex)
+                {
+                    return ex.InnerException.ToString();
+                }
+
+                return "success";
+            }       
+        }
+
         public string ChangeType(int id)
         {
             JsonPatchDocument patchDocument = new JsonPatchDocument();
@@ -228,7 +261,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 {
                     Operation = Operation.Add,
                     Path = "/fields/System.WorkItemType",
-                    Value = "Bug"
+                    Value = "User Story"
                 }
             );                      
 

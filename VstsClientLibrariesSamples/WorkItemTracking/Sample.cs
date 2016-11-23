@@ -253,6 +253,42 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             }           
         }
 
+        public string AddHyperLinkToBug()
+        {
+            var _id = _configuration.WorkItemId;
+           
+            JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            patchDocument.Add(new JsonPatchOperation()
+            {
+                Operation = Operation.Add,
+                Path = "/relations/-",
+                Value = new
+                {
+                    rel = "Hyperlink",
+                    url = "http://www.visualstudio.com/team-services",
+                    attributes = new { comment = "Visual Studio Team Services" }
+                }
+            });
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                try
+                {
+                    WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, _id).Result;
+                    return "success";
+                }
+                catch (Microsoft.VisualStudio.Services.Common.VssServiceException ex)
+                {
+                    return ex.Message;
+                }
+                catch (Exception ex)
+                {
+                    return ex.InnerException.Message;
+                }
+            }
+        }
+
         public string AddAttachmentToBug()
         {
             var _id = _configuration.WorkItemId;
