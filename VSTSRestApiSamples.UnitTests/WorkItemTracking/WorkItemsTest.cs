@@ -235,6 +235,28 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_AddCommitLink_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            // act
+            WorkItemPatchResponse.WorkItem response = request.AddCommitLink("3045");
+
+            // assert
+            if (response.Message.ToLower().Contains("relation already exists"))
+            {
+                Assert.Inconclusive("Commit link already exists on bug");
+            }
+            else
+            {
+                Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+            }
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_WorkItems_UploadAttachment_Success()
         {
             // arrange

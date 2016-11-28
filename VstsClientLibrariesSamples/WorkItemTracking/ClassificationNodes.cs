@@ -59,10 +59,16 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                WorkItemClassificationNode result = workItemTrackingHttpClient.CreateOrUpdateClassificationNodeAsync(node, project, TreeStructureGroup.Areas, path).Result;
-            }
-
-            return "success";
+                try
+                {
+                    WorkItemClassificationNode result = workItemTrackingHttpClient.CreateOrUpdateClassificationNodeAsync(node, project, TreeStructureGroup.Areas, path).Result;
+                    return "success";
+                }
+                catch(AggregateException ex)
+                {
+                    return ex.InnerException.ToString();
+                }
+            }           
         }
 
         public string UpdateArea(string project, string path, string name)
@@ -90,6 +96,90 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
             return "success";
         }
-       
+
+        public string GetIterations(string project, int depth)
+        {
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                WorkItemClassificationNode result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, TreeStructureGroup.Iterations, null, depth).Result;
+            }
+
+            return "success";
+        }
+
+        public string GetIteration(string project, string path)
+        {
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                try
+                {
+                    WorkItemClassificationNode result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, TreeStructureGroup.Iterations, path, 0).Result;
+                }
+                catch (System.AggregateException ex)
+                {
+                    return ex.InnerException.ToString();
+                }
+            }
+
+            return "success";
+        }
+
+        public string CreateIteration(string project, string name, string startDate, string finishDate)
+        {
+            IDictionary<string, Object> dict = new Dictionary<string, Object>();
+
+            dict.Add("startDate", startDate);
+            dict.Add("finishDate", finishDate);
+
+            WorkItemClassificationNode node = new WorkItemClassificationNode()
+            {
+                Name = name,
+                StructureType = TreeNodeStructureType.Iteration,
+                Attributes = dict  
+            };
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                try
+                {
+                    WorkItemClassificationNode result = workItemTrackingHttpClient.CreateOrUpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, "").Result;
+                    return "success";
+                }
+                catch (AggregateException ex)
+                {
+                    return ex.InnerException.ToString();
+                }
+            }
+        }
+
+        public string UpdateIteration(string project, string name, DateTime startDate, DateTime finishDate)
+        {
+            IDictionary<string, Object> dict = new Dictionary<string, Object>();
+
+            dict.Add("StartDate", startDate);
+            dict.Add("FinishDate", finishDate);
+
+            WorkItemClassificationNode node = new WorkItemClassificationNode()
+            {
+                Id = 116926,
+                Name = name,
+                StructureType = TreeNodeStructureType.Iteration,
+                Attributes = dict
+            };
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                try
+                {
+                    WorkItemClassificationNode result = workItemTrackingHttpClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, name).Result;
+                }
+                catch (System.AggregateException ex)
+                {
+                    return ex.InnerException.ToString();
+                }
+
+                return "success";
+            }           
+        }
     }
 }

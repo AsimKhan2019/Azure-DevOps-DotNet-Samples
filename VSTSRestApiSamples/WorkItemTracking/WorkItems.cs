@@ -583,6 +583,66 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return viewModel;
             }
         }
+        
+        /// <summary>
+        /// Add hyperlink to work item
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>WorkItemPatchResponse.WorkItem</returns>
+        public WorkItemPatchResponse.WorkItem AddCommitLink(string id)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[1];
+
+            // change some values on a few fields
+            fields[0] = new WorkItemPatch.Field()
+            {
+                op = "add",
+                path = "/relations/-",
+                value = new WorkItemPatch.Value()
+                {
+                    rel = "ArtifactLink",
+                    url = "vstfs:///Git/Commit/1435ac99-ba45-43e7-9c3d-0e879e7f2691%2Fd00dd2d9-55dd-46fc-ad00-706891dfbc48%2F3fefa488aac46898a25464ca96009cf05a6426e3",
+                    attributes = new WorkItemPatch.Attributes()
+                    {
+                       name = "Fixed in Commit"
+                    }
+                }
+            };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+
+                // set the httpmethod to Patch
+                var method = new HttpMethod("PATCH");
+
+                // send the request
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                    viewModel.Message = "success";
+                }
+                else
+                {
+                    dynamic responseForInvalidStatusCode = response.Content.ReadAsAsync<dynamic>();
+                    Newtonsoft.Json.Linq.JContainer msg = responseForInvalidStatusCode.Result;
+                    viewModel.Message = msg.ToString();
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
 
         // / <summary>
         // / add link to another work item
