@@ -117,7 +117,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             var result = nodes.GetIteration(_configuration.Project, path);
 
             //assert
-            if (result.Contains("VS402485:"))
+            if (result.Contains("VS402371:"))
             {
                 Assert.Inconclusive("path '" + path + "' not found");
             }
@@ -132,14 +132,15 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             ClassificationNodes nodes = new ClassificationNodes(_configuration);
             string startDate = "11/28/2016";
             string finishDate = "12/16/2016";
+            string path = "Iteration Foo";
 
             // act
-            var result = nodes.CreateIteration(_configuration.Project, "Iteration Foo", startDate, finishDate);
+            var result = nodes.CreateIteration(_configuration.Project, path, startDate, finishDate);
 
             // assert
             if (result.Contains("VS402371:"))
             {
-                Assert.Inconclusive("area path already exists");
+                Assert.Inconclusive("Iteration '" + path + "' already exists");
             }
             else
             {
@@ -148,25 +149,25 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_ClassificationNodes_UpdateIteration_Success()
+        public void WorkItemTracking_ClassificationNodes_UpdateIterationDates_Success()
         {
             // arrange
-            string name = "Iteration Foo";
             DateTime startDate = new DateTime(2016,12,28);
-            DateTime finishDate = new DateTime(2017,1,7); 
+            DateTime finishDate = new DateTime(2017,1,7);
+            string path = "Iteration Foo";
 
             ClassificationNodes nodes = new ClassificationNodes(_configuration);
 
-            // act
-            var result = nodes.UpdateIteration(_configuration.Project, name, startDate, finishDate);
+            // act           
+            var result = nodes.UpdateIterationDates(_configuration.Project, path, startDate, finishDate);
 
             //assert
             if (result.Contains("VS402485:"))
             {
-                Assert.Inconclusive("name '" + name + "' not found");
+                Assert.Inconclusive("name '" + path + "' not found");
             }
 
-            Assert.AreEqual("success", result);
+            Assert.AreEqual("success", result);         
         }
     }
 }

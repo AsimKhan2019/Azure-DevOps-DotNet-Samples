@@ -67,6 +67,7 @@
     <Compile Include="ViewModels\ProjectsAndTeams\ListofTeamsResponse.cs" />
     <Compile Include="ViewModels\ProjectsAndTeams\TeamPost.cs" />
     <Compile Include="ViewModels\WorkItemTracking\AttachmentReference.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\CreateUpdateNodeViewModel.cs" />
     <Compile Include="ViewModels\WorkItemTracking\GetNodeResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\ListOfNodesResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\WorkItemBatchPost.cs" />

@@ -113,15 +113,14 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             {
                 try
                 {
-                    WorkItemClassificationNode result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, TreeStructureGroup.Iterations, path, 0).Result;
+                    var result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, TreeStructureGroup.Iterations, path, 0).Result;
+                    return "success";
                 }
                 catch (System.AggregateException ex)
                 {
                     return ex.InnerException.ToString();
                 }
-            }
-
-            return "success";
+            }           
         }
 
         public string CreateIteration(string project, string name, string startDate, string finishDate)
@@ -142,7 +141,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             {
                 try
                 {
-                    WorkItemClassificationNode result = workItemTrackingHttpClient.CreateOrUpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, "").Result;
+                    WorkItemClassificationNode result = workItemTrackingHttpClient.CreateOrUpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, name).Result;
                     return "success";
                 }
                 catch (AggregateException ex)
@@ -152,17 +151,15 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             }
         }
 
-        public string UpdateIteration(string project, string name, DateTime startDate, DateTime finishDate)
+        public string UpdateIterationDates(string project, string name, DateTime startDate, DateTime finishDate)
         {
             IDictionary<string, Object> dict = new Dictionary<string, Object>();
 
-            dict.Add("StartDate", startDate);
-            dict.Add("FinishDate", finishDate);
+            dict.Add("startDate", startDate);
+            dict.Add("finishDate", finishDate);
 
             WorkItemClassificationNode node = new WorkItemClassificationNode()
-            {
-                Id = 116926,
-                Name = name,
+            {              
                 StructureType = TreeNodeStructureType.Iteration,
                 Attributes = dict
             };
