@@ -44,6 +44,72 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return viewModel;
             }
         }
+
+        public ListOfNodesResponse.Nodes GetArea(string project, string path)
+        {
+            ListOfNodesResponse.Nodes viewModel = new ListOfNodesResponse.Nodes();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_configuration.UriString);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/classificationNodes/areas/" + path + "?api-version=2.2").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<ListOfNodesResponse.Nodes>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
+
+        public GetNodeResponse.Node CreateArea(string project, string path)
+        {
+    CreateUpdateNodeViewModel.Node node = new CreateUpdateNodeViewModel.Node()
+    {
+        name = path               
+    };
+
+    GetNodeResponse.Node viewModel = new GetNodeResponse.Node();
+
+    using (var client = new HttpClient())
+    {
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+        // serialize the fields array into a json string          
+        var postValue = new StringContent(JsonConvert.SerializeObject(node), Encoding.UTF8, "application/json");
+        var method = new HttpMethod("POST");
+
+        // send the request
+        var request = new HttpRequestMessage(method, _configuration.UriString + project + "/_apis/wit/classificationNodes/areas?api-version=2.2") { Content = postValue };
+        var response = client.SendAsync(request).Result;
+
+        if (response.IsSuccessStatusCode)
+        {
+            viewModel = response.Content.ReadAsAsync<GetNodeResponse.Node>().Result;
+            viewModel.Message = "success";
+        }
+        else
+        {
+            dynamic responseForInvalidStatusCode = response.Content.ReadAsAsync<dynamic>();
+            Newtonsoft.Json.Linq.JContainer msg = responseForInvalidStatusCode.Result;
+            viewModel.Message = msg.ToString();
+        }
+
+        viewModel.HttpStatusCode = response.StatusCode;
+
+        return viewModel;
+            }
+        }
         
         public ListOfNodesResponse.Nodes GetIterations(string project)
         {
@@ -119,7 +185,7 @@ namespace VstsRestApiSamples.WorkItemTracking
         {
             CreateUpdateNodeViewModel.Node node = new CreateUpdateNodeViewModel.Node()
             {
-                name = path,
+                //name = path,
                 attributes = new CreateUpdateNodeViewModel.Attributes()
                 {
                     startDate = startDate,

@@ -39,6 +39,45 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_Nodes_GetArea_Success()
+        {
+            string path = "Area Foo";
+
+            // arrange
+            ClassificationNodes request = new ClassificationNodes(_configuration);
+
+            // act
+            ListOfNodesResponse.Nodes response = request.GetArea(_configuration.Project, path);
+
+            //assert
+            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_Nodes_CreateArea_Success()
+        {
+            // arrange
+            ClassificationNodes request = new ClassificationNodes(_configuration);            
+            string path = "Area Foo";
+
+            // act
+            GetNodeResponse.Node response = request.CreateArea(_configuration.Project, path);
+
+            //assert
+            if (response.Message.Contains("VS402371:"))
+            {
+                Assert.Inconclusive("Area path '" + path + "' already exists");
+            }
+            else
+            {
+                Assert.AreEqual(HttpStatusCode.Created, response.HttpStatusCode);
+            }
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
         public void WorkItemTracking_Nodes_GetIterations_Success()
         {
             // arrange
@@ -68,7 +107,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             //assert
             if (response.Message.Contains("VS402371: Classification node name " + path))
             {
-                Assert.Inconclusive("Area path '" + path + "' already exists");
+                Assert.Inconclusive("Iteration '" + path + "' already exists");
             }
             else
             {
