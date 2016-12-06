@@ -128,6 +128,7 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="GettingStarted\AuthenticationTest.cs" />
     <Compile Include="InitHelper.cs" />
+    <Compile Include="ProjectsAndTeams\ProjectCollectionsTest.cs" />
     <Compile Include="ProjectsAndTeams\ProjectsTest.cs" />
     <Compile Include="ProjectsAndTeams\TeamsTest.cs" />
     <Compile Include="ProjectsAndTeams\SamplesTest.cs" />

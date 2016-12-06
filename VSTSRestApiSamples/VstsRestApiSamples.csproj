@@ -54,6 +54,7 @@
     <Compile Include="Git\Repositories.cs" />
     <Compile Include="IConfiguration.cs" />
     <Compile Include="ProjectsAndTeams\Processes.cs" />
+    <Compile Include="ProjectsAndTeams\ProjectCollections.cs" />
     <Compile Include="ProjectsAndTeams\Projects.cs" />
     <Compile Include="ProjectsAndTeams\Samples.cs" />
     <Compile Include="ProjectsAndTeams\Teams.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="ViewModels\Git\GetRepositoryByIdResponse.cs" />
     <Compile Include="ViewModels\ProjectsAndTeams\GetTeamMembersResponse.cs" />
     <Compile Include="ViewModels\ProjectsAndTeams\GetTeamResponse.cs" />
+    <Compile Include="ViewModels\ProjectsAndTeams\GetProjectCollectionResponse.cs" />
     <Compile Include="ViewModels\ProjectsAndTeams\ListofProjectsResponse.cs" />
     <Compile Include="ViewModels\ProjectsAndTeams\ListofTeamsResponse.cs" />
     <Compile Include="ViewModels\ProjectsAndTeams\TeamPost.cs" />

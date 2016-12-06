@@ -3,6 +3,7 @@ namespace VstsRestApiSamples
 {
     public class Configuration : IConfiguration
     {
+        public string CollectionId { get; set; }
         public string UriString { get; set; }
         public string PersonalAccessToken { get; set; }
         public string Project { get; set; }

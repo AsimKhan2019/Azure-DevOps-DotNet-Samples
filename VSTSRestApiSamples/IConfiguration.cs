@@ -3,6 +3,7 @@ namespace VstsRestApiSamples
 {
     public interface IConfiguration
     {        
+        string CollectionId { get; set; }
         string PersonalAccessToken { get; set; }
         string Project { get; set; }
         string Team { get; set; }

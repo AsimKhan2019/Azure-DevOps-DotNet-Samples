@@ -11,6 +11,7 @@ namespace VstsClientLibrariesSamples.Tests
     {
         public static IConfiguration GetConfiguration(IConfiguration configuration)
         {
+            configuration.CollectionId = ConfigurationSettings.AppSettings["appsetting.collectionid"].ToString();
             configuration.PersonalAccessToken = ConfigurationSettings.AppSettings["appsetting.pat"].ToString();
             configuration.Project = ConfigurationSettings.AppSettings["appsetting.project"].ToString();
             configuration.Team = ConfigurationSettings.AppSettings["appsetting.team"].ToString();
