@@ -120,7 +120,7 @@
     <Compile Include="ProjectsAndTeams\Samples.cs" />
     <Compile Include="ProjectsAndTeams\Teams.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProjectsAndTeams\Projects.cs" />
+    <Compile Include="ProjectsAndTeams\TeamProjects.cs" />
     <Compile Include="WorkItemTracking\Fields.cs" />
     <Compile Include="WorkItemTracking\Queries.cs" />
     <Compile Include="WorkItemTracking\Sample.cs" />

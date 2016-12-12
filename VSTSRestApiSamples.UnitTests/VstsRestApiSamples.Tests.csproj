@@ -66,6 +66,7 @@
     <Compile Include="GettingStarted\AuthenticationTest.cs" />
     <Compile Include="Git\GitRepositoryTest.cs" />
     <Compile Include="InitHelper.cs" />
+    <Compile Include="ProjectsAndTeams\TeamProjectsTests.cs" />
     <Compile Include="ProjectsAndTeams\ProjectCollectionsTest.cs" />
     <Compile Include="ProjectsAndTeams\ProcessesTest.cs" />
     <Compile Include="ProjectsAndTeams\SamplesTest.cs" />
