@@ -1,6 +1,6 @@
 ﻿namespace VstsRestApiSamples.ViewModels.WorkItemTracking
 {
-    public class ListofWorkItemFieldsResponse
+    public class GetWorkItemFieldsResponse
     {
         public class Fields : BaseViewModel
         {

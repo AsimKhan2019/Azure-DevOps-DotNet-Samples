@@ -18,12 +18,7 @@ namespace VstsRestApiSamples.WorkItemTracking
             _configuration = configuration;
             _credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _configuration.PersonalAccessToken)));
         }
-
-        // <summary>
-        // Create work item and link the multiple work items
-        // </summary>
-        // <param name="projectName"></param>
-        // <returns>WorkItemPatchResponse.WorkItem</returns>
+              
         public WorkItemBatchPostResponse CreateAndLinkMultipleWorkItems(string projectName)
         {
             WorkItemBatchPost.BatchRequest[] batchRequests = new WorkItemBatchPost.BatchRequest[2];

@@ -21,9 +21,9 @@ namespace VstsRestApiSamples.WorkItemTracking
             _credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _configuration.PersonalAccessToken)));
         }
 
-        public ListOfNodesResponse.Nodes GetAreas(string project)
+        public GetNodesResponse.Nodes GetAreas(string project)
         {
-            ListOfNodesResponse.Nodes viewModel = new ListOfNodesResponse.Nodes();
+            GetNodesResponse.Nodes viewModel = new GetNodesResponse.Nodes();
             
             using (var client = new HttpClient())
             {
@@ -36,7 +36,7 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 if (response.IsSuccessStatusCode)
                 {
-                    viewModel = response.Content.ReadAsAsync<ListOfNodesResponse.Nodes>().Result;
+                    viewModel = response.Content.ReadAsAsync<GetNodesResponse.Nodes>().Result;
                 }
 
                 viewModel.HttpStatusCode = response.StatusCode;
@@ -45,9 +45,9 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
 
-        public ListOfNodesResponse.Nodes GetArea(string project, string path)
+        public GetNodesResponse.Nodes GetArea(string project, string path)
         {
-            ListOfNodesResponse.Nodes viewModel = new ListOfNodesResponse.Nodes();
+            GetNodesResponse.Nodes viewModel = new GetNodesResponse.Nodes();
 
             using (var client = new HttpClient())
             {
@@ -60,7 +60,7 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 if (response.IsSuccessStatusCode)
                 {
-                    viewModel = response.Content.ReadAsAsync<ListOfNodesResponse.Nodes>().Result;
+                    viewModel = response.Content.ReadAsAsync<GetNodesResponse.Nodes>().Result;
                 }
 
                 viewModel.HttpStatusCode = response.StatusCode;
@@ -111,9 +111,9 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
         
-        public ListOfNodesResponse.Nodes GetIterations(string project)
+        public GetNodesResponse.Nodes GetIterations(string project)
         {
-            ListOfNodesResponse.Nodes viewModel = new ListOfNodesResponse.Nodes();
+            GetNodesResponse.Nodes viewModel = new GetNodesResponse.Nodes();
 
             using (var client = new HttpClient())
             {
@@ -126,7 +126,7 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 if (response.IsSuccessStatusCode)
                 {
-                    viewModel = response.Content.ReadAsAsync<ListOfNodesResponse.Nodes>().Result;
+                    viewModel = response.Content.ReadAsAsync<GetNodesResponse.Nodes>().Result;
                 }
 
                 viewModel.HttpStatusCode = response.StatusCode;

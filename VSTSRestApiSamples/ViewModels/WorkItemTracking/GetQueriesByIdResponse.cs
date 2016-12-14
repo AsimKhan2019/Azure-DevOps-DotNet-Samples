@@ -1,6 +1,6 @@
 ﻿namespace VstsRestApiSamples.ViewModels.WorkItemTracking
 {
-    public class GetQueryResponse
+    public class GetQueriesByIdResponse
     {
         public class Queries : BaseViewModel
         {

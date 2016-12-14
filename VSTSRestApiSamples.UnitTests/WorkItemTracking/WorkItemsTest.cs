@@ -24,13 +24,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_GetListOfWorkItemsByIDs_Success()
+        public void WorkItemTracking_WorkItems_GetWorkItemsByIDs_Success()
         {
             // arrange
             WorkItems request = new WorkItems(_configuration);
 
             // act
-            ListofWorkItemsResponse.WorkItems response = request.GetListOfWorkItems_ByIDs(_configuration.WorkItemIds);
+            GetWorkItemsResponse.WorkItems response = request.GetWorkItemsByIDs(_configuration.WorkItemIds);
 
             // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
@@ -46,43 +46,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_GetListOfWorkItemsByIDs_WithSpecificFields_Success()
+        public void WorkItemTracking_WorkItems_GetWorkItemsWithSpecificFields_Success()
         {
             // arrange
             WorkItems request = new WorkItems(_configuration);
 
             // act
-            ListofWorkItemsResponse.WorkItems response = request.GetListOfWorkItems_ByIDsWithSpecificFields("2247, 2473");
-
-            // assert
-            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
-
-            request = null;
-        }
-        
-        [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_GetBatchOfWorkItemLinksByProjectAndDate_Success()
-        {
-            // arrange
-            WorkItems request = new WorkItems(_configuration);
-
-            // act
-            BatchOfWorkItemLinksResponse.WorkItemLinks response = request.GetBatchOfWorkItemLinks(_configuration.Project, new DateTime(2016, 3, 15));
-
-            // assert
-            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
-
-            request = null;            
-        }
-
-        [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_GetWorkItemExpandAll_Success()
-        {
-            // arrange
-            WorkItems request = new WorkItems(_configuration);
-
-            // act
-            var response = request.GetWorkItem("2583");
+            GetWorkItemsResponse.WorkItems response = request.GetWorkItemsWithSpecificFields(_configuration.WorkItemIds);
 
             // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
@@ -90,49 +60,130 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             request = null;
         }
 
-        [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_Reporting_GetBatchOfWorkItemLinksForAll_Success()
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_GetWorkItemsAsOfDate_Success()
         {
             // arrange
             WorkItems request = new WorkItems(_configuration);
+            DateTime asOfDate = DateTime.Now.AddDays(-90);
 
             // act
-            BatchOfWorkItemLinksResponse.WorkItemLinks response = request.GetBatchOfWorkItemLinksAll();
-
-            // assert
-            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);          
-        }
-
-        [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_Reporting_GetBatchOfWorkItemRevisions_ByProjectAndDate_Success()
-        {
-            // arrange
-            WorkItems request = new WorkItems(_configuration);
-
-            // act
-            BatchOfWorkItemRevisionsResponse.WorkItemRevisions response = request.GetBatchOfWorkItemRevisionsByDate(_configuration.Project, new DateTime(2016, 4, 17));
+            GetWorkItemsResponse.WorkItems response = request.GetWorkItemsAsOfDate(_configuration.WorkItemIds, asOfDate);
 
             // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
 
             request = null;
-            response = null;   
         }
 
-        [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_Reporting_GetBatchOfWorkItemRevisions_ForAll_Success()
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_GetWorkItemsWithLinksAndAttachments_Success()
         {
             // arrange
             WorkItems request = new WorkItems(_configuration);
 
             // act
-            BatchOfWorkItemRevisionsResponse.WorkItemRevisions response = request.GetBatchOfWorkItemRevisionsAll();
+            GetWorkItemsWithLinksAndAttachmentsResponse.WorkItems response = request.GetWorkItemsWithLinksAndAttachments(_configuration.WorkItemIds);
 
             // assert
-            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+            if (response.HttpStatusCode == HttpStatusCode.NotFound)
+            {
+                Assert.Inconclusive("work items '" + _configuration.WorkItemIds + "' not found");
+            }
+            else
+            {
+                Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+            }
 
             request = null;
-            response = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_GetWorkItem_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            // act
+            var response = request.GetWorkItem(_configuration.WorkItemId);
+                    
+            // assert
+            if (response.HttpStatusCode == HttpStatusCode.NotFound)
+            {
+                Assert.Inconclusive("work item '" + _configuration.WorkItemId + "' not found");
+            }
+            else
+            {
+                Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+            }
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_GetWorkItemWithLinksAndAttachments_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            // act
+            var response = request.GetWorkItemWithLinksAndAttachments(_configuration.WorkItemId);
+
+            // assert
+            if (response.HttpStatusCode == HttpStatusCode.NotFound)
+            {
+                Assert.Inconclusive("work item '" + _configuration.WorkItemId + "' not found");
+            }
+            else
+            {
+                Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+            }
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_GetWorkItemFullyExpanded_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            // act
+            var response = request.GetWorkItemFullyExpanded(_configuration.WorkItemId);
+
+            // assert
+            if (response.HttpStatusCode == HttpStatusCode.NotFound)
+            {
+                Assert.Inconclusive("work item '" + _configuration.WorkItemId + "' not found");
+            }
+            else
+            {
+                Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+            }
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_GetDefaultValues_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            // act
+            var response = request.GetDefaultValues("Task", _configuration.Project);
+
+            // assert
+            if (response.HttpStatusCode == HttpStatusCode.NotFound)
+            {
+                Assert.Inconclusive("work item type not found");
+            }
+            else
+            {
+                Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+            }
+
+            request = null;
         }
 
         [TestMethod, TestCategory("REST API")]  

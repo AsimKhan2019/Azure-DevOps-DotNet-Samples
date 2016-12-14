@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using Newtonsoft.Json;
+
 using VstsRestApiSamples.ViewModels.ProjectsAndTeams;
 
 namespace VstsRestApiSamples.ProjectsAndTeams
@@ -113,7 +114,7 @@ namespace VstsRestApiSamples.ProjectsAndTeams
         {
             GetOperationResponse.Operation operation = new GetOperationResponse.Operation();
             
-            Object projectData = new
+            Object teamProject = new
             {
                 name = name,
                 description = "VanDelay Industries travel app",
@@ -132,21 +133,21 @@ namespace VstsRestApiSamples.ProjectsAndTeams
 
             using (var client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
 
-                // serialize the fields array into a json string         
-                var patchValue = new StringContent(JsonConvert.SerializeObject(projectData), Encoding.UTF8, "application/json");
-                var method = new HttpMethod("POST");
+        // serialize the fields array into a json string         
+        var patchValue = new StringContent(JsonConvert.SerializeObject(teamProject), Encoding.UTF8, "application/json");
+        var method = new HttpMethod("POST");
 
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/projects?api-version=2.2") { Content = patchValue };
-                var response = client.SendAsync(request).Result;
+        var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/projects?api-version=2.2") { Content = patchValue };
+        var response = client.SendAsync(request).Result;
 
-                if (response.IsSuccessStatusCode)
-                {
-                    operation = response.Content.ReadAsAsync<GetOperationResponse.Operation>().Result;
-                }
+        if (response.IsSuccessStatusCode)
+        {
+            operation = response.Content.ReadAsAsync<GetOperationResponse.Operation>().Result;
+        }
                  else
                 {
                     dynamic responseForInvalidStatusCode = response.Content.ReadAsAsync<dynamic>();
@@ -194,7 +195,7 @@ namespace VstsRestApiSamples.ProjectsAndTeams
         {
             GetOperationResponse.Operation operation = new GetOperationResponse.Operation();
 
-            Object projectData = new
+            Object teamProject = new
             {
                 name = newProjectName,                
             };
@@ -206,7 +207,7 @@ namespace VstsRestApiSamples.ProjectsAndTeams
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
 
                 // serialize the fields array into a json string         
-                var patchValue = new StringContent(JsonConvert.SerializeObject(projectData), Encoding.UTF8, "application/json");
+                var patchValue = new StringContent(JsonConvert.SerializeObject(teamProject), Encoding.UTF8, "application/json");
                 var method = new HttpMethod("PATCH");
 
                 var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/projects/" + projectId + "?api-version=2.2") { Content = patchValue };

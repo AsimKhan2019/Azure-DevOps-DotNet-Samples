@@ -122,6 +122,5 @@ namespace VstsClientLibrariesSamples.ProjectsAndTeams
                 return operationReferencee;
             }
         }
-
     }
 }

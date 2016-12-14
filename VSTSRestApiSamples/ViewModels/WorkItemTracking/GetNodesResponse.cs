@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace VstsRestApiSamples.ViewModels.WorkItemTracking
 {
-    public class ListOfNodesResponse
+    public class GetNodesResponse
     {
-
         public class Nodes : BaseViewModel
         {
             public int id { get; set; }

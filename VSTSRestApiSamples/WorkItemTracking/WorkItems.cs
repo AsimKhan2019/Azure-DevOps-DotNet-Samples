@@ -20,15 +20,10 @@ namespace VstsRestApiSamples.WorkItemTracking
             _configuration = configuration;
             _credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _configuration.PersonalAccessToken)));
         }
-
-        // / <summary>
-        // / Get a list of work items by one ore more id's
-        // / </summary>
-        // / <param name="ids"></param>
-        // / <returns>ListofWorkItemsResponse.WorkItems</returns>
-        public ListofWorkItemsResponse.WorkItems GetListOfWorkItems_ByIDs(string ids)
+       
+        public GetWorkItemsResponse.WorkItems GetWorkItemsByIDs(string ids)
         {
-            ListofWorkItemsResponse.WorkItems viewModel = new ListofWorkItemsResponse.WorkItems();
+            GetWorkItemsResponse.WorkItems viewModel = new GetWorkItemsResponse.WorkItems();
 
             using (var client = new HttpClient())
             {
@@ -41,7 +36,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                             
                 if (response.IsSuccessStatusCode)
                 {
-                    viewModel = response.Content.ReadAsAsync<ListofWorkItemsResponse.WorkItems>().Result;
+                    viewModel = response.Content.ReadAsAsync<GetWorkItemsResponse.WorkItems>().Result;
                 }
 
                 viewModel.HttpStatusCode = response.StatusCode;
@@ -49,15 +44,10 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return viewModel;
             }
         }
-
-        // / <summary>
-        // / Get list work items but only specific fields
-        // / </summary>
-        // / <param name="ids"></param>
-        // / <returns>ListofWorkItemsResponse.WorkItems</returns>
-        public ListofWorkItemsResponse.WorkItems GetListOfWorkItems_ByIDsWithSpecificFields(string ids)
+            
+        public GetWorkItemsResponse.WorkItems GetWorkItemsWithSpecificFields(string ids)
         {
-            ListofWorkItemsResponse.WorkItems viewModel = new ListofWorkItemsResponse.WorkItems();
+            GetWorkItemsResponse.WorkItems viewModel = new GetWorkItemsResponse.WorkItems();
 
             // list of fields that i care about
             string fields = "System.Id,System.Title,System.WorkItemType,Microsoft.VSTS.Scheduling.RemainingWork";
@@ -73,7 +63,34 @@ namespace VstsRestApiSamples.WorkItemTracking
                                 
                 if (response.IsSuccessStatusCode)
                 {
-                    viewModel = response.Content.ReadAsAsync<ListofWorkItemsResponse.WorkItems>().Result;
+                    viewModel = response.Content.ReadAsAsync<GetWorkItemsResponse.WorkItems>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
+        public GetWorkItemsResponse.WorkItems GetWorkItemsAsOfDate(string ids, DateTime asOfDate)
+        {
+            GetWorkItemsResponse.WorkItems viewModel = new GetWorkItemsResponse.WorkItems();
+
+            // list of fields that i care about
+            string fields = "System.Id,System.Title,System.WorkItemType,Microsoft.VSTS.Scheduling.RemainingWork";
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_configuration.UriString);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                HttpResponseMessage response = client.GetAsync("_apis/wit/workitems?ids=" + ids + "&fields=" + fields + "&asOf=" + asOfDate.ToString() + "&api-version=2.2").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<GetWorkItemsResponse.WorkItems>().Result;
                 }
 
                 viewModel.HttpStatusCode = response.StatusCode;
@@ -82,11 +99,30 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
         
-        // / <summary>
-        // / get a work item by id
-        // / </summary>
-        // / <param name="id"></param>
-        // / <returns>GetWorkItemExpandAllResponse.WorkItem</returns>
+        public GetWorkItemsWithLinksAndAttachmentsResponse.WorkItems GetWorkItemsWithLinksAndAttachments(string ids)
+        {
+            GetWorkItemsWithLinksAndAttachmentsResponse.WorkItems viewModel = new GetWorkItemsWithLinksAndAttachmentsResponse.WorkItems();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_configuration.UriString);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                HttpResponseMessage response = client.GetAsync("_apis/wit/workitems?ids=" + ids + "&expand=all&api-version=2.2").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<GetWorkItemsWithLinksAndAttachmentsResponse.WorkItems>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+              
         public GetWorkItemExpandAllResponse.WorkItem GetWorkItem(string id)
         {
             GetWorkItemExpandAllResponse.WorkItem viewModel = new GetWorkItemExpandAllResponse.WorkItem();
@@ -97,6 +133,56 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
+
+                // use $expand=all to get all fields
+                HttpResponseMessage response = client.GetAsync("_apis/wit/workitems/" + id + "?api-version=2.2").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<GetWorkItemExpandAllResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
+        public GetWorkItemExpandAllResponse.WorkItem GetWorkItemWithLinksAndAttachments(string id)
+        {
+            GetWorkItemExpandAllResponse.WorkItem viewModel = new GetWorkItemExpandAllResponse.WorkItem();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_configuration.UriString);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // use $expand=all to get all fields
+                HttpResponseMessage response = client.GetAsync("_apis/wit/workitems/" + id + "?$expand=relations&api-version=2.2").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<GetWorkItemExpandAllResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
+        public GetWorkItemExpandAllResponse.WorkItem GetWorkItemFullyExpanded(string id)
+        {
+            GetWorkItemExpandAllResponse.WorkItem viewModel = new GetWorkItemExpandAllResponse.WorkItem();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_configuration.UriString);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
 
                 // use $expand=all to get all fields
                 HttpResponseMessage response = client.GetAsync("_apis/wit/workitems/" + id + "?$expand=all&api-version=2.2").Result;
@@ -112,6 +198,31 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
 
+        public GetDefaultValuesResponse.Defaults GetDefaultValues(string type, string project)
+        {
+            GetDefaultValuesResponse.Defaults viewModel = new GetDefaultValuesResponse.Defaults();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_configuration.UriString);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // use $expand=all to get all fields
+                HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/workitems/$" + type + "?api-version=2.2").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<GetDefaultValuesResponse.Defaults>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+        
         // / <summary>
         // / create a work item using bypass rules
         // / </summary>
@@ -285,191 +396,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return viewModel;
             }
         }
-
-        // / <summary>
-        // / get a batch of work item links starting at a specific start date and scoped to a project
-        // / </summary>
-        // / <param name="project">project name or id</param>
-        // / <param name="startDateTime"></param>
-        // / <returns>BatchOfWorkItemLinksResponse.WorkItemLinks</returns>
-        public BatchOfWorkItemLinksResponse.WorkItemLinks GetBatchOfWorkItemLinks(string project, DateTime startDateTime)
-        {
-            BatchOfWorkItemLinksResponse.WorkItemLinks viewModel = new BatchOfWorkItemLinksResponse.WorkItemLinks();
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(_configuration.UriString);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
-
-                HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/reporting/workitemlinks?startDateTime=" + startDateTime.ToShortDateString() + "&api-version=2.0").Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    viewModel = response.Content.ReadAsAsync<BatchOfWorkItemLinksResponse.WorkItemLinks>().Result;
-                }
-
-                viewModel.HttpStatusCode = response.StatusCode;
-
-                return viewModel;
-            }
-        }
-
-        // / <summary>
-        // / get all of the work item links by paging through list
-        // / </summary>
-        // / <returns>BatchOfWorkItemLinksResponse.WorkItemLinks</returns>
-        public BatchOfWorkItemLinksResponse.WorkItemLinks GetBatchOfWorkItemLinksAll()
-        {
-            BatchOfWorkItemLinksResponse.WorkItemLinks viewModel = new BatchOfWorkItemLinksResponse.WorkItemLinks();
-            BatchOfWorkItemLinksResponse.WorkItemLinks tempViewModel = new BatchOfWorkItemLinksResponse.WorkItemLinks();
-            List<BatchOfWorkItemLinksResponse.Value> list = new List<BatchOfWorkItemLinksResponse.Value>();
-            HttpResponseMessage response;
-
-            using (var client = new HttpClient())
-            {               
-                client.BaseAddress = new Uri(_configuration.UriString);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
-                                
-                response = client.GetAsync("_apis/wit/reporting/workitemlinks?api-version=2.0").Result;
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    viewModel.HttpStatusCode = response.StatusCode;
-                    return viewModel;
-                }
-                else
-                {
-                    // read from response
-                    tempViewModel = response.Content.ReadAsAsync<BatchOfWorkItemLinksResponse.WorkItemLinks>().Result;
-
-                    // and add values to list object
-                    list.AddRange(tempViewModel.values);
-
-                    // keep looping through the list untill done
-                    // loop thru until isLastBatch = true
-                    while (!tempViewModel.isLastBatch)
-                    {
-                        // using watermarked nextLink value, get next page from list
-                        response = client.GetAsync(tempViewModel.nextLink).Result;
-
-                        if (!response.IsSuccessStatusCode)
-                        {
-                            viewModel.HttpStatusCode = response.StatusCode;
-                            return viewModel;
-                        }
-                        else
-                        {
-                            // read and add to your list
-                            tempViewModel = response.Content.ReadAsAsync<BatchOfWorkItemLinksResponse.WorkItemLinks>().Result;
-                            list.AddRange(tempViewModel.values);
-                        }
-                    }
-
-                    // loaded all pages, now set value in viewModel with list object so we can send the entire list back
-                    viewModel.values = list.ToArray<BatchOfWorkItemLinksResponse.Value>();
-                    viewModel.HttpStatusCode = response.StatusCode;
-
-                    return viewModel;
-                }
-            }
-        }
-
-        // / <summary>
-        // / get batch of work item revisions by start date scoped to project
-        // / </summary>
-        // / <param name="project">project name or id</param>
-        // / <param name="startDateTime"></param>
-        // / <returns>BatchOfWorkItemRevisionsResponse.WorkItemRevisions</returns>
-        public BatchOfWorkItemRevisionsResponse.WorkItemRevisions GetBatchOfWorkItemRevisionsByDate(string project, DateTime startDateTime)
-        {
-            BatchOfWorkItemRevisionsResponse.WorkItemRevisions viewModel = new BatchOfWorkItemRevisionsResponse.WorkItemRevisions();
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(_configuration.UriString);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
-
-                HttpResponseMessage response = client.GetAsync(project + "/_apis/wit/reporting/workItemRevisions?startDateTime=" + startDateTime.ToShortDateString() + "&api-version=2.0").Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    viewModel = response.Content.ReadAsAsync<BatchOfWorkItemRevisionsResponse.WorkItemRevisions>().Result;
-                }
-
-                viewModel.HttpStatusCode = response.StatusCode;
-
-                return viewModel;
-            }
-        }
-
-        // / <summary>
-        // / get all work item revisions by paging through list
-        // / </summary>
-        // / <returns>BatchOfWorkItemRevisionsResponse.WorkItemRevisions</returns>
-        public BatchOfWorkItemRevisionsResponse.WorkItemRevisions GetBatchOfWorkItemRevisionsAll()
-        {
-            BatchOfWorkItemRevisionsResponse.WorkItemRevisions tempViewModel = new BatchOfWorkItemRevisionsResponse.WorkItemRevisions();
-            BatchOfWorkItemRevisionsResponse.WorkItemRevisions viewModel = new BatchOfWorkItemRevisionsResponse.WorkItemRevisions();
-            HttpResponseMessage response;
-            List<BatchOfWorkItemRevisionsResponse.Value> list = new List<BatchOfWorkItemRevisionsResponse.Value>();
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(_configuration.UriString);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
-
-                response = client.GetAsync("_apis/wit/reporting/workItemRevisions?api-version=2.0").Result;
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    viewModel.HttpStatusCode = response.StatusCode;
-                    return viewModel;
-                }
-                else
-                {
-                    // read from response
-                    tempViewModel = response.Content.ReadAsAsync<BatchOfWorkItemRevisionsResponse.WorkItemRevisions>().Result;
-
-                    // add values to the list object
-                    list.AddRange(tempViewModel.values);
-
-                    // keep looping through the list untill done
-                    // loop thru until isLastBatch = true
-                    while (!tempViewModel.isLastBatch)
-                    {
-                        response = client.GetAsync(tempViewModel.nextLink).Result;
-
-                        if (!response.IsSuccessStatusCode)
-                        {
-                            viewModel.HttpStatusCode = response.StatusCode;
-                            return viewModel;
-                        }
-                        else
-                        {
-                            // read response
-                            tempViewModel = response.Content.ReadAsAsync<BatchOfWorkItemRevisionsResponse.WorkItemRevisions>().Result;
-
-                            // add new batch to my list
-                            list.AddRange(tempViewModel.values);
-                        }                       
-                    }
-
-                    viewModel.HttpStatusCode = response.StatusCode;
-                    viewModel.values = list.ToArray<BatchOfWorkItemRevisionsResponse.Value>();
-
-                    return viewModel;
-                }                
-            }
-        }
-
+        
         // / <summary>
         // / add link to another work item
         // / </summary>

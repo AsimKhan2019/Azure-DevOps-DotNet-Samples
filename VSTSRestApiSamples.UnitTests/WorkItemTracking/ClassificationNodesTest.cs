@@ -30,7 +30,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             ClassificationNodes request = new ClassificationNodes(_configuration);
 
             // act
-            ListOfNodesResponse.Nodes response = request.GetAreas(_configuration.Project);
+            GetNodesResponse.Nodes response = request.GetAreas(_configuration.Project);
 
             //assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
@@ -47,7 +47,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             ClassificationNodes request = new ClassificationNodes(_configuration);
 
             // act
-            ListOfNodesResponse.Nodes response = request.GetArea(_configuration.Project, path);
+            GetNodesResponse.Nodes response = request.GetArea(_configuration.Project, path);
 
             //assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
@@ -84,7 +84,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             ClassificationNodes request = new ClassificationNodes(_configuration);
 
             // act
-            ListOfNodesResponse.Nodes response = request.GetIterations(_configuration.Project);
+            GetNodesResponse.Nodes response = request.GetIterations(_configuration.Project);
 
             //assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);

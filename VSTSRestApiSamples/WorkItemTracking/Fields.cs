@@ -20,9 +20,9 @@ namespace VstsRestApiSamples.WorkItemTracking
         // / get list of all the fields in the account
         // / </summary>
         // / <returns>ListofWorkItemFieldsResponse.Fields</returns>
-        public ListofWorkItemFieldsResponse.Fields GetListOfWorkItemFields()
+        public GetWorkItemFieldsResponse.Fields GetListOfWorkItemFields()
         {
-            ListofWorkItemFieldsResponse.Fields viewModel = new ListofWorkItemFieldsResponse.Fields();
+            GetWorkItemFieldsResponse.Fields viewModel = new GetWorkItemFieldsResponse.Fields();
 
             using (var client = new HttpClient())
             {
@@ -35,7 +35,7 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 if (response.IsSuccessStatusCode)
                 {
-                    viewModel = response.Content.ReadAsAsync<ListofWorkItemFieldsResponse.Fields>().Result;
+                    viewModel = response.Content.ReadAsAsync<GetWorkItemFieldsResponse.Fields>().Result;
                 }
 
                 viewModel.HttpStatusCode = response.StatusCode;
