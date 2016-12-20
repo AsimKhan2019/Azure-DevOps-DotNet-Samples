@@ -3,6 +3,7 @@ using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VstsRestApiSamples.WorkItemTracking;
 using VstsRestApiSamples.ViewModels.WorkItemTracking;
+using System.IO;
 
 namespace VstsRestApiSamples.Tests.WorkItemTracking
 {
@@ -185,15 +186,15 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
 
             request = null;
         }
-
-        [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_CreateWorkItemWithByPassRules_Success()
+                
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_CreateWorkItem_Success()
         {
             // arrange
             WorkItems request = new WorkItems(_configuration);
 
             // act
-            WorkItemPatchResponse.WorkItem response = request.CreateWorkItemUsingByPassRules(_configuration.Project);
+            WorkItemPatchResponse.WorkItem response = request.CreateWorkItem(_configuration.Project);
 
             // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
@@ -202,43 +203,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]
-        public void WorkItemTracking_WorkItems_CreateBug_Success()
+        public void WorkItemTracking_WorkItems_CreateWorkItemWithWorkItemLink_Success()
         {
             // arrange
             WorkItems request = new WorkItems(_configuration);
 
             // act
-            WorkItemPatchResponse.WorkItem response = request.CreateBug(_configuration.Project);
-
-            // assert
-            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
-
-            request = null;
-        }
-
-        [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_UpdateWorkItem_Success()
-        {
-            // arrange
-            WorkItems request = new WorkItems(_configuration);
-
-            // act
-            WorkItemPatchResponse.WorkItem response = request.UpdateWorkItemFields(_configuration.WorkItemId);
-
-            // assert
-            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
-
-            request = null;
-        }
-
-        [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_UpdateWorkItemWithByPassRules_Success()
-        {
-            // arrange
-            WorkItems request = new WorkItems(_configuration);
-
-            // act
-            WorkItemPatchResponse.WorkItem response = request.UpdateWorkItemFieldsWithByPassRules(_configuration.WorkItemId);
+            WorkItemPatchResponse.WorkItem response = request.CreateWorkItemWithWorkItemLink(_configuration.Project, _configuration.WorkItemId);
 
             // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
@@ -247,15 +218,13 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]
-        public void WorkItemTracking_WorkItems_AddLink_Success()
+        public void WorkItemTracking_WorkItems_CreateWorkItemByPassingRules_Success()
         {
             // arrange
             WorkItems request = new WorkItems(_configuration);
 
-            string[] arr = _configuration.WorkItemIds.Split(',');
-                        
             // act
-            WorkItemPatchResponse.WorkItem response = request.AddLink(arr[0].ToString(), arr[1].ToString());
+            WorkItemPatchResponse.WorkItem response = request.CreateWorkItemByPassingRules(_configuration.Project);
 
             // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
@@ -263,24 +232,213 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             request = null;
         }
 
-        [TestMethod, TestCategory("REST API")]
-        public void WorkItemTracking_WorkItems_AddHyperLink_Success()
+        [TestMethod, TestCategory("REST API")]  
+        public void WorkItemTracking_WorkItems_UpdateWorkItemUpdateField_Success()
         {
             // arrange
             WorkItems request = new WorkItems(_configuration);
 
             // act
-            WorkItemPatchResponse.WorkItem response = request.AddHyperLink(_configuration.WorkItemId);
+            WorkItemPatchResponse.WorkItem createResponse = request.CreateWorkItem(_configuration.Project);
+            WorkItemPatchResponse.WorkItem updateResponse = request.UpdateWorkItemUpdateField(createResponse.id.ToString());
 
             // assert
-            if (response.Message.ToLower().Contains("relation already exists"))
+            Assert.AreEqual(HttpStatusCode.OK, createResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, updateResponse.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_UpdateWorkItemMoveWorkItem_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+            string areaPath = _configuration.MoveToProject;         // user project name for root area path
+            string iterationPath = _configuration.MoveToProject;    // use project name for root iteration path
+
+            // act
+            WorkItemPatchResponse.WorkItem response = request.UpdateWorkItemMoveWorkItem(_configuration.WorkItemId, _configuration.MoveToProject, areaPath, iterationPath);
+
+            // assert
+            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+            Assert.AreEqual(response.fields.SystemAreaPath, areaPath);
+            Assert.AreEqual(response.fields.SystemIterationPath, iterationPath);
+                       
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_UpdateWorkItemChangeWorkItemType_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            // act
+            ///create a task then change it to a user story
+            WorkItemPatchResponse.WorkItem createResponse = request.CreateWorkItem(_configuration.Project);
+            WorkItemPatchResponse.WorkItem changeResponse = request.UpdateWorkItemChangeWorkItemType(createResponse.id.ToString());
+
+            // assert
+            Assert.AreEqual(HttpStatusCode.OK, createResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, changeResponse.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_UpdateWorkItemAddTag_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            // act
+            WorkItemPatchResponse.WorkItem result = request.UpdateWorkItemAddTag(_configuration.WorkItemId);
+
+            // assert
+            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_UpdateWorkItemAddLink_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            // act
+            WorkItemPatchResponse.WorkItem createResponse = request.CreateWorkItem(_configuration.Project);
+            WorkItemPatchResponse.WorkItem updateResponse = request.UpdateWorkItemAddLink(createResponse.id.ToString(), _configuration.WorkItemId);
+
+            // assert
+            Assert.AreEqual(HttpStatusCode.OK, createResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, updateResponse.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_UpdateWorkItemUpdateLink_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            // act
+            WorkItemPatchResponse.WorkItem createResponse = request.CreateWorkItem(_configuration.Project);
+            WorkItemPatchResponse.WorkItem addLinkResponse = request.UpdateWorkItemAddLink(createResponse.id.ToString(), _configuration.WorkItemId);
+            WorkItemPatchResponse.WorkItem updateLinkResponse = request.UpdateWorkItemUpdateLink(createResponse.id.ToString(), _configuration.WorkItemId);
+
+            // assert
+            Assert.AreEqual(HttpStatusCode.OK, createResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, addLinkResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, updateLinkResponse.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_UpdateWorkItemRemoveLink_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            // act
+            WorkItemPatchResponse.WorkItem createResponse = request.CreateWorkItem(_configuration.Project);
+            WorkItemPatchResponse.WorkItem addLinkResponse = request.UpdateWorkItemAddLink(createResponse.id.ToString(), _configuration.WorkItemId);
+            WorkItemPatchResponse.WorkItem removeLinkResponse = request.UpdateWorkItemRemoveLink(createResponse.id.ToString());
+
+            // assert
+            Assert.AreEqual(HttpStatusCode.OK, createResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, addLinkResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, removeLinkResponse.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_UpdateWorkItemAddAttachment_Success()
+        {
+            // arrange
+            if (! File.Exists(@_configuration.FilePath))
             {
-                Assert.Inconclusive("Link already exists on bug");
+                Assert.Inconclusive("file not found: " + @_configuration.FilePath);
             }
-            else
-            {
-                Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
-            }          
+            
+            WorkItems request = new WorkItems(_configuration);
+            Attachments attachmentsRequest = new Attachments(_configuration);
+
+            // act
+            //upload attachment
+            var attachmentReference = attachmentsRequest.UploadAttachment(_configuration.FilePath);
+
+            //create work item then add attachment to that work item
+            WorkItemPatchResponse.WorkItem createResponse = request.CreateWorkItem(_configuration.Project);
+            WorkItemPatchResponse.WorkItem attachmentResponse = request.UpdateWorkItemAddAttachment(createResponse.id.ToString(), attachmentReference.url);
+
+            // assert    
+            Assert.AreEqual(HttpStatusCode.OK, createResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, attachmentResponse.HttpStatusCode);
+
+            request = null;
+            attachmentsRequest = null;
+        }
+        
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_UpdateWorkItemRemoveAttachment_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+            Attachments attachmentsRequest = new Attachments(_configuration);
+
+            // act
+            //upload attachment
+            var attachmentReference = attachmentsRequest.UploadAttachment(_configuration.FilePath);
+
+            //create work item then add attachment to that work item
+            WorkItemPatchResponse.WorkItem createResponse = request.CreateWorkItem(_configuration.Project);
+            WorkItemPatchResponse.WorkItem addAttachmentResponse = request.UpdateWorkItemAddAttachment(createResponse.id.ToString(), attachmentReference.url);
+            WorkItemPatchResponse.WorkItem removeAttachmentResponse = request.UpdateWorkItemRemoveAttachment(createResponse.id.ToString());
+
+            // assert    
+            Assert.AreEqual(HttpStatusCode.OK, createResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, addAttachmentResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, removeAttachmentResponse.HttpStatusCode);
+
+            request = null;
+            attachmentsRequest = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_UpdateWorkItemAddHyperLink_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            // act
+            WorkItemPatchResponse.WorkItem createResponse = request.CreateWorkItem(_configuration.Project);
+            WorkItemPatchResponse.WorkItem addHyperLinkResponse = request.UpdateWorkItemAddHyperLink(createResponse.id.ToString());
+
+            // assert
+            Assert.AreEqual(HttpStatusCode.OK, createResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, addHyperLinkResponse.HttpStatusCode);                    
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void WorkItemTracking_WorkItems_DeleteWorkItem_Success()
+        {
+            // arrange
+            WorkItems request = new WorkItems(_configuration);
+
+            // act
+            WorkItemPatchResponse.WorkItem createResponse = request.CreateWorkItem(_configuration.Project);
+            var deleteResponse = request.DeleteWorkItem(createResponse.id.ToString());
+
+            // assert
+            Assert.AreEqual(HttpStatusCode.OK, createResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, deleteResponse.HttpStatusCode);
 
             request = null;
         }
@@ -292,7 +450,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             WorkItems request = new WorkItems(_configuration);
 
             // act
-            WorkItemPatchResponse.WorkItem response = request.AddCommitLink("3045");
+            WorkItemPatchResponse.WorkItem response = request.UpdateWorkItemAddCommitLink("3045");
 
             // assert
             if (response.Message.ToLower().Contains("relation already exists"))
@@ -306,73 +464,15 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
 
             request = null;
         }
-
+                        
         [TestMethod, TestCategory("REST API")]
-        public void WorkItemTracking_WorkItems_UploadAttachment_Success()
-        {
-            // arrange
-            WorkItems workItemsRequest = new WorkItems(_configuration);
-            Attachments attachmentsRequest = new Attachments(_configuration);
-
-            // act
-            var attachmentReference = attachmentsRequest.UploadAttachment(_configuration.FilePath);
-
-            var response = workItemsRequest.AddAttachment(_configuration.WorkItemId, attachmentReference.url);
-
-            // assert    
-            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
-
-            workItemsRequest = null;
-            attachmentsRequest = null;
-        }
-
-        [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_AddAndUpdateWorkItemTags_Success()
+        public void WorkItemTracking_WorkItems_UpdateWorkItemByPassRules_Success()
         {
             // arrange
             WorkItems request = new WorkItems(_configuration);
 
             // act
-            WorkItemPatchResponse.WorkItem result = request.AddWorkItemTags(_configuration.WorkItemId, "Technical Debt; Spike Needed");
-
-            // assert
-            Assert.AreEqual(HttpStatusCode.OK, result.HttpStatusCode);
-
-            request = null;
-        }
-
-        [TestMethod, TestCategory("REST API"), Ignore]  
-        public void WorkItemTracking_WorkItems_MoveWorkItem_Success()
-        {
-            // arrange
-            WorkItems request = new WorkItems(_configuration);
-            string areaPath = _configuration.MoveToProject;         // user project name for root area path
-            string iterationPath = _configuration.MoveToProject;    // use project name for root iteration path
-
-            // act
-            WorkItemPatchResponse.WorkItem response = request.MoveWorkItem(_configuration.WorkItemId, _configuration.MoveToProject, areaPath, iterationPath);
-
-            // assert
-            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
-            Assert.AreEqual(response.fields.SystemAreaPath, areaPath);
-            Assert.AreEqual(response.fields.SystemIterationPath, iterationPath);
-
-            // move back
-            WorkItemPatchResponse.WorkItem movebackResponse = request.MoveWorkItem(_configuration.WorkItemId, _configuration.Project, _configuration.Project, _configuration.Project);
-            Assert.AreEqual(HttpStatusCode.OK, movebackResponse.HttpStatusCode);
- 
-            request = null;
-        }
-
-        [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_ChangeType_Success()
-        {
-            // arrange
-            WorkItems request = new WorkItems(_configuration);
-
-            // act
-            WorkItemPatchResponse.WorkItem response = request.ChangeType(_configuration.WorkItemId, "User Story");
-            var someme = response.ToString();
+            WorkItemPatchResponse.WorkItem response = request.UpdateWorkItemByPassingRules(_configuration.WorkItemId);
 
             // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);

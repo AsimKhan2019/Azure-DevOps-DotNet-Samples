@@ -222,21 +222,104 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return viewModel;
             }
         }
-        
-        // / <summary>
-        // / create a work item using bypass rules
-        // / </summary>
-        // / <param name="projectName">name of project</param>
-        // / <returns>WorkItemPatchResponse.WorkItem</returns>
-        public WorkItemPatchResponse.WorkItem CreateWorkItemUsingByPassRules(string projectName)
+            
+        public WorkItemPatchResponse.WorkItem CreateWorkItem(string projectName)
         {
             WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[3];
+            Object[] patchDocument = new Object[1];
 
-            // add a title and add a field you normally cant add such as CreatedDate
-            fields[0] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.Title", value = "hello world!" };
-            fields[1] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.CreatedDate", value = "6/1/2016" };
-            fields[2] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.CreatedBy", value = "Art Vandelay" };
+            patchDocument[0] = new { op = "add", path = "/fields/System.Title", value = "JavaScript implementation for Microsoft Account" };
+            
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+
+                // set the httpmethod to Patch
+                var method = new HttpMethod("PATCH");
+                              
+                // send the request
+                var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$Task?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                var me = response.ToString();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
+        public WorkItemPatchResponse.WorkItem CreateWorkItemWithWorkItemLink(string projectName, string linkToId)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            Object[] patchDocument = new Object[5];
+
+            patchDocument[0] = new { op = "add", path = "/fields/System.Title", value = "JavaScript implementation for Microsoft Account" };
+            patchDocument[1] = new { op = "add", path = "/fields/Microsoft.VSTS.Scheduling.RemainingWork", value = "4" };
+            patchDocument[2] = new { op = "add", path = "/fields/System.Description", value = "Follow the code samples from MSDN" };
+            patchDocument[3] = new { op = "add", path = "/fields/System.History", value = "Jim has the most context around this." };
+            patchDocument[4] = new
+            {
+                op = "add",
+                path = "/relations/-",
+                value = new
+                {
+                    rel = "System.LinkTypes.Hierarchy-Reverse",
+                    url = _configuration.UriString + "/_apis/wit/workitems/" + linkToId,
+                    attributes = new
+                    {
+                        comment = "decomposition of work"
+                    }
+                }
+            };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+
+                // set the httpmethod to Patch
+                var method = new HttpMethod("PATCH");
+              
+                // send the request
+                var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$Task?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;              
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
+        public WorkItemPatchResponse.WorkItem CreateWorkItemByPassingRules(string projectName)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+
+            Object[] patchDocument = new Object[3];
+                      
+            // patch document to create a work item
+            patchDocument[0] = new { op = "add", path = "/fields/System.Title", value = "JavaScript implementation for Microsoft Account" };
+            patchDocument[1] = new { op = "add", path = "/fields/System.CreatedDate", value = "6/1/2016" };
+            patchDocument[2] = new { op = "add", path = "/fields/System.CreatedBy", value = "Art Vandelay" };
 
             using (var client = new HttpClient())
             {
@@ -245,13 +328,11 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
 
                 // serialize the fields array into a json string          
-                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
 
                 // set the httpmethod to Patch
                 var method = new HttpMethod("PATCH");
-
-                var url = _configuration.UriString + projectName + "/_apis/wit/workitems/$UserStory?api-version=2.2";
-
+                               
                 // send the request
                 var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$User Story?bypassRules=true&api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
@@ -268,67 +349,16 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return viewModel;
             }
         }
-
-        // / <summary>
-        // / Create a bug
-        // / </summary>
-        // / <param name="projectName"></param>
-        // / <returns>WorkItemPatchResponse.WorkItem</returns>
-        public WorkItemPatchResponse.WorkItem CreateBug(string projectName)
+              
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemUpdateField(string id)
         {
             WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[4];
-
-            // set some field values like title and description
-            fields[0] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.Title", value = "Authorization Errors" };
-            fields[1] = new WorkItemPatch.Field() { op = "add", path = "/fields/Microsoft.VSTS.TCM.ReproSteps", value = "Our authorization logic needs to allow for users with Microsoft accounts (formerly Live Ids) - http:// msdn.microsoft.com/en-us/library/live/hh826547.aspx" };
-            fields[2] = new WorkItemPatch.Field() { op = "add", path = "/fields/Microsoft.VSTS.Common.Priority", value = "1" };
-            fields[3] = new WorkItemPatch.Field() { op = "add", path = "/fields/Microsoft.VSTS.Common.Severity", value = "2 - High" };
-            
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
-
-                // serialize the fields array into a json string          
-                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
-
-                // set the httpmethod to Patch
-                var method = new HttpMethod("PATCH");
-               
-                // send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$Bug?api-version=2.2") { Content = patchValue };
-                var response = client.SendAsync(request).Result;
-
-                var me = response.ToString();
-
-                if (response.IsSuccessStatusCode)
-                {
-                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
-                }
-
-                viewModel.HttpStatusCode = response.StatusCode;
-
-                return viewModel;
-            }
-        }
-
-        // / <summary>
-        // / update a specific work item by id and return that changed worked item
-        // / </summary>
-        // / <param name="id"></param>
-        // / <returns>WorkItemPatchResponse.WorkItem</returns>
-        public WorkItemPatchResponse.WorkItem UpdateWorkItemFields(string id)
-        {
-            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[4];
+            Object[] patchDocument = new Object[3];
 
             // change some values on a few fields
-            fields[0] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.History", value = "adding some history" };
-            fields[1] = new WorkItemPatch.Field() { op = "add", path = "/fields/Microsoft.VSTS.Common.Priority", value = "2" };
-            fields[2] = new WorkItemPatch.Field() { op = "add", path = "/fields/Microsoft.VSTS.Common.BusinessValue", value = "100" };
-            fields[3] = new WorkItemPatch.Field() { op = "add", path = "/fields/Microsoft.VSTS.Common.ValueArea", value = "Architectural" };
+            patchDocument[0] = new { op = "test", path = "/rev", value = "1" };
+            patchDocument[1] = new { op = "add", path = "/fields/Microsoft.VSTS.Common.Priority", value = "2" };
+            patchDocument[2] = new { op = "add", path = "/fields/System.History", value = "Changing priority" };
                       
             using (var client = new HttpClient())
             {               
@@ -337,12 +367,9 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
                 
                 // serialize the fields array into a json string          
-                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
 
-                // set the httpmethod to Patch
-                var method = new HttpMethod("PATCH"); 
-
-                // send the request
+                var method = new HttpMethod("PATCH");                 
                 var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
                                
@@ -356,19 +383,368 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return viewModel;
             }
         }
-
-        // / <summary>
-        // / update fields on work item using bypass rules
-        // / </summary>
-        // / <param name="id">work item id</param>
-        // / <returns>WorkItemPatchResponse.WorkItem</returns>
-        public WorkItemPatchResponse.WorkItem UpdateWorkItemFieldsWithByPassRules(string id)
+        
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemMoveWorkItem(string id, string teamProject, string areaPath, string iterationPath)
         {
             WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[1];
+            Object[] patchDocument = new Object[3];
+
+            // set the required field values for the destination
+            patchDocument[0] = new { op = "add", path = "/fields/System.TeamProject", value = teamProject };
+            patchDocument[1] = new { op = "add", path = "/fields/System.AreaPath", value = areaPath };
+            patchDocument[2] = new { op = "add", path = "/fields/System.IterationPath", value = iterationPath };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+                               
+                var method = new HttpMethod("PATCH");         
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemChangeWorkItemType(string id)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            Object[] patchDocument = new Object[2];
+
+            // change the work item type, state and reason values in order to change the work item type
+            patchDocument[0] = new { op = "add", path = "/fields/System.WorkItemType", value = "User Story" };
+            patchDocument[1] = new { op = "add", path = "/fields/System.State", value = "Active" };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+                               
+                var method = new HttpMethod("PATCH");
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;               
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+        
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemAddTag(string id)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            Object[] patchDocument = new Object[1];
+
+            // change some values on a few fields
+            patchDocument[0] = new { op = "add", path = "/fields/System.Tags", value = "Tag1; Tag2" };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+                               
+                var method = new HttpMethod("PATCH");             
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+        
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemAddLink(string id, string linkToId)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            Object[] patchDocument = new Object[1];
+
+            // change some values on a few fields
+            patchDocument[0] = new
+            {
+                op = "add",
+                path = "/relations/-",
+                value = new {
+                    rel = "System.LinkTypes.Dependency-forward",
+                    url = _configuration.UriString + "/_apis/wit/workitems/" + linkToId,
+                    attributes = new {
+                        comment = "Making a new link for the dependency"
+                    }
+                }
+            };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+                             
+                var method = new HttpMethod("PATCH");                
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+     
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemUpdateLink(string id, string linkToId)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            Object[] patchDocument = new Object[2];
+
+            // change some values on a few fields
+            patchDocument[0] = new { op = "test", path = "/rev", value = "1" };
+            patchDocument[1] = new {
+                op = "add",
+                path = "/relations/-",
+                value = new WorkItemPatch.Value()
+                {
+                    rel = "System.LinkTypes.Dependency-forward",
+                    url = _configuration.UriString + "/_apis/wit/workitems/" + linkToId,
+                    attributes = new WorkItemPatch.Attributes()
+                    {
+                        comment = "Making a new link for the dependency"
+                    }
+                }
+            };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+
+                var method = new HttpMethod("PATCH");
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+        
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemRemoveLink(string id)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            Object[] patchDocument = new Object[2];
+
+            // change some values on a few fields
+            patchDocument[0] = new { op = "test", path = "/rev", value = "1" };
+            patchDocument[1] = new
+            {
+                op = "remove",
+                path = "/relations/0",               
+            };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+
+                var method = new HttpMethod("PATCH");
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+        
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemAddAttachment(string id, string url)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            Object[] patchDocument = new Object[3];
+
+            // change some values on a few fields
+            patchDocument[0] = new { op = "test", path = "/rev", value = "1" };
+            patchDocument[1] = new { op = "add", path = "/fields/System.History", value = "Adding the necessary spec" };
+            patchDocument[2] = new
+            {
+                op = "add",
+                path = "/relations/-",
+                value = new
+                {
+                    rel = "AttachedFile",
+                    url = url,
+                    attributes = new
+                    {
+                        comment = "adding attachment to work item"
+                    }
+                }
+            };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+
+                var method = new HttpMethod("PATCH");
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+        
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemRemoveAttachment(string id)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            Object[] patchDocument = new Object[2];
+
+            // change some values on a few fields
+            patchDocument[0] = new { op = "test", path = "/rev", value = "2" };
+            patchDocument[1] = new { op = "remove", path = "/relations/0" };
+          
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+
+                var method = new HttpMethod("PATCH");
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+        
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemAddHyperLink(string id)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            Object[] patchDocument = new Object[2];
+
+            // change some values on a few fields
+            patchDocument[0] = new { op = "test", path = "/rev", value = "1" };
+            patchDocument[1] = new {
+                op = "add",
+                path = "/relations/-",
+                value = new {
+                    rel = "Hyperlink",
+                    url = "http://www.visualstudio.com/team-services",
+                    attributes = new {
+                        comment = "Visual Studio Team Services"
+                    }
+                }
+            };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+                           
+                var method = new HttpMethod("PATCH");                
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                    viewModel.Message = "success";
+                }
+                else
+                {
+                    dynamic responseForInvalidStatusCode = response.Content.ReadAsAsync<dynamic>();
+                    Newtonsoft.Json.Linq.JContainer msg = responseForInvalidStatusCode.Result;
+                    viewModel.Message = msg.ToString();
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemByPassingRules(string id)
+        {
+            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
+            Object[] patchDocument = new Object[1]; ;
 
             // replace value on a field that you normally cannot change, like system.createdby
-            fields[0] = new WorkItemPatch.Field() { op = "replace", path = "/fields/System.CreatedBy", value = "Foo <Foo@hotmail.com>" };
+            patchDocument[0] = new { op = "replace", path = "/fields/System.CreatedBy", value = "Foo <Foo@hotmail.com>" };
                       
             using (var client = new HttpClient())
             {
@@ -377,7 +753,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
 
                 // serialize the fields array into a json string          
-                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
 
                 // set the httpmethod to Patch
                 var method = new HttpMethod("PATCH");
@@ -396,142 +772,21 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return viewModel;
             }
         }
-        
-        // / <summary>
-        // / add link to another work item
-        // / </summary>
-        // / <param name="id">work item id</param>
-        // / <param name="linkToId">link to work item id</param>
-        // / <returns>WorkItemPatchResponse.WorkItem</returns>
-        public WorkItemPatchResponse.WorkItem AddLink(string id, string linkToId)
+           
+        public WorkItemPatchResponse.WorkItem UpdateWorkItemAddCommitLink(string id)
         {
             WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[1];
+            Object[] patchDocument = new Object[1]; ;
 
             // change some values on a few fields
-            fields[0] = new WorkItemPatch.Field()
+            patchDocument[0] = new WorkItemPatch.Field()
             {
                 op = "add",
                 path = "/relations/-",
-                value =  new WorkItemPatch.Value()
-                {
-                    rel = "System.LinkTypes.Dependency-forward",
-                    url = _configuration.UriString + "/_apis/wit/workitems/" + linkToId,
-                    attributes = new WorkItemPatch.Attributes()
-                    {
-                        comment = "Making a new link for the dependency"
-                    }
-                }
-            };
-
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
-
-                // serialize the fields array into a json string          
-                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
-
-                // set the httpmethod to Patch
-                var method = new HttpMethod("PATCH");
-
-                // send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
-                var response = client.SendAsync(request).Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
-                }
-
-                viewModel.HttpStatusCode = response.StatusCode;
-
-                return viewModel;
-            }
-        }
-
-        /// <summary>
-        /// Add hyperlink to work item
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>WorkItemPatchResponse.WorkItem</returns>
-        public WorkItemPatchResponse.WorkItem AddHyperLink(string id)
-        {
-            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[1];
-
-            // change some values on a few fields
-            fields[0] = new WorkItemPatch.Field()
-            {
-                op = "add",
-                path = "/relations/-",
-                value = new WorkItemPatch.Value()
-                {
-                    rel = "Hyperlink",
-                    url = "http://www.visualstudio.com/team-services",
-                    attributes = new WorkItemPatch.Attributes()
-                    {
-                        comment = "Visual Studio Team Services"
-                    }
-                }
-            };
-
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
-
-                // serialize the fields array into a json string          
-                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
-
-                // set the httpmethod to Patch
-                var method = new HttpMethod("PATCH");
-
-                // send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
-                var response = client.SendAsync(request).Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
-                    viewModel.Message = "success";
-                }
-                else
-                {
-                    dynamic responseForInvalidStatusCode = response.Content.ReadAsAsync<dynamic>();
-                    Newtonsoft.Json.Linq.JContainer msg = responseForInvalidStatusCode.Result;
-                    viewModel.Message = msg.ToString();
-                }                
-               
-                viewModel.HttpStatusCode = response.StatusCode;
-
-                return viewModel;
-            }
-        }
-        
-        /// <summary>
-        /// Add hyperlink to work item
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>WorkItemPatchResponse.WorkItem</returns>
-        public WorkItemPatchResponse.WorkItem AddCommitLink(string id)
-        {
-            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[1];
-
-            // change some values on a few fields
-            fields[0] = new WorkItemPatch.Field()
-            {
-                op = "add",
-                path = "/relations/-",
-                value = new WorkItemPatch.Value()
-                {
+                value = new {
                     rel = "ArtifactLink",
                     url = "vstfs:///Git/Commit/1435ac99-ba45-43e7-9c3d-0e879e7f2691%2Fd00dd2d9-55dd-46fc-ad00-706891dfbc48%2F3fefa488aac46898a25464ca96009cf05a6426e3",
-                    attributes = new WorkItemPatch.Attributes()
-                    {
+                    attributes = new {
                        name = "Fixed in Commit"
                     }
                 }
@@ -544,12 +799,9 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
 
                 // serialize the fields array into a json string          
-                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
 
-                // set the httpmethod to Patch
-                var method = new HttpMethod("PATCH");
-
-                // send the request
+                var method = new HttpMethod("PATCH");                
                 var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
@@ -570,226 +822,30 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return viewModel;
             }
         }
-
-        // / <summary>
-        // / add link to another work item
-        // / </summary>
-        // / <param name="id">work item id</param>
-        // / <param name="linkToId">link to work item id</param>
-        // / <returns>WorkItemPatchResponse.WorkItem</returns>
-        public WorkItemPatchResponse.WorkItem AddAttachment(string id, string url)
-        {
-            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[1];
-
-            // change some values on a few fields
-            fields[0] = new WorkItemPatch.Field()
-            {
-                op = "add",
-                path = "/relations/-",
-                value = new WorkItemPatch.Value()
-                {
-                    rel = "AttachedFile",
-                    url = url,
-                    attributes = new WorkItemPatch.Attributes()
-                    {
-                        comment = "adding attachment to work item"
-                    }
-                }
-            };
-
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
-
-                // serialize the fields array into a json string          
-                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
-
-                // set the httpmethod to Patch
-                var method = new HttpMethod("PATCH");
-
-                // send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
-                var response = client.SendAsync(request).Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
-                }
-
-                viewModel.HttpStatusCode = response.StatusCode;
-
-                return viewModel;
-            }
-        }
-              
-        public WorkItemPatchResponse.WorkItem AddWorkItemTags(string id, string tags)
-        {
-            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[1];
-
-            // change some values on a few fields
-            fields[0] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.Tags", value = tags };
-           
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
-
-                // serialize the fields array into a json string          
-                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
-
-                // set the httpmethod to Patch
-                var method = new HttpMethod("PATCH");
-
-                // send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
-                var response = client.SendAsync(request).Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
-                }
-
-                viewModel.HttpStatusCode = response.StatusCode;
-
-                return viewModel;
-            }
-        }
-
-        // / <summary>
-        // / Move a work item from one project to another when the projects are the same process (agile to agile)
-        // / </summary>
-        // / <param name="id">work item id</param>
-        // / <param name="teamProject">project name</param>
-        // / <param name="areaPath">area path</param>
-        // / <param name="iterationPath">iteration path</param>
-        // / <returns>WorkItemPatchResponse.WorkItem</returns>
-        public WorkItemPatchResponse.WorkItem MoveWorkItem(string id, string teamProject, string areaPath, string iterationPath)
-        {
-            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[3];
-
-            // set the required field values for the destination
-            fields[0] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.TeamProject", value = teamProject };
-            fields[1] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.AreaPath", value = areaPath };
-            fields[2] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.IterationPath", value = iterationPath };           
-
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
-
-                // serialize the fields array into a json string          
-                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
-
-                // set the httpmethod to Patch
-                var method = new HttpMethod("PATCH");
-
-                // send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
-                var response = client.SendAsync(request).Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
-                }
-
-                viewModel.HttpStatusCode = response.StatusCode;
-
-                return viewModel;
-            }
-        }
-
-        // / <summary>
-        // / move a work item from a project in agile to a project in scrum
-        // / </summary>
-        // / <param name="id">work item id</param>
-        // / <param name="teamProject">project name</param>
-        // / <param name="areaPath">area path</param>
-        // / <param name="iterationPath">iteration path</param>
-        // / <returns>WorkItemPatchResponse.WorkItem</returns>
-        public WorkItemPatchResponse.WorkItem MoveWorkItemAndChangeType(string id, string teamProject, string areaPath, string iterationPath)
-        {
-            WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[6];
-
-            // change the required field values in order to do move
-            fields[0] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.TeamProject", value = teamProject };
-            fields[1] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.AreaPath", value = areaPath };
-            fields[2] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.IterationPath", value = iterationPath };
-
-            // change the work item type, state and reason values in order to change the work item type
-            fields[3] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.WorkItemType", value = "Product Backlog Item" };
-            fields[4] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.State", value = "New" };
-            fields[5] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.Reason", value = "New Backlog Item" };
-
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",_credentials);
-
-                // serialize the fields array into a json string          
-                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
-
-                // set the httpmethod to Patch
-                var method = new HttpMethod("PATCH");
-
-                // send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
-                var response = client.SendAsync(request).Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
-                }
-
-                viewModel.HttpStatusCode = response.StatusCode;
-
-                return viewModel;
-            }
-        }
         
-        // / <summary>
-        // / move a work item from a project in agile to a project in scrum
-        // / </summary>
-        // / <param name="id">work item id</param>
-        // / <param name="type">Bug or User Story</param>       
-        // / <returns>WorkItemPatchResponse.WorkItem</returns>
-        public WorkItemPatchResponse.WorkItem ChangeType(string id, string type)
+        public WorkItemPatchResponse.WorkItem DeleteWorkItem(string id)
         {
             WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
-            WorkItemPatch.Field[] fields = new WorkItemPatch.Field[1];
            
-            // change the work item type, state and reason values in order to change the work item type
-            fields[0] = new WorkItemPatch.Field() { op = "add", path = "/fields/System.WorkItemType", value = type };
-       
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
-
-                // serialize the fields array into a json string          
-                var patchValue = new StringContent(JsonConvert.SerializeObject(fields), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
-
-                // set the httpmethod to Patch
-                var method = new HttpMethod("PATCH");
-
-                // send the request
-                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2") { Content = patchValue };
+                              
+                var method = new HttpMethod("DELETE");
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?api-version=2.2");
                 var response = client.SendAsync(request).Result;
 
-                var someme = response.ToString();
-
                 if (response.IsSuccessStatusCode)
+                {                   
+                    viewModel.Message = "success";
+                }
+                else
                 {
-                    viewModel = response.Content.ReadAsAsync<WorkItemPatchResponse.WorkItem>().Result;
+                    dynamic responseForInvalidStatusCode = response.Content.ReadAsAsync<dynamic>();
+                    Newtonsoft.Json.Linq.JContainer msg = responseForInvalidStatusCode.Result;
+                    viewModel.Message = msg.ToString();
                 }
 
                 viewModel.HttpStatusCode = response.StatusCode;

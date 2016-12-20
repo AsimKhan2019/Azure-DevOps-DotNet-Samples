@@ -16,12 +16,7 @@ namespace VstsRestApiSamples.WorkItemTracking
             _configuration = configuration;
             _credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _configuration.PersonalAccessToken)));
         }
-
-        // / <summary>
-        // / get list of queries by project
-        // / </summary>
-        // / <param name="project">project name or id</param>
-        // / <returns>ListofQueriesResponse.Queries</returns>
+                
         public GetQueriesResponse.Queries GetListOfQueries(string project)
         {
             GetQueriesResponse.Queries viewModel = new GetQueriesResponse.Queries();
@@ -46,13 +41,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return viewModel;
             }
         }
-        
-        // / <summary>
-        // / get list of queries by a specific folder path
-        // / </summary>
-        // / <param name="project">project name or id</param>
-        // / <param name="folderPath">folder path that must be url encoded</param>
-        // / <returns>ListofQueriesByFolderPath.Queries</returns>
+           
         public GetQueriesByFolderPath.Queries GetListOfQueriesByFolderPath(string project, string folderPath)
         {
             GetQueriesByFolderPath.Queries viewModel = new GetQueriesByFolderPath.Queries();
@@ -77,12 +66,6 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
 
-        // / <summary>
-        // / get queries for a specific query path
-        // / </summary>
-        // / <param name="project">project name or id</param>
-        // / <param name="path">full query path</param>
-        // / <returns>ListofQueriesByFolderPath.Queries</returns>
         public GetQueriesByIdResponse.Queries GetQueryByPath(string project, string path)
         {
             GetQueriesByIdResponse.Queries viewModel = new GetQueriesByIdResponse.Queries();
@@ -106,13 +89,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 return viewModel;
             }
         }
-
-        // / <summary>
-        // / get query or folder by id
-        // / </summary>
-        // / <param name="project">project name or id</param>
-        // / <param name="id">query id</param>
-        // / <returns>GetQueryByIdResponse.Queries</returns>
+        
         public GetQueriesByIdResponse.Queries GetQueryById(string project, string id)
         {
             GetQueriesByIdResponse.Queries viewModel = new GetQueriesByIdResponse.Queries();
