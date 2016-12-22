@@ -8,6 +8,7 @@ namespace VstsClientLibrariesSamples
         string PersonalAccessToken { get; set; }
         string Project { get; set; }
         string Team { get; set; }
+        string MoveToProject { get; set; }
         string UriString { get; set; }        
         string Query { get; set; }
         string Identity { get; set; }

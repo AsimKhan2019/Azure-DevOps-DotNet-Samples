@@ -310,7 +310,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                     {
                         rel = "AttachedFile",
                         url = attachmentReference.Url,
-                        attributes = new { comment = "adding link to bug" }
+                        attributes = new { comment = "adding attachement to work item" }
                     }
                 });
 

@@ -238,11 +238,8 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 // serialize the fields array into a json string          
                 var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
-
-                // set the httpmethod to Patch
-                var method = new HttpMethod("PATCH");
-                              
-                // send the request
+                             
+                var method = new HttpMethod("PATCH");                 
                 var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$Task?api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
@@ -292,10 +289,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 // serialize the fields array into a json string          
                 var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
 
-                // set the httpmethod to Patch
                 var method = new HttpMethod("PATCH");
-              
-                // send the request
                 var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$Task?api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;              
 
@@ -319,7 +313,7 @@ namespace VstsRestApiSamples.WorkItemTracking
             // patch document to create a work item
             patchDocument[0] = new { op = "add", path = "/fields/System.Title", value = "JavaScript implementation for Microsoft Account" };
             patchDocument[1] = new { op = "add", path = "/fields/System.CreatedDate", value = "6/1/2016" };
-            patchDocument[2] = new { op = "add", path = "/fields/System.CreatedBy", value = "Art Vandelay" };
+            patchDocument[2] = new { op = "add", path = "/fields/System.CreatedBy", value = "Art VanDelay" };
 
             using (var client = new HttpClient())
             {
@@ -330,10 +324,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 // serialize the fields array into a json string          
                 var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
 
-                // set the httpmethod to Patch
-                var method = new HttpMethod("PATCH");
-                               
-                // send the request
+                var method = new HttpMethod("PATCH");               
                 var request = new HttpRequestMessage(method, _configuration.UriString + projectName + "/_apis/wit/workitems/$User Story?bypassRules=true&api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
@@ -626,7 +617,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                     url = url,
                     attributes = new
                     {
-                        comment = "adding attachment to work item"
+                        comment = "VanDelay Industries - Spec"
                     }
                 }
             };
@@ -754,11 +745,8 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 // serialize the fields array into a json string          
                 var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
-
-                // set the httpmethod to Patch
+                              
                 var method = new HttpMethod("PATCH");
-
-                // send the request
                 var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + id + "?bypassRules=true&api-version=2.2") { Content = patchValue };
                 var response = client.SendAsync(request).Result;
 
