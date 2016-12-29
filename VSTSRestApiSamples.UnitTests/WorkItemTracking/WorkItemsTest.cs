@@ -370,7 +370,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
 
             // act
             //upload attachment
-            var attachmentReference = attachmentsRequest.UploadAttachment(_configuration.FilePath);
+            var attachmentReference = attachmentsRequest.UploadAttachmentBinaryFile(_configuration.FilePath);
 
             //create work item then add attachment to that work item
             WorkItemPatchResponse.WorkItem createResponse = request.CreateWorkItem(_configuration.Project);
@@ -393,7 +393,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
 
             // act
             //upload attachment
-            var attachmentReference = attachmentsRequest.UploadAttachment(_configuration.FilePath);
+            var attachmentReference = attachmentsRequest.UploadAttachmentBinaryFile(_configuration.FilePath);
 
             //create work item then add attachment to that work item
             WorkItemPatchResponse.WorkItem createResponse = request.CreateWorkItem(_configuration.Project);

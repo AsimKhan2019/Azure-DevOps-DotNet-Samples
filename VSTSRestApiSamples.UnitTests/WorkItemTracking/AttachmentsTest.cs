@@ -23,7 +23,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("REST API")]  
-        public void WorkItemTracking_WorkItems_DownloadAttachment_Success()
+        public void REST_WorkItemTracking_Attachments_DownloadAttachment_Success()
         {
             // arrange
             string url = "";
@@ -55,6 +55,35 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
                     }
                 }
             }
+        }
+
+
+        [TestMethod, TestCategory("REST API")]
+        public void REST_WorkItemTracking_Attachments_UploadAttachmentBinaryFile_Success()
+        {
+            // arrange    
+            string filePath = @"D:\Temp\test.jpg";
+            Attachments attachements = new Attachments(_configuration);
+
+            // act
+            var response = attachements.UploadAttachmentBinaryFile(@filePath);
+
+            //assert
+            Assert.AreEqual(HttpStatusCode.Created, response.HttpStatusCode);      
+        }
+
+        [TestMethod, TestCategory("REST API")]
+        public void REST_WorkItemTracking_Attachments_UploadAttachmentTextFile_Success()
+        {
+            // arrange    
+            string filePath = @"D:\Temp\test.txt";
+            Attachments attachements = new Attachments(_configuration);
+
+            // act
+            var response = attachements.UploadAttachmentTextFile(@filePath);
+
+            //assert
+            Assert.AreEqual(HttpStatusCode.Created, response.HttpStatusCode);
         }
     }
 }

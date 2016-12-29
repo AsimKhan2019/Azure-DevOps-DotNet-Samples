@@ -121,6 +121,7 @@
     <Compile Include="ProjectsAndTeams\Teams.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProjectsAndTeams\TeamProjects.cs" />
+    <Compile Include="WorkItemTracking\Attachments.cs" />
     <Compile Include="WorkItemTracking\Batch.cs" />
     <Compile Include="WorkItemTracking\Fields.cs" />
     <Compile Include="WorkItemTracking\Queries.cs" />

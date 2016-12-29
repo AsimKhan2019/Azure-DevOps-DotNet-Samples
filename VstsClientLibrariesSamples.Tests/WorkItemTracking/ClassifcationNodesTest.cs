@@ -25,7 +25,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         }
                 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_ClassificationNodes_GetAreas_Success()
+        public void CL_WorkItemTracking_ClassificationNodes_GetAreas_Success()
         {
             // arrange
             ClassificationNodes nodes = new ClassificationNodes(_configuration);
@@ -37,7 +37,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_ClassificationNodes_GetArea_Success()
+        public void CL_WorkItemTracking_ClassificationNodes_GetArea_Success()
         {
             // arrange
             string path = "Area Path Test 1A";
@@ -56,7 +56,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_ClassificationNodes_CreateArea_Success()
+        public void CL_WorkItemTracking_ClassificationNodes_CreateArea_Success()
         {
             // arrange
             ClassificationNodes nodes = new ClassificationNodes(_configuration);
@@ -76,7 +76,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_ClassificationNodes_UpdateArea_Success()
+        public void CL_WorkItemTracking_ClassificationNodes_UpdateArea_Success()
         {
             // arrange
             string path = "Area Path Test 1A";
@@ -95,7 +95,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_ClassificationNodes_GetIterations_Success()
+        public void CL_WorkItemTracking_ClassificationNodes_GetIterations_Success()
         {
             // arrange
             ClassificationNodes nodes = new ClassificationNodes(_configuration);

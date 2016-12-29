@@ -258,8 +258,10 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             var createOneResult = workItems.CreateWorkItem(_configuration.Project);
             var createTwoResult = workItems.CreateWorkItem(_configuration.Project);
             var id = createOneResult.Id ?? default(int);
-           
-            var updateResult = workItems.UpdateWorkItemUpdateLink(id, createTwoResult.Url);
+            var linkToId = createTwoResult.Id ?? default(int);
+
+            var updateLinkResult = workItems.UpdateWorkItemAddLink(id, linkToId);
+            var updateResult = workItems.UpdateWorkItemUpdateLink(id);
 
             //assert
             Assert.IsNotNull(createOneResult);
@@ -277,8 +279,9 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             var createOneResult = workItems.CreateWorkItem(_configuration.Project); //create wi 1
             var createTwoResult = workItems.CreateWorkItem(_configuration.Project); //creaet wi 2
             var id = createOneResult.Id ?? default(int);
+            var linkToId = createTwoResult.Id ?? default(int);
 
-            var updateResult = workItems.UpdateWorkItemUpdateLink(id, createTwoResult.Url); //link on wi #1 to wi #2
+            var updateResult = workItems.UpdateWorkItemAddLink(id, linkToId); //link on wi #1 to wi #2
             var removeResult = workItems.UpdateWorkItemRemoveLink(id); //remove link from wi #1
 
             //assert

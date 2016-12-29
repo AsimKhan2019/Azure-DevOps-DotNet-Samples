@@ -25,7 +25,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_ProjectCollections_GetProjectCollections_Success()
+        public void CL_ProjectsAndTeams_ProjectCollections_GetProjectCollections_Success()
         {
             // arrange
             ProjectCollections projectCollections = new ProjectCollections(_configuration);
@@ -38,7 +38,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_ProjectCollections_GetProjectCollection_Success()
+        public void CL_ProjectsAndTeams_ProjectCollections_GetProjectCollection_Success()
         {
             // arrange
             ProjectCollections projectCollections = new ProjectCollections(_configuration);

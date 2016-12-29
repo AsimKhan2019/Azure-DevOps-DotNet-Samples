@@ -22,7 +22,7 @@ namespace VstsClientLibrariesSamples.Tests.GettingStarted
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void GettingStarted_Authentication_PersonalAccessToken_Success()
+        public void CL_GettingStarted_Authentication_PersonalAccessToken_Success()
         {
             // arrange
             Authentication authentication = new Authentication(_configuration);

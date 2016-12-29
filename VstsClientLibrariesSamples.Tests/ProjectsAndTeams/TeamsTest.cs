@@ -24,7 +24,7 @@ namespace VstsClientLibrariesTeams.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Teams_GetTeams_Success()
+        public void CL_ProjectsAndTeams_Teams_GetTeams_Success()
         {
             // arrange
             Teams request = new Teams(_configuration);
@@ -44,7 +44,7 @@ namespace VstsClientLibrariesTeams.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Teams_GetTeam_Success()
+        public void CL_ProjectsAndTeams_Teams_GetTeam_Success()
         {
             // arrange
             Teams request = new Teams(_configuration);
@@ -64,7 +64,7 @@ namespace VstsClientLibrariesTeams.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Teams_GetTeamMembers_Success()
+        public void CL_ProjectsAndTeams_Teams_GetTeamMembers_Success()
         {
             // arrange
             Teams request = new Teams(_configuration);
@@ -84,7 +84,7 @@ namespace VstsClientLibrariesTeams.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Teams_CreateTeam_Success()
+        public void CL_ProjectsAndTeams_Teams_CreateTeam_Success()
         {
             // arrange
             Teams request = new Teams(_configuration);
@@ -106,7 +106,7 @@ namespace VstsClientLibrariesTeams.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Teams_UpdateTeam_Success()
+        public void CL_ProjectsAndTeams_Teams_UpdateTeam_Success()
         {
             // arrange
             Teams request = new Teams(_configuration);
@@ -128,7 +128,7 @@ namespace VstsClientLibrariesTeams.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Teams_DeleteTeam_Success()
+        public void CL_ProjectsAndTeams_Teams_DeleteTeam_Success()
         {
             // arrange
             Teams request = new Teams(_configuration);

@@ -22,7 +22,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Sample_QueryAndUpdateWorkItems_Success()
+        public void CL_Sample_WorkItemTracking_QueryAndUpdateWorkItems_Success()
         {
             // arrange
             Sample sample = new Sample(_configuration);
@@ -41,7 +41,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Sample_CreateBug_Success()
+        public void CL_Sample_WorkItemTracking_CreateBug_Success()
         {
             // arrange
             Sample sample = new Sample(_configuration);
@@ -53,7 +53,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Sample_CreateBugByPassingRules_Success()
+        public void CL_Sample_WorkItemTracking_CreateBugByPassingRules_Success()
         {
             // arrange
             Sample sample = new Sample(_configuration);
@@ -65,7 +65,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Sample_UpdateBug_Success()
+        public void CL_Sample_WorkItemTracking_UpdateBug_Success()
         {
             // arrange
             Sample sample = new Sample(_configuration);
@@ -77,7 +77,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }        
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Samples_AddLinkToBug_Success()
+        public void CL_Sample_WorkItemTracking_AddLinkToBug_Success()
         {
             // arrange
             Sample sample = new Sample(_configuration);
@@ -98,7 +98,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Samples_AddHyperLinkToBug_Success()
+        public void CL_Sample_WorkItemTracking_AddHyperLinkToBug_Success()
         {
             // arrange
             Sample sample = new Sample(_configuration);
@@ -118,7 +118,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Samples_AddAttachmentToBug_Success()
+        public void CL_Sample_WorkItemTracking_AddAttachmentToBug_Success()
         {
             // arrange
             Sample sample = new Sample(_configuration);
@@ -131,7 +131,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Sample_AddCommentsToBug_Success()
+        public void CL_Sample_WorkItemTracking_AddCommentsToBug_Success()
         {
             // arrange
             Sample sample = new Sample(_configuration);
@@ -143,7 +143,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Sample_QueryWorkItems_Query_Success()
+        public void CL_Sample_WorkItemTracking_QueryWorkItems_Query_Success()
         {
             // arrange
             Sample sample = new Sample(_configuration);
@@ -155,7 +155,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Sample_QueryWorkItems_Query_QueryNotFound()
+        public void CL_Sample_WorkItemTracking_QueryWorkItems_Query_QueryNotFound()
         {
             // arrange
             Sample sample = new Sample(_configuration);
@@ -168,7 +168,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Sample_QueryWorkItems_Wiql_Success()
+        public void CL_Sample_WorkItemTracking_QueryWorkItems_Wiql_Success()
         {
             // arrange
             Sample sample = new Sample(_configuration);                     
@@ -187,7 +187,7 @@ namespace VstsClientLibrariesSamples.Tests.QueryAndUpdateWorkItems
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Sample_GetListOfWorkItemFields_Success()
+        public void CL_Sample_WorkItemTracking_GetListOfWorkItemFields_Success()
         {
             // arrange
             Sample sample = new Sample(_configuration);

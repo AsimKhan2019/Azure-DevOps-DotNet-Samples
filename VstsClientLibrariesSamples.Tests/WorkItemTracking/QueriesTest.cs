@@ -25,7 +25,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Queries_GetQueryByName_Success()
+        public void CL_WorkItemTracking_Queries_GetQueryByName_Success()
         {
             // arrange
             Queries queries = new Queries(_configuration);
@@ -39,7 +39,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Queries_ExecuteQuery_Success()
+        public void CL_WorkItemTracking_Queries_ExecuteQuery_Success()
         {
             // arrange
             Queries queries = new Queries(_configuration);
@@ -62,7 +62,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void WorkItemTracking_Queries_ExecuteByWiql_Success()
+        public void CL_WorkItemTracking_Queries_ExecuteByWiql_Success()
         {
             // arrange
             Queries queries = new Queries(_configuration);

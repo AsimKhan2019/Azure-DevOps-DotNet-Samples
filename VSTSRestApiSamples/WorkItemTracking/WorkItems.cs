@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -228,7 +226,11 @@ namespace VstsRestApiSamples.WorkItemTracking
             WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
             Object[] patchDocument = new Object[1];
 
-            patchDocument[0] = new { op = "add", path = "/fields/System.Title", value = "JavaScript implementation for Microsoft Account" };
+            patchDocument[0] = new {
+                op = "add",
+                path = "/fields/System.Title",
+                value = "JavaScript implementation for Microsoft Account"
+            };
             
             using (var client = new HttpClient())
             {
@@ -479,9 +481,7 @@ namespace VstsRestApiSamples.WorkItemTracking
             WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
             Object[] patchDocument = new Object[1];
 
-            // change some values on a few fields
-            patchDocument[0] = new
-            {
+            patchDocument[0] = new {
                 op = "add",
                 path = "/relations/-",
                 value = new {
@@ -521,21 +521,12 @@ namespace VstsRestApiSamples.WorkItemTracking
         {
             WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
             Object[] patchDocument = new Object[2];
-
-            // change some values on a few fields
-            patchDocument[0] = new { op = "test", path = "/rev", value = "1" };
+            
+            patchDocument[0] = new { op = "test", path = "/rev", value = "2" };
             patchDocument[1] = new {
-                op = "add",
-                path = "/relations/-",
-                value = new WorkItemPatch.Value()
-                {
-                    rel = "System.LinkTypes.Dependency-forward",
-                    url = _configuration.UriString + "/_apis/wit/workitems/" + linkToId,
-                    attributes = new WorkItemPatch.Attributes()
-                    {
-                        comment = "Making a new link for the dependency"
-                    }
-                }
+                op = "replace",
+                path = "/relations/0/attributes/comment",
+                value = "Adding traceability to dependencies"
             };
 
             using (var client = new HttpClient())
@@ -543,8 +534,7 @@ namespace VstsRestApiSamples.WorkItemTracking
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
-
-                // serialize the fields array into a json string          
+                                    
                 var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
 
                 var method = new HttpMethod("PATCH");
@@ -567,10 +557,8 @@ namespace VstsRestApiSamples.WorkItemTracking
             WorkItemPatchResponse.WorkItem viewModel = new WorkItemPatchResponse.WorkItem();
             Object[] patchDocument = new Object[2];
 
-            // change some values on a few fields
             patchDocument[0] = new { op = "test", path = "/rev", value = "1" };
-            patchDocument[1] = new
-            {
+            patchDocument[1] = new {
                 op = "remove",
                 path = "/relations/0",               
             };
@@ -607,16 +595,13 @@ namespace VstsRestApiSamples.WorkItemTracking
             // change some values on a few fields
             patchDocument[0] = new { op = "test", path = "/rev", value = "1" };
             patchDocument[1] = new { op = "add", path = "/fields/System.History", value = "Adding the necessary spec" };
-            patchDocument[2] = new
-            {
+            patchDocument[2] = new {
                 op = "add",
                 path = "/relations/-",
-                value = new
-                {
+                value = new {
                     rel = "AttachedFile",
                     url = url,
-                    attributes = new
-                    {
+                    attributes = new {
                         comment = "VanDelay Industries - Spec"
                     }
                 }

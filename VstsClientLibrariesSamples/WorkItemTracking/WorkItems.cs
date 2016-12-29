@@ -33,12 +33,12 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
         public List<WorkItem> GetWorkItemsWithSpecificFields(IEnumerable<int> ids)
         {
-           var fields = new string[] {
-               "System.Id",
-               "System.Title",
-               "System.WorkItemType",
-               "Microsoft.VSTS.Scheduling.RemainingWork"
-           };    
+            var fields = new string[] {
+                "System.Id",
+                "System.Title",
+                "System.WorkItemType",
+                "Microsoft.VSTS.Scheduling.RemainingWork"
+            };    
 
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
@@ -115,34 +115,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                     Path = "/fields/System.Title",
                     Value = "JavaScript implementation for Microsoft Account"
                 }
-            );
-
-            patchDocument.Add(
-                new JsonPatchOperation()
-                {
-                    Operation = Operation.Add,
-                    Path = "/fields/Microsoft.VSTS.Scheduling.RemainingWork",
-                    Value = "4"
-                }
-            );
-
-            patchDocument.Add(
-                new JsonPatchOperation()
-                {
-                    Operation = Operation.Add,
-                    Path = "/fields/System.Description",
-                    Value = "Follow the code samples from MSDN"
-                }
-            );
-
-            patchDocument.Add(
-                new JsonPatchOperation()
-                {
-                    Operation = Operation.Add,
-                    Path = "/fields/System.History",
-                    Value = "Jim has the most context around this."
-                }
-            );
+            );            
 
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
@@ -296,8 +269,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
             patchDocument.Add(
-                new JsonPatchOperation()
-                {
+                new JsonPatchOperation() {
                     Operation = Operation.Add,
                     Path = "/fields/System.TeamProject",
                     Value = teamProject
@@ -305,8 +277,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             );
 
             patchDocument.Add(
-                new JsonPatchOperation()
-                {
+                new JsonPatchOperation() {
                     Operation = Operation.Add,
                     Path = "/fields/System.AreaPath",
                     Value = areaPath
@@ -314,22 +285,12 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             );
 
             patchDocument.Add(
-               new JsonPatchOperation()
-               {
-                   Operation = Operation.Add,
-                   Path = "/fields/System.IterationPath",
-                   Value = iterationPath
-               }
-            );
-
-            patchDocument.Add(
-                new JsonPatchOperation()
-                {
+                new JsonPatchOperation() {
                     Operation = Operation.Add,
-                    Path = "/fields/System.History",
-                    Value = "moving work item to new project"
+                    Path = "/fields/System.IterationPath",
+                    Value = iterationPath
                 }
-            );
+            );           
 
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
@@ -343,8 +304,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
             patchDocument.Add(
-                new JsonPatchOperation()
-                {
+                new JsonPatchOperation() {
                     Operation = Operation.Add,
                     Path = "/fields/System.WorkItemType",
                     Value = "User Story"
@@ -352,12 +312,11 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             );
 
             patchDocument.Add(
-               new JsonPatchOperation()
-               {
-                   Operation = Operation.Add,
-                   Path = "/fields/System.State",
-                   Value = "Active"
-               }
+                new JsonPatchOperation() {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.State",
+                    Value = "Active"
+                }
             );
 
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
@@ -387,20 +346,20 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             }
         }
 
-        public WorkItem UpdateWorkItemAddLink(int id, string linkToId)
+        public WorkItem UpdateWorkItemAddLink(int id, int linkToId)
         {
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
             patchDocument.Add(
-                new JsonPatchOperation()
-                {
+                new JsonPatchOperation() {
                     Operation = Operation.Add,
                     Path = "/relations/-",
-                    Value = new
-                    {
+                    Value = new {
                         rel = "System.LinkTypes.Dependency-forward",
                         url = _configuration.UriString + "/_apis/wit/workItems/" + linkToId.ToString(),
-                        attributes = new { comment = "Making a new link for the dependency" }
+                        attributes = new {
+                            comment = "Making a new link for the dependency"
+                        }
                     }
                 }
             );
@@ -412,13 +371,12 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             }
         }
 
-        public WorkItem UpdateWorkItemUpdateLink(int id, string url)
+        public WorkItem UpdateWorkItemUpdateLink(int id)
         {
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
             patchDocument.Add(
-                new JsonPatchOperation()
-                {
+                new JsonPatchOperation() {
                     Operation = Operation.Test,
                     Path = "/rev",
                     Value = "1"
@@ -426,16 +384,10 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             );
 
             patchDocument.Add(
-                new JsonPatchOperation()
-                {
-                    Operation = Operation.Add,
-                    Path = "/relations/-",
-                    Value = new
-                    {
-                        rel = "System.LinkTypes.Dependency-forward",
-                        url = url,
-                        attributes = new { comment = "Making a new link for the dependency" }
-                    }
+                new JsonPatchOperation() {
+                    Operation = Operation.Replace,
+                    Path = "/relations/0/attributes/comment",
+                    Value = "Adding traceability to dependencies"                  
                 }
             );
 
@@ -451,8 +403,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
             patchDocument.Add(
-                new JsonPatchOperation()
-                {
+                new JsonPatchOperation() {
                     Operation = Operation.Test,
                     Path = "/rev",
                     Value = "1"
@@ -460,8 +411,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             );
 
             patchDocument.Add(
-                new JsonPatchOperation()
-                {
+                new JsonPatchOperation() {
                     Operation = Operation.Remove,
                     Path = "/relations/0"
                 }
@@ -622,8 +572,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
             patchDocument.Add(
-                new JsonPatchOperation()
-                {
+                new JsonPatchOperation() { 
                     Operation = Operation.Add,
                     Path = "/fields/System.CreatedBy",
                     Value = "Foo <Foo@hotmail.com>"

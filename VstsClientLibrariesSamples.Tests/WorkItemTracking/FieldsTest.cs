@@ -22,7 +22,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
         }
 
         [TestMethod]
-        public void Fields_GetListOfWorkItemFields()
+        public void CL_Fields_GetListOfWorkItemFields()
         {
             // arrange
             Fields fields = new Fields(_configuration);
@@ -34,7 +34,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             Assert.AreEqual("System.Title", result);
         }
 
-        public void Fields_GetField()
+        public void CL_Fields_GetField()
         {
         }
     }

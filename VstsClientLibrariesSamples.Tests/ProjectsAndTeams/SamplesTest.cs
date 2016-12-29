@@ -22,7 +22,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Samples_GetTeams_Success()
+        public void CL_Samples_ProjectsAndTeams_GetTeams_Success()
         {
             // arrange
             Samples request = new Samples(_configuration);
@@ -42,7 +42,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Samples_GetTeam_Success()
+        public void CL_Samples_ProjectsAndTeams_Samples_GetTeam_Success()
         {
             // arrange
             Samples request = new Samples(_configuration);
@@ -62,7 +62,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Samples_GetTeamMembers_Success()
+        public void CL_Samples_ProjectsAndTeams_GetTeamMembers_Success()
         {
             // arrange
             Samples request = new Samples(_configuration);
@@ -82,7 +82,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Samples_CreateTeam_Success()
+        public void CL_Samples_ProjectsAndTeams_CreateTeam_Success()
         {
             // arrange
             Samples request = new Samples(_configuration);
@@ -122,7 +122,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Samples_DeleteTeam_Success()
+        public void CL_Samples_ProjectsAndTeams_DeleteTeam_Success()
         {
             // arrange
             Samples request = new Samples(_configuration);

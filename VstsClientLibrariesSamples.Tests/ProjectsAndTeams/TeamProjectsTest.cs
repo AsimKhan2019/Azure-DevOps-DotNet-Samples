@@ -26,7 +26,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Projects_GetTeamProjects_Success()
+        public void CL_ProjectsAndTeams_Projects_GetTeamProjects_Success()
         {
             // arrange
             TeamProjects projects = new TeamProjects(_configuration);
@@ -39,7 +39,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Projects_GetTeamProjectsByState_Success()
+        public void CL_ProjectsAndTeams_Projects_GetTeamProjectsByState_Success()
         {
             // arrange
             TeamProjects projects = new TeamProjects(_configuration);
@@ -52,7 +52,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Projects_GetTeamProject_Success()
+        public void CL_ProjectsAndTeams_Projects_GetTeamProject_Success()
         {
             // arrange
             TeamProjects projects = new TeamProjects(_configuration);
@@ -72,7 +72,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Projects_CreateTeamProject_Success()
+        public void CL_ProjectsAndTeams_Projects_CreateTeamProject_Success()
         {
             // arrange
             TeamProjects projects = new TeamProjects(_configuration);
@@ -87,7 +87,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Projects_RenameTeamProject_Success()
+        public void CL_ProjectsAndTeams_Projects_RenameTeamProject_Success()
         {
             // arrange
             TeamProjects projects = new TeamProjects(_configuration);
@@ -115,7 +115,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
                
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Projects_ChangeTeamProjectDescription_Success()
+        public void CL_ProjectsAndTeams_Projects_ChangeTeamProjectDescription_Success()
         {
             // arrange
             TeamProjects projects = new TeamProjects(_configuration);
@@ -142,7 +142,7 @@ namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
         }
 
         [TestMethod, TestCategory("Client Libraries")]
-        public void ProjectsAndTeams_Projects_DeleteTeamProject_Success()
+        public void CL_ProjectsAndTeams_Projects_DeleteTeamProject_Success()
         {
             // arrange
             TeamProjects projects = new TeamProjects(_configuration);
