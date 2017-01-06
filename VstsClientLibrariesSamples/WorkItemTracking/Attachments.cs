@@ -52,7 +52,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
         {
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                AttachmentReference attachmentReference = workItemTrackingHttpClient.CreateAttachmentAsync(@filePath, "text").Result;
+                AttachmentReference attachmentReference = workItemTrackingHttpClient.CreateAttachmentAsync(@filePath).Result;
                 return attachmentReference;
             }
         }
@@ -61,7 +61,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
         {
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                AttachmentReference attachmentReference = workItemTrackingHttpClient.CreateAttachmentAsync(@filePath, "binary").Result;
+                AttachmentReference attachmentReference = workItemTrackingHttpClient.CreateAttachmentAsync(@filePath).Result;
                 return attachmentReference;
             }
         }

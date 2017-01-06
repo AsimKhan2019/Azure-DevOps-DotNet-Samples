@@ -45,6 +45,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             Assert.IsNotNull(result);
         }
 
+        [TestMethod, TestCategory("Client Libraries")]
         public void CL_WorkItemTracking_WorkItems_GetWorkItemsWithSpecificFields_Success()
         {
             // arrange
@@ -64,6 +65,7 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             Assert.IsNotNull(result);
         }
 
+        [TestMethod, TestCategory("Client Libraries")]
         public void CL_WorkItemTracking_WorkItems_GetWorkItemsAsOfDate_Success()
         {
             // arrange
