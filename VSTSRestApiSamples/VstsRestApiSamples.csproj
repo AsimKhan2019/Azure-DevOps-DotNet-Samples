@@ -74,6 +74,8 @@
     <Compile Include="ViewModels\WorkItemTracking\AttachmentReference.cs" />
     <Compile Include="ViewModels\WorkItemTracking\CreateUpdateNodeViewModel.cs" />
     <Compile Include="ViewModels\WorkItemTracking\GetDefaultValuesResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetItemFromRecycleBinResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetItemsFromRecycleBinResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\GetNodeResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\GetNodesResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\GetWorkItemsWithLinksAndAttachmentsResponse.cs" />
@@ -83,6 +85,7 @@
     <Compile Include="WorkItemTracking\Batch.cs" />
     <Compile Include="WorkItemTracking\ClassificationNodes.cs" />
     <Compile Include="WorkItemTracking\Fields.cs" />
+    <Compile Include="WorkItemTracking\RecycleBin.cs" />
     <Compile Include="WorkItemTracking\Samples.cs" />
     <Compile Include="WorkItemTracking\WIQL.cs" />
     <Compile Include="WorkItemTracking\Reporting.cs" />

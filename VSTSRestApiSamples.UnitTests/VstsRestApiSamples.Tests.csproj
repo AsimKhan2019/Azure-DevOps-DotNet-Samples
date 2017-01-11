@@ -73,6 +73,7 @@
     <Compile Include="ProjectsAndTeams\TeamsTest.cs" />
     <Compile Include="WorkItemTracking\SamplesTest.cs" />
     <Compile Include="WorkItemTracking\ClassificationNodesTest.cs" />
+    <Compile Include="WorkItemTracking\RecycleBinTest.cs" />
     <Compile Include="WorkItemTracking\WIQLTest.cs" />
     <Compile Include="WorkItemTracking\QueriesTest.cs" />
     <Compile Include="WorkItemTracking\FieldsTest.cs" />
