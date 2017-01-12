@@ -67,18 +67,23 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             RecycleBin recyclebinRequest = new RecycleBin(_configuration);
 
             // act
-            //WorkItemPatchResponse.WorkItem createResponse = workItemsRequest.CreateWorkItem(_configuration.Project);
-            //WorkItemPatchResponse.WorkItem deleteResponse = workItemsRequest.DeleteWorkItem(createResponse.id.ToString());
-            //GetItemFromRecycleBinResponse.WorkItem getDeletedItemResponse = recyclebinRequest.GetDeletedItem(_configuration.Project, createResponse.id.ToString());
-            System.Net.HttpStatusCode restoreResponse = recyclebinRequest.RestoreWorkItem(_configuration.Project, "3212");
+            WorkItemPatchResponse.WorkItem createResponse = workItemsRequest.CreateWorkItem(_configuration.Project);
+            WorkItemPatchResponse.WorkItem deleteResponse = workItemsRequest.DeleteWorkItem(createResponse.id.ToString());
+            GetItemFromRecycleBinResponse.WorkItem getDeletedItemResponse = recyclebinRequest.GetDeletedItem(_configuration.Project, createResponse.id.ToString());
+            System.Net.HttpStatusCode restoreResponse = recyclebinRequest.RestoreWorkItem(_configuration.Project, createResponse.id.ToString());
+
+            ////get restored item
+            GetWorkItemExpandAllResponse.WorkItem getRestoredItemResponse = workItemsRequest.GetWorkItem(createResponse.id.ToString());
 
             //assert
-            //Assert.AreEqual(HttpStatusCode.OK, createResponse.HttpStatusCode);
-            //Assert.AreEqual(HttpStatusCode.OK, deleteResponse.HttpStatusCode);
-            //Assert.AreEqual(HttpStatusCode.OK, getDeletedItemResponse.HttpStatusCode);
-            Assert.AreEqual(HttpStatusCode.OK, restoreResponse);
+            Assert.AreEqual(HttpStatusCode.OK, createResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, deleteResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, getDeletedItemResponse.HttpStatusCode);
+            Assert.AreEqual(HttpStatusCode.NoContent, restoreResponse);
+            Assert.AreEqual(HttpStatusCode.OK, getRestoredItemResponse.HttpStatusCode);
 
             workItemsRequest = null;
+            recyclebinRequest = null;
         }
     }
 

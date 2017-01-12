@@ -81,6 +81,7 @@
     <Compile Include="ViewModels\WorkItemTracking\GetWorkItemsWithLinksAndAttachmentsResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\WorkItemBatchPost.cs" />
     <Compile Include="ViewModels\WorkItemTracking\WorkItemBatchPostResponse.cs" />
+    <Compile Include="ViewModels\Work\GetTeamSettingsResponse.cs" />
     <Compile Include="WorkItemTracking\Attachments.cs" />
     <Compile Include="WorkItemTracking\Batch.cs" />
     <Compile Include="WorkItemTracking\ClassificationNodes.cs" />
@@ -90,8 +91,8 @@
     <Compile Include="WorkItemTracking\WIQL.cs" />
     <Compile Include="WorkItemTracking\Reporting.cs" />
     <Compile Include="WorkItemTracking\WorkItems.cs" />
-    <Compile Include="Work\ProcessConfiguration\Fields.cs" />
-    <Compile Include="Work\ProcessConfiguration\Lists.cs" />
+    <Compile Include="Work\Fields.cs" />
+    <Compile Include="Work\Lists.cs" />
     <Compile Include="WorkItemTracking\Queries.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="ViewModels\Work\PickListResponse.cs" />
     <Compile Include="ViewModels\Work\PickListPost.cs" />
     <Compile Include="ViewModels\Work\PickListPostResponse.cs" />
+    <Compile Include="Work\TeamSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

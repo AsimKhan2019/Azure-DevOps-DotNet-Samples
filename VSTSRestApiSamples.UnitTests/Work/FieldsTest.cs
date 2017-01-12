@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VstsRestApiSamples.Work.ProcessConfiguration;
+using VstsRestApiSamples.Work;
 using System.Net;
 
-namespace VstsRestApiSamples.Tests.Work.ProcessConfiguration
-{
+namespace VstsRestApiSamples.Tests.Work
+{ 
     [TestClass]
     public class FieldsTest
     {

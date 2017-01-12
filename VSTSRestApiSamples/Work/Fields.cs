@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using VstsRestApiSamples.ViewModels.Work;
 
-namespace VstsRestApiSamples.Work.ProcessConfiguration
+namespace VstsRestApiSamples.Work
 {
     public class Fields
     {
