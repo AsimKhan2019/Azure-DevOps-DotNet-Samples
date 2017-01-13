@@ -58,6 +58,7 @@
     <Compile Include="ProjectsAndTeams\TeamProjects.cs" />
     <Compile Include="ProjectsAndTeams\Samples.cs" />
     <Compile Include="ProjectsAndTeams\Teams.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetRestoredWorkItemResponse.cs" />
     <Compile Include="ViewModels\Git\GetAllRepositoriesResponse.cs" />
     <Compile Include="ViewModels\Git\GetCommitsByRepositoryIdResponse.cs" />
     <Compile Include="ViewModels\Git\GetFolderAndChildrenResponse.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="ViewModels\WorkItemTracking\GetItemsFromRecycleBinResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\GetNodeResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\GetNodesResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetRestoreMultipleWorkItemsResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\GetWorkItemsWithLinksAndAttachmentsResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\WorkItemBatchPost.cs" />
     <Compile Include="ViewModels\WorkItemTracking\WorkItemBatchPostResponse.cs" />
