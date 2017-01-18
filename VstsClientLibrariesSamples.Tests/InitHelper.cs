@@ -11,11 +11,12 @@ namespace VstsClientLibrariesSamples.Tests
     {
         public static IConfiguration GetConfiguration(IConfiguration configuration)
         {
+            configuration.AccountName = ConfigurationSettings.AppSettings["appsetting.accountname"].ToString();
+            configuration.ApplicationId = ConfigurationSettings.AppSettings["appsetting.applicationId"].ToString();
             configuration.PersonalAccessToken = ConfigurationSettings.AppSettings["appsetting.pat"].ToString();
             configuration.Project = ConfigurationSettings.AppSettings["appsetting.project"].ToString();
             configuration.Query = ConfigurationSettings.AppSettings["appsetting.query"].ToString();
             configuration.Identity = ConfigurationSettings.AppSettings["appsetting.identity"].ToString();
-            configuration.UriString = ConfigurationSettings.AppSettings["appsetting.uri"].ToString();   
             configuration.WorkItemIds = ConfigurationSettings.AppSettings["appsetting.workitemids"].ToString();
             configuration.WorkItemId = Convert.ToInt32(ConfigurationSettings.AppSettings["appsetting.workitemid"].ToString());
             configuration.FilePath = ConfigurationSettings.AppSettings["appsetting.filepath"].ToString();
