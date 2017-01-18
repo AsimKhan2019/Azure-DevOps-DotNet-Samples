@@ -108,7 +108,7 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
 
-        public GetRestoreMultipleWorkItemsResponse.Items RestoreMultipleWorkItems(string[] ids)
+        public GetRestoreMultipleWorkItemsResponse.Items RestoreMultipleItems(string[] ids)
         {
             GetRestoreMultipleWorkItemsResponse.Items viewModel = new GetRestoreMultipleWorkItemsResponse.Items();
             WorkItemBatchPost.BatchRequest[] postDocument = new WorkItemBatchPost.BatchRequest[3];

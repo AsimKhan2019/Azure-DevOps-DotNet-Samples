@@ -108,7 +108,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
                 var deleteResponse = workItemsRequest.DeleteWorkItem(id);
             }
 
-            var respond = recyclebinRequest.RestoreMultipleWorkItems(ids);
+            var respond = recyclebinRequest.RestoreMultipleItems(ids);
                     
             //assert
             Assert.AreEqual(HttpStatusCode.OK, createResponse.HttpStatusCode);          
@@ -177,5 +177,4 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             recyclebinRequest = null;
         }
     }
-
 }

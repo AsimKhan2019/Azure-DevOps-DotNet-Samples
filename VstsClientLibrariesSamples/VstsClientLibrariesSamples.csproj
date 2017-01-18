@@ -125,6 +125,7 @@
     <Compile Include="WorkItemTracking\Batch.cs" />
     <Compile Include="WorkItemTracking\Fields.cs" />
     <Compile Include="WorkItemTracking\Queries.cs" />
+    <Compile Include="WorkItemTracking\RecycleBin.cs" />
     <Compile Include="WorkItemTracking\Reporting.cs" />
     <Compile Include="WorkItemTracking\Sample.cs" />
     <Compile Include="WorkItemTracking\ClassificationNodes.cs" />

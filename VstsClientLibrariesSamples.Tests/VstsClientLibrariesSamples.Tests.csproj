@@ -138,6 +138,7 @@
     <Compile Include="WorkItemTracking\FieldsTest.cs" />
     <Compile Include="WorkItemTracking\ClassifcationNodesTest.cs" />
     <Compile Include="WorkItemTracking\AttachmentsTest.cs" />
+    <Compile Include="WorkItemTracking\RecyleBinTest.cs" />
     <Compile Include="WorkItemTracking\WorkItemsTest.cs" />
   </ItemGroup>
   <ItemGroup>
