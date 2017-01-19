@@ -19,7 +19,7 @@ namespace VstsRestApiSamples.GettingStarted
         {
         }
 
-        public ListofProjectsResponse.Projects InteractiveADAL(string accountName, string applicationId)
+        public ListofProjectsResponse.Projects InteractiveADAL(string vstsAccountName, string applicationId)
         {
             AuthenticationContext ctx = GetAuthenticationContext(null);
             AuthenticationResult result = null;
@@ -34,11 +34,11 @@ namespace VstsRestApiSamples.GettingStarted
 
             var bearerAuthHeader = new AuthenticationHeaderValue("Bearer", result.AccessToken);
 
-            return ListProjects(accountName, bearerAuthHeader);
+            return ListProjects(vstsAccountName, bearerAuthHeader);
         }
 
         //NOTE: If the user is not already logged in, this will cause a web browser prompt to display
-        public ListofProjectsResponse.Projects InteractiveADALExchangeGraphTokenForVSTSToken(string accountName, string applicationId)
+        public ListofProjectsResponse.Projects InteractiveADALExchangeGraphTokenForVSTSToken(string vstsAccountName, string applicationId)
         {
             AuthenticationContext ctx = GetAuthenticationContext(null);
 
@@ -58,21 +58,21 @@ namespace VstsRestApiSamples.GettingStarted
 
             var bearerAuthHeader = new AuthenticationHeaderValue("Bearer", result.AccessToken);
 
-            return ListProjects(accountName, bearerAuthHeader);
+            return ListProjects(vstsAccountName, bearerAuthHeader);
         }
 
-        public ListofProjectsResponse.Projects NonInteractivePersonalAccessToken(string accountName, string personalAccessToken)
+        public ListofProjectsResponse.Projects NonInteractivePersonalAccessToken(string vstsAccountName, string personalAccessToken)
         {
             // encode our personal access token                   
             string encodedPAT = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", personalAccessToken)));
             var basicAuthHeader = new AuthenticationHeaderValue("Basic", encodedPAT);
 
-            return ListProjects(accountName, basicAuthHeader);
+            return ListProjects(vstsAccountName, basicAuthHeader);
         }
 
-        public ListofProjectsResponse.Projects DeviceCodeADAL(string accountName, string applicationId)
+        public ListofProjectsResponse.Projects DeviceCodeADAL(string vstsAccountName, string applicationId)
         {
-            string tenant = GetAccountTenant(accountName);
+            string tenant = GetAccountTenant(vstsAccountName);
             AuthenticationContext ctx = GetAuthenticationContext(tenant);
 
             AuthenticationResult result = null;
@@ -90,7 +90,7 @@ namespace VstsRestApiSamples.GettingStarted
 
             var bearerAuthHeader = new AuthenticationHeaderValue("Bearer", result.AccessToken);
 
-            return ListProjects(accountName, bearerAuthHeader);
+            return ListProjects(vstsAccountName, bearerAuthHeader);
         }
 
         private static ListofProjectsResponse.Projects ListProjects(string vstsAccountName, AuthenticationHeaderValue authHeader)
