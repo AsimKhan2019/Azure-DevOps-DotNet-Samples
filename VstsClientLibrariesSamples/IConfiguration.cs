@@ -6,10 +6,12 @@ namespace VstsClientLibrariesSamples
     public interface IConfiguration
     {
         string AccountName { get; set; }
+        Uri CollectionUri { get; }
+        string UriString { get; }
         string ApplicationId { get; set; }
         string PersonalAccessToken { get; set; }
         string Project { get; set; }
-        string UriString { get; }
+        
         string Query { get; set; }
         string Identity { get; set; }
         string WorkItemIds { get; set; }
