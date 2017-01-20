@@ -20,7 +20,7 @@ namespace VstsRestApiSamples.ProjectsAndTeams
         // / get list of all processes
         // / </summary>
         // / <returns>ListofProcessesResponse.Processes</returns>
-        public ListofProcessesResponse.Projects GetListOfProcesses()
+        public ListofProcessesResponse.Projects GetProcesses()
         {
             ListofProcessesResponse.Projects viewModel = new ListofProcessesResponse.Projects();
 

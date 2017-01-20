@@ -20,3 +20,7 @@
 /VstsClientLibrariesSamples.Tests/app.Release.config
 /VSTSRestApiSamples.UnitTests/app.Debug.config
 /VSTSRestApiSamples.UnitTests/app.Release.config
+/VstsClientLibrariesSamples.Tests/obj/Release
+/VstsClientLibrariesSamples/obj/Release
+/VSTSRestApiSamples/obj/Release
+/VSTSRestApiSamples.UnitTests/obj/Release

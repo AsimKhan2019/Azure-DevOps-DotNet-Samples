@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.Services.Common;
+ sing System;
 
 namespace VstsClientLibrariesSamples
 {
@@ -11,7 +10,9 @@ namespace VstsClientLibrariesSamples
         string ApplicationId { get; set; }
         string PersonalAccessToken { get; set; }
         string Project { get; set; }
-        
+        string CollectionId { get; set; }
+        string Team { get; set; }
+        string MoveToProject { get; set; }  
         string Query { get; set; }
         string Identity { get; set; }
         string WorkItemIds { get; set; }

@@ -39,7 +39,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.9.0.2-beta1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -59,20 +59,50 @@
     <Compile Include="Build2\Build.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="GettingStarted\Authentication.cs" />
+    <Compile Include="Git\Repositories.cs" />
     <Compile Include="IConfiguration.cs" />
     <Compile Include="ProjectsAndTeams\Processes.cs" />
+    <Compile Include="ProjectsAndTeams\ProjectCollections.cs" />
+    <Compile Include="ProjectsAndTeams\TeamProjects.cs" />
+    <Compile Include="ProjectsAndTeams\Samples.cs" />
+    <Compile Include="ProjectsAndTeams\Teams.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetRestoredWorkItemResponse.cs" />
+    <Compile Include="ViewModels\Git\GetAllRepositoriesResponse.cs" />
+    <Compile Include="ViewModels\Git\GetCommitsByRepositoryIdResponse.cs" />
+    <Compile Include="ViewModels\Git\GetFolderAndChildrenResponse.cs" />
+    <Compile Include="ViewModels\Git\GetRepositoryByIdResponse.cs" />
+    <Compile Include="ViewModels\ProjectsAndTeams\GetOperationResponse.cs" />
+    <Compile Include="ViewModels\ProjectsAndTeams\GetProjectResponse.cs" />
+    <Compile Include="ViewModels\ProjectsAndTeams\GetTeamMembersResponse.cs" />
+    <Compile Include="ViewModels\ProjectsAndTeams\GetTeamResponse.cs" />
+    <Compile Include="ViewModels\ProjectsAndTeams\GetProjectCollectionResponse.cs" />
     <Compile Include="ViewModels\ProjectsAndTeams\ListofProjectsResponse.cs" />
+    <Compile Include="ViewModels\ProjectsAndTeams\ListofTeamsResponse.cs" />
+    <Compile Include="ViewModels\ProjectsAndTeams\ProjectPost.cs" />
+    <Compile Include="ViewModels\ProjectsAndTeams\TeamPost.cs" />
     <Compile Include="ViewModels\WorkItemTracking\AttachmentReference.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\CreateUpdateNodeViewModel.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetDefaultValuesResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetItemFromRecycleBinResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetItemsFromRecycleBinResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetNodeResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetNodesResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetRestoreMultipleWorkItemsResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetWorkItemsWithLinksAndAttachmentsResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\WorkItemBatchPost.cs" />
     <Compile Include="ViewModels\WorkItemTracking\WorkItemBatchPostResponse.cs" />
+    <Compile Include="ViewModels\Work\GetTeamSettingsResponse.cs" />
     <Compile Include="WorkItemTracking\Attachments.cs" />
     <Compile Include="WorkItemTracking\Batch.cs" />
+    <Compile Include="WorkItemTracking\ClassificationNodes.cs" />
     <Compile Include="WorkItemTracking\Fields.cs" />
+    <Compile Include="WorkItemTracking\RecycleBin.cs" />
     <Compile Include="WorkItemTracking\Samples.cs" />
     <Compile Include="WorkItemTracking\WIQL.cs" />
+    <Compile Include="WorkItemTracking\Reporting.cs" />
     <Compile Include="WorkItemTracking\WorkItems.cs" />
-    <Compile Include="Work\ProcessConfiguration\Fields.cs" />
-    <Compile Include="Work\ProcessConfiguration\Lists.cs" />
+    <Compile Include="Work\Fields.cs" />
+    <Compile Include="Work\Lists.cs" />
     <Compile Include="WorkItemTracking\Queries.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
@@ -81,13 +111,13 @@
     <Compile Include="ViewModels\ProjectsAndTeams\ListofProcessesResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\BatchOfWorkItemLinksResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\BatchOfWorkItemRevisionsResponse.cs" />
-    <Compile Include="ViewModels\WorkItemTracking\GetWorkItemsResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetWorkItemsWIQLResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\GetWorkItemExpandAllResponse.cs" />
-    <Compile Include="ViewModels\WorkItemTracking\ListofQueriesByFolderPath.cs" />
-    <Compile Include="ViewModels\WorkItemTracking\ListofQueriesByIdResponse.cs" />
-    <Compile Include="ViewModels\WorkItemTracking\ListofQueriesResponse.cs" />
-    <Compile Include="ViewModels\WorkItemTracking\ListofWorkItemFieldsResponse.cs" />
-    <Compile Include="ViewModels\WorkItemTracking\ListofWorkItemsResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetQueriesByFolderPath.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetQueriesByIdResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetQueriesResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetWorkItemFieldsResponse.cs" />
+    <Compile Include="ViewModels\WorkItemTracking\GetWorkItemsResponse.cs" />
     <Compile Include="ViewModels\WorkItemTracking\WorkItemPatch.cs" />
     <Compile Include="ViewModels\WorkItemTracking\WorkItemPatchResponse.cs" />
     <Compile Include="ViewModels\Work\DownloadAttachmentResponse.cs" />
@@ -97,6 +127,7 @@
     <Compile Include="ViewModels\Work\PickListResponse.cs" />
     <Compile Include="ViewModels\Work\PickListPost.cs" />
     <Compile Include="ViewModels\Work\PickListPostResponse.cs" />
+    <Compile Include="Work\TeamSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

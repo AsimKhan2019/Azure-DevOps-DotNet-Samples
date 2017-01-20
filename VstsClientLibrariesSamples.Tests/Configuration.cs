@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,8 +14,11 @@ namespace VstsClientLibrariesSamples.Tests
         public string ApplicationId { get; set; }
         public string UriString { get { return string.Format("https://{0}.visualstudio.com", AccountName); } }
         public Uri CollectionUri { get { return new Uri(UriString); } }
+        public string CollectionId { get; set; }
         public string PersonalAccessToken { get; set; }
         public string Project { get; set; }
+        public string Team { get; set; }
+        public string MoveToProject { get; set; }
         public string Query { get; set; }
         public string Identity { get; set; }
         public string WorkItemIds { get; set; }

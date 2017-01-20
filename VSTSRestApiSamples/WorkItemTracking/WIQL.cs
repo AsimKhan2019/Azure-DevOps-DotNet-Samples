@@ -23,9 +23,9 @@ namespace VstsRestApiSamples.WorkItemTracking
         // / </summary>
         // / <param name="id">query id</param>
         // / <returns></returns>
-        public GetWorkItemsResponse.Results GetListOfWorkItems_ByQueryId(string project, string id)
+        public GetWorkItemsWIQLResponse.Results GetListOfWorkItems_ByQueryId(string project, string id)
         {
-            GetWorkItemsResponse.Results viewModel = new GetWorkItemsResponse.Results();
+            GetWorkItemsWIQLResponse.Results viewModel = new GetWorkItemsWIQLResponse.Results();
 
             using (var client = new HttpClient())
             {
@@ -38,7 +38,7 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 if (response.IsSuccessStatusCode)
                 {
-                    viewModel = response.Content.ReadAsAsync<GetWorkItemsResponse.Results>().Result;
+                    viewModel = response.Content.ReadAsAsync<GetWorkItemsWIQLResponse.Results>().Result;
                 }
 
                 viewModel.HttpStatusCode = response.StatusCode;
@@ -52,9 +52,9 @@ namespace VstsRestApiSamples.WorkItemTracking
         // / </summary>
         // / <param name="project"></param>
         // / <returns></returns>
-        public GetWorkItemsResponse.Results GetListOfWorkItems_ByWiql(string project)
+        public GetWorkItemsWIQLResponse.Results GetListOfWorkItems_ByWiql(string project)
         {
-            GetWorkItemsResponse.Results viewModel = new GetWorkItemsResponse.Results();
+            GetWorkItemsWIQLResponse.Results viewModel = new GetWorkItemsWIQLResponse.Results();
 
             // create wiql object
             Object wiql = new {
@@ -83,7 +83,7 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 if (response.IsSuccessStatusCode)
                 {
-                    viewModel = response.Content.ReadAsAsync<GetWorkItemsResponse.Results>().Result;
+                    viewModel = response.Content.ReadAsAsync<GetWorkItemsWIQLResponse.Results>().Result;
                 }
 
                 viewModel.HttpStatusCode = response.StatusCode;

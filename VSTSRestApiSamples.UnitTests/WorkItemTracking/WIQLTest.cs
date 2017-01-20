@@ -29,7 +29,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             WIQL request = new WIQL(_configuration);
 
             // act
-            GetWorkItemsResponse.Results response = request.GetListOfWorkItems_ByQueryId(_configuration.Project, _configuration.QueryId);
+            GetWorkItemsWIQLResponse.Results response = request.GetListOfWorkItems_ByQueryId(_configuration.Project, _configuration.QueryId);
 
             // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
@@ -51,7 +51,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             WIQL request = new WIQL(_configuration);
 
             // act
-            GetWorkItemsResponse.Results response = request.GetListOfWorkItems_ByWiql(_configuration.Project);
+            GetWorkItemsWIQLResponse.Results response = request.GetListOfWorkItems_ByWiql(_configuration.Project);
 
             // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)

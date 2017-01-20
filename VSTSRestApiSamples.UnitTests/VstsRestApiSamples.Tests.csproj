@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.9.0.2-beta1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -64,18 +64,27 @@
     <Compile Include="Build2\BuildTest.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="GettingStarted\AuthenticationTest.cs" />
+    <Compile Include="Git\GitRepositoryTest.cs" />
     <Compile Include="InitHelper.cs" />
+    <Compile Include="ProjectsAndTeams\TeamProjectsTests.cs" />
+    <Compile Include="ProjectsAndTeams\ProjectCollectionsTest.cs" />
     <Compile Include="ProjectsAndTeams\ProcessesTest.cs" />
+    <Compile Include="ProjectsAndTeams\SamplesTest.cs" />
+    <Compile Include="ProjectsAndTeams\TeamsTest.cs" />
     <Compile Include="WorkItemTracking\SamplesTest.cs" />
+    <Compile Include="WorkItemTracking\ClassificationNodesTest.cs" />
+    <Compile Include="WorkItemTracking\RecycleBinTest.cs" />
     <Compile Include="WorkItemTracking\WIQLTest.cs" />
     <Compile Include="WorkItemTracking\QueriesTest.cs" />
     <Compile Include="WorkItemTracking\FieldsTest.cs" />
     <Compile Include="WorkItemTracking\AttachmentsTest.cs" />
     <Compile Include="WorkItemTracking\BatchTest.cs" />
+    <Compile Include="WorkItemTracking\ReportingTest.cs" />
     <Compile Include="WorkItemTracking\WorkItemsTest.cs" />
-    <Compile Include="Work\ProcessConfiguration\ListsTest.cs" />
-    <Compile Include="Work\ProcessConfiguration\FieldsTest.cs" />
+    <Compile Include="Work\ListsTest.cs" />
+    <Compile Include="Work\FieldsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Work\TeamSettingsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -95,6 +104,7 @@
       <Name>VstsRestApiSamples</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

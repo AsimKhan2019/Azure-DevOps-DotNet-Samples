@@ -30,7 +30,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             Queries request = new Queries(_configuration);
 
             // act
-            ListofQueriesResponse.Queries response = request.GetListOfQueries(_configuration.Project);
+            GetQueriesResponse.Queries response = request.GetListOfQueries(_configuration.Project);
 
             // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
@@ -46,7 +46,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             string folderPath = "Shared%20Queries/Product%20Planning";
 
             // act
-            ListofQueriesByFolderPath.Queries response = request.GetListOfQueriesByFolderPath(_configuration.Project, folderPath);
+            GetQueriesByFolderPath.Queries response = request.GetListOfQueriesByFolderPath(_configuration.Project, folderPath);
 
             // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
@@ -61,7 +61,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             Queries request = new Queries(_configuration);                    
 
             // act
-            GetQueryResponse.Queries response = request.GetQueryById(_configuration.Project, _configuration.QueryId);
+            GetQueriesByIdResponse.Queries response = request.GetQueryById(_configuration.Project, _configuration.QueryId);
 
             // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)
@@ -83,7 +83,7 @@ namespace VstsRestApiSamples.Tests.WorkItemTracking
             Queries request = new Queries(_configuration);           
 
             // act
-            GetQueryResponse.Queries response = request.GetQueryByPath(_configuration.Project, _configuration.Query);
+            GetQueriesByIdResponse.Queries response = request.GetQueryByPath(_configuration.Project, _configuration.Query);
 
             // assert
             if (response.HttpStatusCode == HttpStatusCode.NotFound)

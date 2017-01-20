@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-
-namespace VstsRestApiSamples.ViewModels.WorkItemTracking
+﻿namespace VstsRestApiSamples.ViewModels.WorkItemTracking
 {
     public class AttachmentReference : BaseViewModel
     {       
