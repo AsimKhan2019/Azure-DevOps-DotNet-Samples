@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using VstsRestApiSamples.ViewModels.Work;
 
 namespace VstsRestApiSamples.WorkItemTracking
@@ -17,12 +18,6 @@ namespace VstsRestApiSamples.WorkItemTracking
             _credentials = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Format("{0}:{1}", "", _configuration.PersonalAccessToken)));
         }
 
-        // / <summary>
-        // / download an attachment from the work item
-        // / </summary>
-        // / <param name="url">url supplied from get work item</param>
-        // / <param name="saveToFile">location you want to save the attachment to</param>
-        // / <returns>DownloadAttachmentResponse</returns>
         public DownloadAttachmentResponse DownloadAttachment(string url, string saveToFile)
         {             
             DownloadAttachmentResponse viewModel = new DownloadAttachmentResponse();
@@ -69,17 +64,47 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
 
-        // / <summary>
-        // / upload binary file into attachement store
-        // / </summary>
-        // / <param name="filePath">local file path for file</param>
-        // / <returns>UploadAttachmentResponse.Attachment</returns>
-        public ViewModels.WorkItemTracking.AttachmentReference UploadAttachment(string filePath)
+        public ViewModels.WorkItemTracking.AttachmentReference UploadAttachmentTextFile(string filePath)
+        {
+            string text = File.ReadAllText(@filePath);
+            String[] breakApart = filePath.Split('\\');
+            int length = breakApart.Length;
+            string fileName = breakApart[length - 1];
+
+            ViewModels.WorkItemTracking.AttachmentReference viewModel = new ViewModels.WorkItemTracking.AttachmentReference();
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string         
+                var patchValue = new StringContent(text, Encoding.UTF8, "application/json"); // mediaType needs to be application/json-patch+json for a patch call
+                var method = new HttpMethod("POST");
+
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/attachments?fileName=" + fileName + "&api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    viewModel = response.Content.ReadAsAsync<ViewModels.WorkItemTracking.AttachmentReference>().Result;
+                }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+
+                return viewModel;
+            }
+        }
+
+        public ViewModels.WorkItemTracking.AttachmentReference UploadAttachmentBinaryFile(string filePath)
         {
             Byte[] bytes = File.ReadAllBytes(@filePath);
             String[] breakApart = filePath.Split('\\');
             int length = breakApart.Length;
             string fileName = breakApart[length - 1];
+
+            ViewModels.WorkItemTracking.AttachmentReference viewModel = new ViewModels.WorkItemTracking.AttachmentReference();
 
             using (var client = new HttpClient())
             {
@@ -94,17 +119,17 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = response.Content.ReadAsAsync<ViewModels.WorkItemTracking.AttachmentReference>().Result;
-                    return result;
+                    viewModel = response.Content.ReadAsAsync<ViewModels.WorkItemTracking.AttachmentReference>().Result;
                 }
                 else
                 {
                     dynamic responseForInvalidStatusCode = response.Content.ReadAsAsync<dynamic>();
-                    Newtonsoft.Json.Linq.JContainer msg = responseForInvalidStatusCode.Result;
-                    var error = msg.ToString();
-
-                    return null;
+                    Newtonsoft.Json.Linq.JContainer msg = responseForInvalidStatusCode.Result;                   
+                    viewModel.Message = msg.ToString();
                 }
+
+                viewModel.HttpStatusCode = response.StatusCode;
+                return viewModel;
             }
         }
 

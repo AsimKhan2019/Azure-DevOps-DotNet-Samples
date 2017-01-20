@@ -1,4 +1,3 @@
-﻿
 namespace VstsRestApiSamples
 {
     public class Configuration : IConfiguration
@@ -6,8 +5,10 @@ namespace VstsRestApiSamples
         public string AccountName { get; set; }
         public string ApplicationId { get; set; }
         public string UriString { get { return string.Format("https://{0}.visualstudio.com", AccountName); } }
+        public string CollectionId { get; set; }
         public string PersonalAccessToken { get; set; }
         public string Project { get; set; }
+        public string Team { get; set; }
         public string MoveToProject { get; set; }
         public string Query { get; set; }
         public string Identity { get; set; }
@@ -17,5 +18,6 @@ namespace VstsRestApiSamples
         public string PickListId { get; set; }
         public string QueryId { get; set; }
         public string FilePath { get; set; }
+        public string GitRepositoryId { get; set; }
     }
 }

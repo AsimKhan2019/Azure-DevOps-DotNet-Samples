@@ -3,8 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using Newtonsoft.Json;
-
-using VstsRestApiSamples.ViewModels.WorkItemTracking;
+using System.Collections.Generic;
 
 namespace VstsRestApiSamples.WorkItemTracking
 {
@@ -307,6 +306,58 @@ namespace VstsRestApiSamples.WorkItemTracking
             }
         }
 
+        public string AddHyperLinkToBug()
+        {
+            string _id = _configuration.WorkItemId;
+          
+            Object[] patchDocument = new Object[1];
+
+            // change some values on a few fields
+            patchDocument[0] = new
+            {
+                op = "add",
+                path = "/relations/-",
+                value = new
+                {
+                    rel = "Hyperlink",
+                    url = "http://www.visualstudio.com/team-services",
+                    attributes = new
+                    {
+                        comment = "Visaul Studio Team Services"
+                    }
+                }
+            };
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                // serialize the fields array into a json string          
+                var patchValue = new StringContent(JsonConvert.SerializeObject(patchDocument), Encoding.UTF8, "application/json-patch+json"); // mediaType needs to be application/json-patch+json for a patch call
+
+                // set the httpmethod to Patch
+                var method = new HttpMethod("PATCH");
+
+                // send the request
+                var request = new HttpRequestMessage(method, _configuration.UriString + "_apis/wit/workitems/" + _id + "?api-version=2.2") { Content = patchValue };
+                var response = client.SendAsync(request).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    return "success";
+                }
+                else
+                {
+                    dynamic responseForInvalidStatusCode = response.Content.ReadAsAsync<dynamic>();
+                    Newtonsoft.Json.Linq.JContainer msg = responseForInvalidStatusCode.Result;
+                    return (msg.ToString());
+                }               
+            }
+        }
+
         public string AddAttachmentToBug()
         {
             string _id = _configuration.WorkItemId;
@@ -316,8 +367,16 @@ namespace VstsRestApiSamples.WorkItemTracking
             String[] breakApart = _filePath.Split('\\');
             int length = breakApart.Length;
             string fileName = breakApart[length - 1];
+            Byte[] bytes;
 
-            Byte[] bytes = System.IO.File.ReadAllBytes(@_filePath);
+            try
+            {
+                bytes = System.IO.File.ReadAllBytes(@_filePath);
+            }
+            catch(System.IO.FileNotFoundException)
+            {
+                return @"file not found: " + _filePath;
+            }
 
             using (var client = new HttpClient())
             {
@@ -416,9 +475,37 @@ namespace VstsRestApiSamples.WorkItemTracking
                 if (response.IsSuccessStatusCode)
                 {
                     var result = response.Content.ReadAsStringAsync().Result;
+                    return "success";
                 }
 
-                return "success";
+                return "failure";
+                
+            }
+        }
+
+        public string GetListOfWorkItemFields(string fieldName)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_configuration.UriString);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credentials);
+
+                HttpResponseMessage response = client.GetAsync("_apis/wit/fields?api-version=2.2").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    WorkItemFields result = response.Content.ReadAsAsync<WorkItemFields>().Result;
+
+                    List<WorkItemField> list = new List<WorkItemField>(result.value);
+
+                    var item = list.Find(x => x.name == fieldName);
+
+                    return item.referenceName;
+                }
+
+                return "failure";
             }
         }
     }
@@ -430,6 +517,7 @@ namespace VstsRestApiSamples.WorkItemTracking
         public string path { get; set; }           
         public string url { get; set; }
     }
+
     public class WorkItemQueryResult 
     {
         public string queryType { get; set; }
@@ -438,20 +526,38 @@ namespace VstsRestApiSamples.WorkItemTracking
         public Column[] columns { get; set; }
         public Workitem[] workItems { get; set; }
     }   
+
     public class Workitem
     {
         public int id { get; set; }
         public string url { get; set; }
     }
+
     public class Column
     {
         public string referenceName { get; set; }
         public string name { get; set; }
         public string url { get; set; }
     }
+
     public class AttachmentReference
     {
         public string id { get; set; }
+        public string url { get; set; }
+    }
+
+    public class WorkItemFields 
+    {
+        public int count { get; set; }
+        public WorkItemField[] value { get; set; }
+    }
+
+    public class WorkItemField
+    {
+        public string name { get; set; }
+        public string referenceName { get; set; }
+        public string type { get; set; }
+        public bool readOnly { get; set; }        
         public string url { get; set; }
     }
 }

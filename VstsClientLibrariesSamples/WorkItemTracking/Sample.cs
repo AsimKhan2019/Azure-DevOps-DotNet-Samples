@@ -253,6 +253,42 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             }           
         }
 
+        public string AddHyperLinkToBug()
+        {
+            var _id = _configuration.WorkItemId;
+           
+            JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            patchDocument.Add(new JsonPatchOperation()
+            {
+                Operation = Operation.Add,
+                Path = "/relations/-",
+                Value = new
+                {
+                    rel = "Hyperlink",
+                    url = "http://www.visualstudio.com/team-services",
+                    attributes = new { comment = "Visual Studio Team Services" }
+                }
+            });
+
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                try
+                {
+                    WorkItem result = workItemTrackingHttpClient.UpdateWorkItemAsync(patchDocument, _id).Result;
+                    return "success";
+                }
+                catch (Microsoft.VisualStudio.Services.Common.VssServiceException ex)
+                {
+                    return ex.Message;
+                }
+                catch (Exception ex)
+                {
+                    return ex.InnerException.Message;
+                }
+            }
+        }
+
         public string AddAttachmentToBug()
         {
             var _id = _configuration.WorkItemId;
@@ -274,7 +310,7 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                     {
                         rel = "AttachedFile",
                         url = attachmentReference.Url,
-                        attributes = new { comment = "adding link to bug" }
+                        attributes = new { comment = "adding attachement to work item" }
                     }
                 });
 
@@ -461,6 +497,25 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             patchDocument = null;
 
             return "success";           
+        }
+
+        public string GetListOfWorkItemFields(string fieldName)
+        {
+            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            {
+                List<WorkItemField> result = workItemTrackingHttpClient.GetFieldsAsync(null).Result;
+
+                var item = result.Find(x => x.Name == fieldName);
+
+                if (item == null)
+                {
+                    return "field not found";
+                }
+                else
+                {
+                    return item.ReferenceName;
+                }
+            }
         }
     }
 }

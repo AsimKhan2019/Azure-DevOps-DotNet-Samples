@@ -31,7 +31,7 @@ namespace VstsRestApiSamples.Tests.ProjectsAndTeams
             Processes request = new Processes(_configuration);
 
             // act
-            var response = request.GetListOfProcesses();
+            var response = request.GetProcesses();
 
             // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
@@ -46,7 +46,7 @@ namespace VstsRestApiSamples.Tests.ProjectsAndTeams
             Processes request = new Processes(_configuration);
 
             // act
-            var listResponse = request.GetListOfProcesses();                // get list of processes
+            var listResponse = request.GetProcesses();                // get list of processes
             IList<ListofProcessesResponse.Value> vm = listResponse.value;   // bind to list
             string processId = vm[0].id;                                    // get a process id so we can look that up
 

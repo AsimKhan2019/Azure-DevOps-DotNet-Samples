@@ -19,6 +19,7 @@
         public class Attributes
         {
             public string comment { get; set; }
+            public string name { get; set; }
         }
     }
 }

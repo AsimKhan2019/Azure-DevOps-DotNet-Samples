@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
-using VstsRestApiSamples.Work.ProcessConfiguration;
+using VstsRestApiSamples.Work;
 
-namespace VstsRestApiSamples.Tests.Work.ProcessConfiguration
+namespace VstsRestApiSamples.Tests.Work
 {
     [TestClass]
     public class ListTests

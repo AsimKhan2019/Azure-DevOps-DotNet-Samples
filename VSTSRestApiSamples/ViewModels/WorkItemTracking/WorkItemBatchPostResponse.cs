@@ -1,10 +1,8 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
-using System;
 
 namespace VstsRestApiSamples.ViewModels.WorkItemTracking
-{ 
+{
     public class WorkItemBatchPostResponse
     {
         public int count { get; set; }

@@ -6,10 +6,13 @@ namespace VstsRestApiSamples.Tests
     {
         public static IConfiguration GetConfiguration(IConfiguration configuration)
         {
+
             configuration.AccountName = ConfigurationSettings.AppSettings["appsetting.accountname"].ToString();
             configuration.ApplicationId = ConfigurationSettings.AppSettings["appsetting.applicationId"].ToString();
+            configuration.CollectionId = ConfigurationSettings.AppSettings["appsetting.collectionid"].ToString();
             configuration.PersonalAccessToken = ConfigurationSettings.AppSettings["appsetting.pat"].ToString();
             configuration.Project = ConfigurationSettings.AppSettings["appsetting.project"].ToString();
+            configuration.Team = ConfigurationSettings.AppSettings["appsetting.team"].ToString();
             configuration.MoveToProject = ConfigurationSettings.AppSettings["appsetting.movetoproject"].ToString();
             configuration.Query = ConfigurationSettings.AppSettings["appsetting.query"].ToString();
             configuration.Identity = ConfigurationSettings.AppSettings["appsetting.identity"].ToString();
@@ -19,6 +22,7 @@ namespace VstsRestApiSamples.Tests
             configuration.PickListId = ConfigurationSettings.AppSettings["appsetting.picklistid"].ToString();
             configuration.QueryId = ConfigurationSettings.AppSettings["appsetting.queryid"].ToString();
             configuration.FilePath = ConfigurationSettings.AppSettings["appsetting.filepath"].ToString();
+            configuration.GitRepositoryId = ConfigurationSettings.AppSettings["appsetting.git.repositoryid"].ToString();
 
             return configuration;
         }

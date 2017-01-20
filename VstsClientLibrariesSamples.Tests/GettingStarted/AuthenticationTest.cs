@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VstsClientLibrariesSamples.GettingStarted;
 
@@ -22,7 +22,7 @@ namespace VstsClientLibrariesSamples.Tests.GettingStarted
         }
 
         [TestMethod, TestCategory("Client Libraries - Authentication")]
-        public void GettingStarted_Authentication_InteractiveADAL_Success()
+        public void CL_GettingStarted_Authentication_InteractiveADAL_Success()
         {
             // arrange
             Authentication authentication = new Authentication();
@@ -35,7 +35,7 @@ namespace VstsClientLibrariesSamples.Tests.GettingStarted
         }
 
         [TestMethod, TestCategory("Client Libraries - Authentication")]
-        public void GettingStarted_Authentication_InteractiveADALExchangeGraphTokenForVSTSToken_Success()
+        public void CL_GettingStarted_Authentication_InteractiveADALExchangeGraphTokenForVSTSToken_Success()
         {
             // arrange
             Authentication authentication = new Authentication();
@@ -48,7 +48,7 @@ namespace VstsClientLibrariesSamples.Tests.GettingStarted
         }
 
         [TestMethod, TestCategory("Client Libraries - Authentication")]
-        public void GettingStarted_Authentication_NonInteractivePersonalAccessToken_Success()
+        public void CL_GettingStarted_Authentication_NonInteractivePersonalAccessToken_Success()
         {
             // arrange
             Authentication authentication = new Authentication();
@@ -59,7 +59,5 @@ namespace VstsClientLibrariesSamples.Tests.GettingStarted
             // assert
             Assert.IsNotNull(result);
         }
-
-
     }
 }
