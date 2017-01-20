@@ -137,16 +137,23 @@ namespace VstsRestApiSamples.GettingStarted
                 client.DefaultRequestHeaders.Add("X-TFS-FedAuthRedirect", "Suppress");
                 HttpResponseMessage response = client.GetAsync("_apis/connectiondata").Result;
 
-                // Get the tenant from the Login URL
-                var wwwAuthenticateHeaderResults = response.Headers.WwwAuthenticate.ToList();
-                var bearerResult = wwwAuthenticateHeaderResults.Where(p => p.Scheme == "Bearer");
-                foreach (var item in wwwAuthenticateHeaderResults)
-                {
-                    if (item.Scheme.StartsWith("Bearer"))
+                try { 
+                    // Get the tenant from the Login URL
+                    var wwwAuthenticateHeaderResults = response.Headers.WwwAuthenticate.ToList();
+                    var bearerResult = wwwAuthenticateHeaderResults.Where(p => p.Scheme == "Bearer");
+                    foreach (var item in wwwAuthenticateHeaderResults)
                     {
-                        tenant = item.Parameter.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[2];
-                        break;
+                        if (item.Scheme.StartsWith("Bearer"))
+                        {
+                            tenant = item.Parameter.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[2];
+                            break;
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    // In MSA backed accounts, there is no tenant
+                    return null;
                 }
             }
 
