@@ -9,6 +9,7 @@
 /VSTSRestApiSamples/obj/Debug
 /VstsClientLibrariesSamples/bin/Debug
 /VstsClientLibrariesSamples/obj/Debug
+/VstsClientLibrariesSamples/app.config
 /VSTSRestApiSamples/VstsClientLibrariesSamples.Tests/bin/Debug
 /VSTSRestApiSamples/VstsClientLibrariesSamples.Tests/obj/Debug
 /VSTSRestApiSamples/VstsClientLibrariesSamples.Tests/ConfigurationLocal.cs
@@ -18,5 +19,7 @@
 /packages
 /VstsClientLibrariesSamples.Tests/app.Debug.config
 /VstsClientLibrariesSamples.Tests/app.Release.config
+/VstsClientLibrariesSamples.Tests/app.config
 /VSTSRestApiSamples.UnitTests/app.Debug.config
 /VSTSRestApiSamples.UnitTests/app.Release.config
+/VSTSRestApiSamples.UnitTests/app.config
