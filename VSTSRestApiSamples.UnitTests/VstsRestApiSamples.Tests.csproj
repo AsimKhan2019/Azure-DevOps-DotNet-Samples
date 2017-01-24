@@ -71,6 +71,7 @@
     <Compile Include="ProjectsAndTeams\ProcessesTest.cs" />
     <Compile Include="ProjectsAndTeams\SamplesTest.cs" />
     <Compile Include="ProjectsAndTeams\TeamsTest.cs" />
+    <Compile Include="WorkItemTracking\ClassificationNodesSamplesTest.cs" />
     <Compile Include="WorkItemTracking\SamplesTest.cs" />
     <Compile Include="WorkItemTracking\ClassificationNodesTest.cs" />
     <Compile Include="WorkItemTracking\RecycleBinTest.cs" />

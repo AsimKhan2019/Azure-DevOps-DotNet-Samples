@@ -86,6 +86,7 @@
     <Compile Include="ViewModels\Work\GetTeamSettingsResponse.cs" />
     <Compile Include="WorkItemTracking\Attachments.cs" />
     <Compile Include="WorkItemTracking\Batch.cs" />
+    <Compile Include="WorkItemTracking\ClassificationNodesSamples.cs" />
     <Compile Include="WorkItemTracking\ClassificationNodes.cs" />
     <Compile Include="WorkItemTracking\Fields.cs" />
     <Compile Include="WorkItemTracking\RecycleBin.cs" />
