@@ -22,11 +22,11 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
             _uri = new Uri(_configuration.UriString);
         }
 
-        public List<WorkItemDeleteReference> GetDeletedItems(string project, int[] ids)
+        public List<WorkItemDeleteReference> GetDeletedItems(string project)
         {
             using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
             {
-                List<WorkItemDeleteReference> results = workItemTrackingHttpClient.GetDeletedWorkItemsAsync(project, ids).Result;
+                List<WorkItemDeleteReference> results = workItemTrackingHttpClient.GetDeletedWorkItemsAsync(project).Result;
                 return results;
             }
         }

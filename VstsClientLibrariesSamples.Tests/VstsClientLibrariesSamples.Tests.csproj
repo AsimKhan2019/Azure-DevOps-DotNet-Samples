@@ -133,6 +133,7 @@
     <Compile Include="ProjectsAndTeams\TeamsTest.cs" />
     <Compile Include="ProjectsAndTeams\SamplesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorkItemTracking\ClassifcationNodesSamplesTest.cs" />
     <Compile Include="WorkItemTracking\SampleTest.cs" />
     <Compile Include="WorkItemTracking\QueriesTest.cs" />
     <Compile Include="WorkItemTracking\FieldsTest.cs" />

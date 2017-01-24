@@ -41,11 +41,11 @@ namespace VstsClientLibrariesSamples.Tests.WorkItemTracking
             workItems.DeleteWorkItem(Convert.ToInt32(item.Id));
             ids[1] = Convert.ToInt32(item.Id);
 
-            var list = recycleBin.GetDeletedItems(_configuration.Project, ids);
+            var list = recycleBin.GetDeletedItems(_configuration.Project);
             
             //assert
             Assert.IsNotNull(list);
-            Assert.AreEqual(2, list.Count);
+            Assert.IsTrue(list.Count >= 2);
         }
 
         [TestMethod, TestCategory("Client Libraries")]
