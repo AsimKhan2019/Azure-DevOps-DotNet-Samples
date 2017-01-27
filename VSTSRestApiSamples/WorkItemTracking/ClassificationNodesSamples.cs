@@ -26,7 +26,7 @@ namespace VstsRestApiSamples.WorkItemTracking
 
         public List<string> GetAreaTree(string project)
         {
-            GetNodesResponse.Nodes result = new GetNodesResponse.Nodes();
+            GetNodesResponse.Nodes nodes = new GetNodesResponse.Nodes();
             List<string> list = new List<string>();
 
             using (var client = new HttpClient())
@@ -40,10 +40,10 @@ namespace VstsRestApiSamples.WorkItemTracking
 
                 if (response.IsSuccessStatusCode)
                 {
-                    result = response.Content.ReadAsAsync<GetNodesResponse.Nodes>().Result;
+                    nodes = response.Content.ReadAsAsync<GetNodesResponse.Nodes>().Result;
                                      
                     //list.Add(result.name);
-                    walkTreedNode(client, project, result, "", list);
+                    walkTreedNode(client, project, nodes, "", list);
                 }
 
                 return list;

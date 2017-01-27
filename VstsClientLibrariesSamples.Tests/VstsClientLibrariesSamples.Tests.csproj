@@ -141,6 +141,7 @@
     <Compile Include="WorkItemTracking\AttachmentsTest.cs" />
     <Compile Include="WorkItemTracking\RecyleBinTest.cs" />
     <Compile Include="WorkItemTracking\WorkItemsTest.cs" />
+    <Compile Include="Work\TeamSettingsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

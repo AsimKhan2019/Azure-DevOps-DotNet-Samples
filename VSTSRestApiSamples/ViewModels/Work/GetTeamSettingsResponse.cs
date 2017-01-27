@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,17 +11,17 @@ namespace VstsRestApiSamples.ViewModels.Work
     {
         public class Settings : BaseViewModel
         {
-            public Backlogiteration backlogIteration { get; set; }
+            public BacklogIteration backlogIteration { get; set; }
             public string bugsBehavior { get; set; }
             public string[] workingDays { get; set; }
-            public Backlogvisibilities backlogVisibilities { get; set; }
-            public Defaultiteration defaultIteration { get; set; }
+            public BacklogVisibilities backlogVisibilities { get; set; }
+            public DefaultIteration defaultIteration { get; set; }
             public string defaultIterationMacro { get; set; }
             public string url { get; set; }
             public _Links _links { get; set; }
         }
 
-        public class Backlogiteration
+        public class BacklogIteration
         {
             public string id { get; set; }
             public string name { get; set; }
@@ -28,14 +29,19 @@ namespace VstsRestApiSamples.ViewModels.Work
             public string url { get; set; }
         }
 
-        public class Backlogvisibilities
+        public class BacklogVisibilities
         {
+            [JsonProperty(PropertyName = "Microsoft.EpicCategory")]
             public bool MicrosoftEpicCategory { get; set; }
+
+            [JsonProperty(PropertyName = "Microsoft.FeatureCategory")]
             public bool MicrosoftFeatureCategory { get; set; }
+
+            [JsonProperty(PropertyName = "Microsoft.RequirementCategory")]
             public bool MicrosoftRequirementCategory { get; set; }
         }
 
-        public class Defaultiteration
+        public class DefaultIteration
         {
             public string id { get; set; }
             public string name { get; set; }

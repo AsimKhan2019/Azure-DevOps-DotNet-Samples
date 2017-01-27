@@ -131,6 +131,7 @@
     <Compile Include="WorkItemTracking\Sample.cs" />
     <Compile Include="WorkItemTracking\ClassificationNodes.cs" />
     <Compile Include="WorkItemTracking\WorkItems.cs" />
+    <Compile Include="Work\TeamSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
