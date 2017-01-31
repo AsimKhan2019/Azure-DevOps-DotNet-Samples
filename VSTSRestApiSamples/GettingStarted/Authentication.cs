@@ -114,9 +114,18 @@ namespace VstsRestApiSamples.GettingStarted
                 // check to see if we have a succesfull respond
                 if (response.IsSuccessStatusCode)
                 {
-                    // set the viewmodel from the content in the response
                     viewModel = response.Content.ReadAsAsync<ListofProjectsResponse.Projects>().Result;
                     // var value = response.Content.ReadAsStringAsync().Result;
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    // This often occurs if the token has expired.
+                    // Acquire an updated token via the AuthenticationContext
+                    throw new UnauthorizedAccessException();
+                }
+                else
+                {
+                    Console.WriteLine("{0}:{1}", response.StatusCode, response.ReasonPhrase);
                 }
 
                 viewModel.HttpStatusCode = response.StatusCode;
