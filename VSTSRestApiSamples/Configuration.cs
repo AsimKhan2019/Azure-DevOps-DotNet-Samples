@@ -1,10 +1,11 @@
-﻿
 namespace VstsRestApiSamples
 {
     public class Configuration : IConfiguration
     {
+        public string AccountName { get; set; }
+        public string ApplicationId { get; set; }
+        public string UriString { get { return string.Format("https://{0}.visualstudio.com", AccountName); } }
         public string CollectionId { get; set; }
-        public string UriString { get; set; }
         public string PersonalAccessToken { get; set; }
         public string Project { get; set; }
         public string Team { get; set; }

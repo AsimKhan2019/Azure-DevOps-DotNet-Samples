@@ -22,14 +22,44 @@ namespace VstsRestApiSamples.Tests.GettingStarted
             _configuration = null;
         }
 
-        [TestMethod, TestCategory("REST API")]
-        public void GettingStarted_Authentication_PersonalAccessToken_Success()
+        [TestMethod, TestCategory("REST API - Authentication")]
+        public void GettingStarted_InteractiveADAL_Success()
         {
             // arrange
             Authentication request = new Authentication();
 
             // act
-            var response = request.PersonalAccessToken(_configuration.UriString, _configuration.PersonalAccessToken);
+            var response = request.InteractiveADAL(_configuration.AccountName, _configuration.ApplicationId);
+
+            // assert
+            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API - Authentication")]
+        public void GettingStarted_Authentication_InteractiveADALExchangeGraphTokenForVSTSToken_Success()
+        {
+            // arrange
+            Authentication request = new Authentication();
+
+            // act
+            var response = request.InteractiveADALExchangeGraphTokenForVSTSToken(_configuration.AccountName, _configuration.ApplicationId);
+
+            // assert
+            Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
+
+            request = null;
+        }
+
+        [TestMethod, TestCategory("REST API - Authentication")]
+        public void GettingStarted_Authentication_NonInteractivePersonalAccessToken_Success()
+        {
+            // arrange
+            Authentication request = new Authentication();
+
+            // act
+            var response = request.NonInteractivePersonalAccessToken(_configuration.AccountName, _configuration.PersonalAccessToken);
 
             // assert
             Assert.AreEqual(HttpStatusCode.OK, response.HttpStatusCode);
