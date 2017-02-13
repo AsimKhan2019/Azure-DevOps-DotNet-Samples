@@ -18,6 +18,10 @@ namespace VstsClientLibrariesSamples.GettingStarted
         // This is the hard coded Resource ID for Graph, do not change this value
         internal const string GraphResourceId = "https://graph.windows.net";
 
+        // Redirect URI default value for native/mobile apps
+        // https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-oauth-code
+        internal const string RedirectUri = "urn:ietf:wg:oauth:2.0:oob";
+
         public Authentication()
         {
         }
@@ -25,7 +29,7 @@ namespace VstsClientLibrariesSamples.GettingStarted
         public IEnumerable<TeamProjectReference> InteractiveADAL(string vstsAccountName, string applicationId)
         {
             AuthenticationContext authenticationContext = new AadAuthenticationContext("https://login.windows.net/common", validateAuthority: true);
-            var authenticationResultTask = authenticationContext.AcquireTokenAsync(VSTSResourceId, applicationId, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Never)); 
+            var authenticationResultTask = authenticationContext.AcquireTokenAsync(VSTSResourceId, applicationId, new Uri(RedirectUri), new PlatformParameters(PromptBehavior.Auto)); 
             AuthenticationResult authenticationResult = authenticationResultTask.Result;
 
             VssOAuthAccessTokenCredential oAuthCredential = new VssOAuthAccessTokenCredential(authenticationResult.AccessToken);
@@ -36,7 +40,7 @@ namespace VstsClientLibrariesSamples.GettingStarted
         public IEnumerable<TeamProjectReference> InteractiveADALExchangeGraphTokenForVSTSToken(string vstsAccountName, string applicationId)
         {
             AuthenticationContext authenticationContext = new AadAuthenticationContext("https://login.windows.net/common", validateAuthority: true);
-            var authenticationResultTask = authenticationContext.AcquireTokenAsync(GraphResourceId, applicationId, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Never));
+            var authenticationResultTask = authenticationContext.AcquireTokenAsync(GraphResourceId, applicationId, new Uri(RedirectUri), new PlatformParameters(PromptBehavior.Auto));
             AuthenticationResult authenticationResult = authenticationResultTask.Result;
 
             authenticationResultTask = authenticationContext.AcquireTokenSilentAsync(VSTSResourceId, applicationId);
@@ -56,7 +60,7 @@ namespace VstsClientLibrariesSamples.GettingStarted
 
         public IEnumerable<TeamProjectReference> DeviceCodeADAL(string vstsAccountName, string applicationId)
         {
-            string tenant = GetAccountTenant(vstsAccountName);
+            Guid tenant = GetAccountTenant(vstsAccountName);
             AuthenticationContext authenticationContext = new AadAuthenticationContext("https://login.windows.net/" + tenant, validateAuthority: true);
             DeviceCodeResult codeResult = authenticationContext.AcquireDeviceCodeAsync(VSTSResourceId, applicationId).Result;
             Console.WriteLine("You need to sign in.");
@@ -86,9 +90,10 @@ namespace VstsClientLibrariesSamples.GettingStarted
             }
         }
 
-        internal static string GetAccountTenant(string vstsAccountName)
+        // MSA backed accounts will return Guid.Empty
+        private static Guid GetAccountTenant(string vstsAccountName)
         {
-            string tenant = null;
+            Guid tenantGuid = Guid.Empty;
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(String.Format("https://{0}.visualstudio.com", vstsAccountName));
@@ -98,35 +103,20 @@ namespace VstsClientLibrariesSamples.GettingStarted
                 client.DefaultRequestHeaders.Add("X-TFS-FedAuthRedirect", "Suppress");
                 HttpResponseMessage response = client.GetAsync("_apis/connectiondata").Result;
 
-                try { 
-                    // Get the tenant from the Login URL
-                    var wwwAuthenticateHeaderResults = response.Headers.WwwAuthenticate.ToList();
-                    var bearerResult = wwwAuthenticateHeaderResults.Where(p => p.Scheme == "Bearer");
-                    foreach (var item in wwwAuthenticateHeaderResults)
+                // Get the tenant from the Login URL
+                var wwwAuthenticateHeaderResults = response.Headers.WwwAuthenticate.ToList();
+                var bearerResult = wwwAuthenticateHeaderResults.Where(p => p.Scheme == "Bearer");
+                foreach (var item in wwwAuthenticateHeaderResults)
+                {
+                    if (item.Scheme.StartsWith("Bearer"))
                     {
-                        if (item.Scheme.StartsWith("Bearer"))
-                        {
-                            tenant = item.Parameter.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[2];
-                            break;
-                        }
+                        tenantGuid = Guid.Parse(item.Parameter.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[2]);
+                        break;
                     }
                 }
-                catch (Exception ex)
-                {
-                    // In MSA backed accounts, there is no tenant
-                    return null;
-                }
             }
 
-            if (String.IsNullOrEmpty(tenant))
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Something went wrong...");
-                Console.WriteLine("\t " + "Something went wrong retrieving the tenant");
-                Console.ResetColor();
-            }
-
-            return tenant;
+            return tenantGuid;
         }
     }
 }
