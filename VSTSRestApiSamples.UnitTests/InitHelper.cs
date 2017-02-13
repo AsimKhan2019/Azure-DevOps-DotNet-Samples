@@ -6,11 +6,10 @@ namespace VstsRestApiSamples.Tests
     {
         public static IConfiguration GetConfiguration(IConfiguration configuration)
         {
-
             configuration.AccountName = ConfigurationSettings.AppSettings["appsetting.accountname"].ToString();
             configuration.ApplicationId = ConfigurationSettings.AppSettings["appsetting.applicationId"].ToString();
             configuration.CollectionId = ConfigurationSettings.AppSettings["appsetting.collectionid"].ToString();
-            configuration.PersonalAccessToken = ConfigurationSettings.AppSettings["appsetting.pat"].ToString();
+            configuration.PersonalAccessToken = ConfigurationSettings.AppSettings["appsetting.personalaccesstoken"].ToString();
             configuration.Project = ConfigurationSettings.AppSettings["appsetting.project"].ToString();
             configuration.Team = ConfigurationSettings.AppSettings["appsetting.team"].ToString();
             configuration.MoveToProject = ConfigurationSettings.AppSettings["appsetting.movetoproject"].ToString();
