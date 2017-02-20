@@ -74,19 +74,18 @@ namespace VstsClientLibrariesSamples.GettingStarted
 
         internal IEnumerable<TeamProjectReference> ListProjectsViaClientLibrary(string vstsAccountName, VssCredentials credentials)
         {
-            Uri uri = new Uri(String.Format("https://{0}.visualstudio.com", vstsAccountName));
-            using (ProjectHttpClient projectHttpClient = new ProjectHttpClient(uri, credentials))
-            {
-                IEnumerable<TeamProjectReference> projects = projectHttpClient.GetProjects().Result;
+            // Create instance of VssConnection using passed credentials
+            VssConnection connection = new VssConnection(new Uri(String.Format("https://{0}.visualstudio.com", vstsAccountName)), credentials);
+            ProjectHttpClient projectHttpClient = connection.GetClient<ProjectHttpClient>();
 
-                if (projects != null)
-                {
-                    return projects;
-                }
-                else
-                {
-                    return null;
-                }
+            IEnumerable<TeamProjectReference> projects = projectHttpClient.GetProjects().Result;
+            if (projects != null)
+            {
+                return projects;
+            }
+            else
+            {
+                return null;
             }
         }
 

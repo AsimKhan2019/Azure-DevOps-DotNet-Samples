@@ -24,21 +24,20 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
         public string GetListOfWorkItemFields(string fieldName)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            List<WorkItemField> result = workItemTrackingHttpClient.GetFieldsAsync(null).Result;
+
+            var item = result.Find(x => x.Name == fieldName);
+
+            if (item == null)
             {
-                List<WorkItemField> result = workItemTrackingHttpClient.GetFieldsAsync(null).Result;
-
-                var item = result.Find(x => x.Name == fieldName);
-
-                if (item == null)
-                {
-                    return "field not found";
-                }
-                else
-                {
-                    return item.ReferenceName;
-                }
-            }           
+                return "field not found";
+            }
+            else
+            {
+                return item.ReferenceName;
+            }         
         }
     }
 }

@@ -24,41 +24,38 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
         public List<WorkItemDeleteReference> GetDeletedItems(string project)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                List<WorkItemDeleteReference> results = workItemTrackingHttpClient.GetDeletedWorkItemsAsync(project).Result;
-                return results;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            List<WorkItemDeleteReference> results = workItemTrackingHttpClient.GetDeletedWorkItemsAsync(project).Result;
+            return results;
         }
 
         public WorkItemDelete GetDeletedItem(int id)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemDelete result = workItemTrackingHttpClient.GetDeletedWorkItemAsync(id).Result;
-                return result;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemDelete result = workItemTrackingHttpClient.GetDeletedWorkItemAsync(id).Result;
+            return result;
         }
 
         public WorkItemDelete RestoreItem(int id)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemDeleteUpdate payload = new WorkItemDeleteUpdate() {
-                    IsDeleted = false
-                };
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-                WorkItemDelete result = workItemTrackingHttpClient.RestoreWorkItemAsync(payload, id).Result;
-                return result;
-            }
+            WorkItemDeleteUpdate payload = new WorkItemDeleteUpdate() {
+                IsDeleted = false
+            };
+
+            WorkItemDelete result = workItemTrackingHttpClient.RestoreWorkItemAsync(payload, id).Result;
+            return result;
         }
         
         public void PermenentlyDeleteItem(int id)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                workItemTrackingHttpClient.DestroyWorkItemAsync(id);               
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            workItemTrackingHttpClient.DestroyWorkItemAsync(id);
         }       
     }
 }

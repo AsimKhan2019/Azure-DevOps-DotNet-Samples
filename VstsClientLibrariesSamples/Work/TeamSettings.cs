@@ -24,14 +24,12 @@ namespace VstsClientLibrariesSamples.Work
         }
 
         public TeamSetting GetTeamSettings(string project)
-        {            
-            using (WorkHttpClient workHttpClient = new WorkHttpClient(_uri, _credentials))
-            {
-                var teamContext = new TeamContext(project);
-                TeamSetting result = workHttpClient.GetTeamSettingsAsync(teamContext).Result;
-
-                return result;
-            }
+        {    
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkHttpClient workHttpClient = connection.GetClient<WorkHttpClient>();        
+            var teamContext = new TeamContext(project);
+            TeamSetting result = workHttpClient.GetTeamSettingsAsync(teamContext).Result;
+            return result;
         }
 
         public TeamSetting UpdateTeamSettings(string project)
@@ -48,12 +46,11 @@ namespace VstsClientLibrariesSamples.Work
                 BacklogVisibilities = backlogVisibilities
             };
 
-            using (WorkHttpClient workHttpClient = new WorkHttpClient(_uri, _credentials)) {
-                var teamContext = new TeamContext(project);
-                TeamSetting result = workHttpClient.UpdateTeamSettingsAsync(patchDocument, teamContext).Result;
-
-                return result;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkHttpClient workHttpClient = connection.GetClient<WorkHttpClient>();
+            var teamContext = new TeamContext(project);
+            TeamSetting result = workHttpClient.UpdateTeamSettingsAsync(patchDocument, teamContext).Result;
+            return result;
         }
     }
 }
