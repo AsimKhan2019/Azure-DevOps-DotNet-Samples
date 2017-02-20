@@ -20,22 +20,20 @@ namespace VstsClientLibrariesSamples.ProjectsAndTeams
 
         public IEnumerable<TeamProjectCollectionReference> GetProjectCollections()
         {         
-            using (ProjectCollectionHttpClient projectCollectionHttpClient = new ProjectCollectionHttpClient(_uri, _credentials))
-            {
-                IEnumerable<TeamProjectCollectionReference> teamProjectCollectionReference = projectCollectionHttpClient.GetProjectCollections(null).Result;
-                return teamProjectCollectionReference;
-            }
+            // Create instance of VssConnection using passed credentials
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            ProjectCollectionHttpClient projectCollectionHttpClient = connection.GetClient<ProjectCollectionHttpClient>();
+            IEnumerable<TeamProjectCollectionReference> teamProjectCollectionReference = projectCollectionHttpClient.GetProjectCollections(null).Result;
+            return teamProjectCollectionReference;
         }
 
         public TeamProjectCollectionReference GetProjectCollection(string id)
         {
-            using (ProjectCollectionHttpClient projectCollectionHttpClient = new ProjectCollectionHttpClient(_uri, _credentials))
-            {
-                TeamProjectCollectionReference teamProjectCollectionReference = projectCollectionHttpClient.GetProjectCollection(id).Result;
-                return teamProjectCollectionReference;
-            }
+            // Create instance of VssConnection using passed credentials
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            ProjectCollectionHttpClient projectCollectionHttpClient = connection.GetClient<ProjectCollectionHttpClient>();
+            TeamProjectCollectionReference teamProjectCollectionReference = projectCollectionHttpClient.GetProjectCollection(id).Result;
+            return teamProjectCollectionReference;
         }
-
-
     }
 }

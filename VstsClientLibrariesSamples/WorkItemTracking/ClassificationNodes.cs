@@ -25,38 +25,34 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
         public WorkItemClassificationNode GetAreas(string project, int depth)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemClassificationNode result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, TreeStructureGroup.Areas, null, depth).Result;
-                return result;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemClassificationNode result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, TreeStructureGroup.Areas, null, depth).Result;
+            return result;
         }
 
         public WorkItemClassificationNode GetIterations(string project, int depth)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemClassificationNode result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, TreeStructureGroup.Iterations, null, depth).Result;
-                return result;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemClassificationNode result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, TreeStructureGroup.Iterations, null, depth).Result;
+            return result;
         }
 
         public WorkItemClassificationNode GetArea(string project, string path)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemClassificationNode result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, TreeStructureGroup.Areas, path, 0).Result;
-                return result;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemClassificationNode result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, TreeStructureGroup.Areas, path, 0).Result;
+            return result;
         }
 
         public WorkItemClassificationNode GetIteration(string project, string path)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemClassificationNode result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, TreeStructureGroup.Iterations, path, 0).Result;
-                return result;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemClassificationNode result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, TreeStructureGroup.Iterations, path, 0).Result;
+            return result;
         }
 
         public WorkItemClassificationNode CreateArea(string project, string name)
@@ -67,11 +63,10 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 StructureType = TreeNodeStructureType.Area
             };
 
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemClassificationNode result = workItemTrackingHttpClient.CreateOrUpdateClassificationNodeAsync(node, project, TreeStructureGroup.Areas, "").Result;
-                return result;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemClassificationNode result = workItemTrackingHttpClient.CreateOrUpdateClassificationNodeAsync(node, project, TreeStructureGroup.Areas, "").Result;
+            return result;
         }
 
         public WorkItemClassificationNode CreateIteration(string project, string name)
@@ -87,11 +82,10 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 //Attributes = dict
             };
 
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemClassificationNode result = workItemTrackingHttpClient.CreateOrUpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, "").Result;
-                return result;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemClassificationNode result = workItemTrackingHttpClient.CreateOrUpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, "").Result;
+            return result;
         }
 
         public WorkItemClassificationNode RenameArea(string project, string path, string name)
@@ -101,11 +95,10 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 StructureType = TreeNodeStructureType.Area
             };
 
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemClassificationNode result = workItemTrackingHttpClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Areas, path).Result;
-                return result;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemClassificationNode result = workItemTrackingHttpClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Areas, path).Result;
+            return result;
         }
 
         public WorkItemClassificationNode RenameIteration(string project, string path, string name)
@@ -116,11 +109,10 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 StructureType = TreeNodeStructureType.Iteration
             };
 
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemClassificationNode result = workItemTrackingHttpClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, path).Result;
-                return result;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemClassificationNode result = workItemTrackingHttpClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, path).Result;
+            return result;
         }
 
         public WorkItemClassificationNode UpdateIterationDates(string project, string name, DateTime startDate, DateTime finishDate)
@@ -136,11 +128,10 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 Attributes = dict
             };
 
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemClassificationNode result = workItemTrackingHttpClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, name).Result;
-                return result;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemClassificationNode result = workItemTrackingHttpClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, name).Result;
+            return result;
         }
 
         public WorkItemClassificationNode MoveArea(string project, string targetArea, int id)
@@ -151,11 +142,10 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 StructureType = TreeNodeStructureType.Area
             };
 
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemClassificationNode result = workItemTrackingHttpClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Areas, targetArea).Result;
-                return result;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemClassificationNode result = workItemTrackingHttpClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Areas, targetArea).Result;
+            return result;
         }
 
         public WorkItemClassificationNode MoveIteration(string project, string targetIteration, int id)
@@ -166,27 +156,24 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
                 StructureType = TreeNodeStructureType.Iteration
             };
 
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemClassificationNode result = workItemTrackingHttpClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, targetIteration).Result;
-                return result;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemClassificationNode result = workItemTrackingHttpClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, targetIteration).Result;
+            return result;
         }
 
         public void DeleteArea(string project, string areaPath, int reclassifyId)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                workItemTrackingHttpClient.DeleteClassificationNodeAsync(project, TreeStructureGroup.Areas, areaPath, reclassifyId).SyncResult();
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            workItemTrackingHttpClient.DeleteClassificationNodeAsync(project, TreeStructureGroup.Areas, areaPath, reclassifyId).SyncResult();
         }
 
         public void DeleteIteration(string project, string iterationPath, int reclassifyId)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                workItemTrackingHttpClient.DeleteClassificationNodeAsync(project, TreeStructureGroup.Iterations, iterationPath, reclassifyId).SyncResult();
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            workItemTrackingHttpClient.DeleteClassificationNodeAsync(project, TreeStructureGroup.Iterations, iterationPath, reclassifyId).SyncResult();
         }       
     }  
 }

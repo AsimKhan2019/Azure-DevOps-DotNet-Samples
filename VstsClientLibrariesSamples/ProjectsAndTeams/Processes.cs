@@ -20,12 +20,12 @@ namespace VstsClientLibrariesSamples.ProjectsAndTeams
 
         public List<Process> GetProcesses()
         {
-            // create project object
-            using (ProcessHttpClient processHttpClient = new ProcessHttpClient(_uri, _credentials))
-            {
-                List<Process> processes = processHttpClient.GetProcessesAsync().Result;
-                return processes;
-            }
+            // Create instance of VssConnection using passed credentials
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            ProcessHttpClient processHttpClient = connection.GetClient<ProcessHttpClient>();
+
+            List<Process> processes = processHttpClient.GetProcessesAsync().Result;
+            return processes;
         }
 
         public Process GetProcess(System.Guid processId)

@@ -25,45 +25,43 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
         public void DownloadAttachment(System.Guid id, string saveToFile)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            
+            Stream attachmentStream = workItemTrackingHttpClient.GetAttachmentContentAsync(id).Result;
+
+            int length = 256;
+            int bytesRead;
+            Byte[] buffer = new Byte[length];
+
+            FileStream writeStream = new FileStream(@saveToFile, FileMode.Create, FileAccess.ReadWrite);
+            bytesRead = attachmentStream.Read(buffer, 0, length);
+
+            // read data write stream
+            while (bytesRead > 0)
             {
-                Stream attachmentStream = workItemTrackingHttpClient.GetAttachmentContentAsync(id).Result;
-
-                int length = 256;
-                int bytesRead;
-                Byte[] buffer = new Byte[length];
-
-                FileStream writeStream = new FileStream(@saveToFile, FileMode.Create, FileAccess.ReadWrite);
+                writeStream.Write(buffer, 0, bytesRead);
                 bytesRead = attachmentStream.Read(buffer, 0, length);
-
-                // read data write stream
-                while (bytesRead > 0)
-                {
-                    writeStream.Write(buffer, 0, bytesRead);
-                    bytesRead = attachmentStream.Read(buffer, 0, length);
-                }
-
-                attachmentStream.Close();
-                writeStream.Close();
             }
+
+            attachmentStream.Close();
+            writeStream.Close();
         }
 
         public AttachmentReference UploadAttachmentTextFile(string filePath)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                AttachmentReference attachmentReference = workItemTrackingHttpClient.CreateAttachmentAsync(@filePath).Result;
-                return attachmentReference;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            AttachmentReference attachmentReference = workItemTrackingHttpClient.CreateAttachmentAsync(@filePath).Result;
+            return attachmentReference;
         }
 
         public AttachmentReference UploadAttachmentBinaryFile(string filePath)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                AttachmentReference attachmentReference = workItemTrackingHttpClient.CreateAttachmentAsync(@filePath).Result;
-                return attachmentReference;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            AttachmentReference attachmentReference = workItemTrackingHttpClient.CreateAttachmentAsync(@filePath).Result;
+            return attachmentReference;
         }
     }
 }

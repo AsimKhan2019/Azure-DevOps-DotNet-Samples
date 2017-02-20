@@ -22,32 +22,26 @@ namespace VstsClientLibrariesSamples.ProjectsAndTeams
 
         public IEnumerable<TeamProjectReference> GetTeamProjects()
         {
-            // create project object
-            using (ProjectHttpClient projectHttpClient = new ProjectHttpClient(_uri, _credentials))
-            {
-                IEnumerable<TeamProjectReference> projects = projectHttpClient.GetProjects().Result;
-                return projects;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            ProjectHttpClient projectHttpClient = connection.GetClient<ProjectHttpClient>();
+            IEnumerable<TeamProjectReference> projects = projectHttpClient.GetProjects().Result;
+            return projects;
         }
 
         public IEnumerable<TeamProjectReference> GetTeamProjectsByState()
         {
-            // create project object
-            using (ProjectHttpClient projectHttpClient = new ProjectHttpClient(_uri, _credentials))
-            {
-                IEnumerable<TeamProjectReference> projects = projectHttpClient.GetProjects(ProjectState.All).Result;
-                return projects;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            ProjectHttpClient projectHttpClient = connection.GetClient<ProjectHttpClient>();
+            IEnumerable<TeamProjectReference> projects = projectHttpClient.GetProjects(ProjectState.All).Result;
+            return projects;
         }
 
         public TeamProjectReference GetTeamProjectWithCapabilities(string name)
         {
-            // create project object
-            using (ProjectHttpClient projectHttpClient = new ProjectHttpClient(_uri, _credentials))
-            {
-                TeamProject project = projectHttpClient.GetProject(name, true).Result;
-                return project;               
-            }                
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            ProjectHttpClient projectHttpClient = connection.GetClient<ProjectHttpClient>();
+            TeamProject project = projectHttpClient.GetProject(name, true).Result;
+            return project;                    
         }
 
         public OperationReference CreateTeamProject(string name)
@@ -69,21 +63,18 @@ namespace VstsClientLibrariesSamples.ProjectsAndTeams
                 Capabilities = capabilities
             };
 
-            // create project object
-            using (ProjectHttpClient projectHttpClient = new ProjectHttpClient(_uri, _credentials))
-            {
-                var operationReferencee = projectHttpClient.QueueCreateProject(teamProject).Result;
-                return operationReferencee;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            ProjectHttpClient projectHttpClient = connection.GetClient<ProjectHttpClient>();
+            var operationReferencee = projectHttpClient.QueueCreateProject(teamProject).Result;
+            return operationReferencee;
         }
 
         public OperationReference GetOperation(System.Guid Id)
         {  
-            using (OperationsHttpClient operationsHttpClient = new OperationsHttpClient(_uri, _credentials))
-            {
-                var operationReferencee = operationsHttpClient.GetOperation(Id).Result;
-                return operationReferencee;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            OperationsHttpClient operationsHttpClient = connection.GetClient<OperationsHttpClient>();
+            var operationReferencee = operationsHttpClient.GetOperation(Id).Result;
+            return operationReferencee;
         }
 
         public OperationReference RenameTeamProject(Guid projectToUpdateId, string name)
@@ -92,12 +83,11 @@ namespace VstsClientLibrariesSamples.ProjectsAndTeams
             {
                 Name = name                               
             };
-     
-            using (ProjectHttpClient projectHttpClient = new ProjectHttpClient(_uri, _credentials))
-            {
-                var operationReference = projectHttpClient.UpdateProject(projectToUpdateId, teamProject).Result;
-                return operationReference;
-            }
+
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            ProjectHttpClient projectHttpClient = connection.GetClient<ProjectHttpClient>();
+            var operationReference = projectHttpClient.UpdateProject(projectToUpdateId, teamProject).Result;
+            return operationReference;
         }
 
         public OperationReference ChangeTeamProjectDescription(Guid projectToUpdateId, string description)
@@ -107,20 +97,18 @@ namespace VstsClientLibrariesSamples.ProjectsAndTeams
                 Description = description
             };
 
-            using (ProjectHttpClient projectHttpClient = new ProjectHttpClient(_uri, _credentials))
-            {
-                var operationReferencee = projectHttpClient.UpdateProject(projectToUpdateId, teamProject).Result;
-                return operationReferencee;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            ProjectHttpClient projectHttpClient = connection.GetClient<ProjectHttpClient>();
+            var operationReferencee = projectHttpClient.UpdateProject(projectToUpdateId, teamProject).Result;
+            return operationReferencee;
         }
 
         public OperationReference DeleteTeamProject(Guid projectId)
         {
-            using (ProjectHttpClient projectHttpClient = new ProjectHttpClient(_uri, _credentials))
-            {
-                var operationReferencee = projectHttpClient.QueueDeleteProject(projectId).Result;
-                return operationReferencee;
-            }
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            ProjectHttpClient projectHttpClient = connection.GetClient<ProjectHttpClient>();
+            var operationReferencee = projectHttpClient.QueueDeleteProject(projectId).Result;
+            return operationReferencee;
         }
     }
 }

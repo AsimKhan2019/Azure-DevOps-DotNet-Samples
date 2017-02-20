@@ -26,22 +26,21 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
         {
             List<string> list = new List<string>();
 
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemClassificationNode result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, type, null, 1000).Result;
+
+            list.Add(result.Name);               
+            
+            foreach (var item in result.Children)
             {
-                WorkItemClassificationNode result = workItemTrackingHttpClient.GetClassificationNodeAsync(project, type, null, 1000).Result;
+                var name = result.Name + "/" + item.Name;
 
-                list.Add(result.Name);               
-                
-                foreach (var item in result.Children)
-                {
-                    var name = result.Name + "/" + item.Name;
-
-                    list.Add(name);                   
-                    walkTreeNode(item, list, name);
-                }
-
-                return list;
+                list.Add(name);                   
+                walkTreeNode(item, list, name);
             }
+
+            return list;
         }
 
         public void walkTreeNode(WorkItemClassificationNode t, List<string> list, string node)

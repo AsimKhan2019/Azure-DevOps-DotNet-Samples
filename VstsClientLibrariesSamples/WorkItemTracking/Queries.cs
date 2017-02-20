@@ -22,53 +22,49 @@ namespace VstsClientLibrariesSamples.WorkItemTracking
 
         public QueryHierarchyItem GetQueryByName(string project, string queryName)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                QueryHierarchyItem query = workItemTrackingHttpClient.GetQueryAsync(project, queryName).Result;
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            QueryHierarchyItem query = workItemTrackingHttpClient.GetQueryAsync(project, queryName).Result;
 
-                if (query != null)
-                {
-                    return query;
-                }
-                else
-                {
-                    throw new NullReferenceException("Query '" + queryName + "' not found in project");
-                }
+            if (query != null)
+            {
+                return query;
+            }
+            else
+            {
+                throw new NullReferenceException("Query '" + queryName + "' not found in project");
             }
         }
 
         public WorkItemQueryResult ExecuteQuery(Guid queryId)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemQueryResult queryResult = workItemTrackingHttpClient.QueryByIdAsync(queryId).Result;
+
+            if (queryResult != null && queryResult.WorkItems.Count() > 0)
             {
-
-                WorkItemQueryResult queryResult = workItemTrackingHttpClient.QueryByIdAsync(queryId).Result;
-
-                if (queryResult != null && queryResult.WorkItems.Count() > 0)
-                {
-                    return queryResult;
-                }
-                else
-                {
-                    throw new NullReferenceException("Query '" + queryId.ToString().ToLower() + "' did not find any results");
-                }
+                return queryResult;
+            }
+            else
+            {
+                throw new NullReferenceException("Query '" + queryId.ToString().ToLower() + "' did not find any results");
             }
         }
 
         public WorkItemQueryResult ExecuteByWiql(Wiql wiql, string project)
         {
-            using (WorkItemTrackingHttpClient workItemTrackingHttpClient = new WorkItemTrackingHttpClient(_uri, _credentials))
-            {
-                WorkItemQueryResult queryResult = workItemTrackingHttpClient.QueryByWiqlAsync(wiql, project).Result;
+            VssConnection connection = new VssConnection(_uri, _credentials);
+            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemQueryResult queryResult = workItemTrackingHttpClient.QueryByWiqlAsync(wiql, project).Result;
 
-                if (queryResult != null && queryResult.WorkItems.Count() > 0)
-                {
-                    return queryResult;
-                }
-                else
-                {
-                    throw new NullReferenceException("Wiql '" + wiql.Query + "' did not find any results");
-                }
+            if (queryResult != null && queryResult.WorkItems.Count() > 0)
+            {
+                return queryResult;
+            }
+            else
+            {
+                throw new NullReferenceException("Wiql '" + wiql.Query + "' did not find any results");
             }
         }
     }
