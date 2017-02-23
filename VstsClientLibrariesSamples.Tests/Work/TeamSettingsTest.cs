@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VstsClientLibrariesSamples.Work;
 
 namespace VstsClientLibrariesSamples.Tests.Work

@@ -1,8 +1,8 @@
-﻿using Microsoft.VisualStudio.Services.Common;
+﻿using Microsoft.TeamFoundation.Core.WebApi;
+using Microsoft.VisualStudio.Services.Common;
+using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
-using Microsoft.TeamFoundation.Core.WebApi;
-using Microsoft.VisualStudio.Services.WebApi;
 
 namespace VstsClientLibrariesSamples.ProjectsAndTeams
 {

@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using VstsClientLibrariesSamples.ProjectsAndTeams;
-using Microsoft.TeamFoundation.Core.WebApi;
 using System.Collections.Generic;
+using VstsClientLibrariesSamples.ProjectsAndTeams;
 
 namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
 {

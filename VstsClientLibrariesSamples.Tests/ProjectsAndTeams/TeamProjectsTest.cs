@@ -1,10 +1,8 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using VstsClientLibrariesSamples.ProjectsAndTeams;
-using Microsoft.TeamFoundation.Core.WebApi;
-using System.Collections.Generic;
+﻿using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.VisualStudio.Services.Operations;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using VstsClientLibrariesSamples.ProjectsAndTeams;
 
 namespace VstsClientLibrariesSamples.Tests.ProjectsAndTeams
 {
