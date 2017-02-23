@@ -1,4 +1,4 @@
-﻿using Microsoft.TeamFoundation.Core.WebApi;
+﻿using Microsoft.VisualStudio.Services.WebApi;
 using Microsoft.TeamFoundation.Core.WebApi.Types;
 using Microsoft.TeamFoundation.Work.WebApi;
 using Microsoft.VisualStudio.Services.Common;
