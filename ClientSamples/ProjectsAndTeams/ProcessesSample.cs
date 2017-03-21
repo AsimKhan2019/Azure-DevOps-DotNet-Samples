@@ -1,43 +1,37 @@
 ﻿using Microsoft.TeamFoundation.Core.WebApi;
-using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
 
-
-namespace VstsClientLibrariesSamples.ProjectsAndTeams
+namespace VstsSamples.Client.Core
 {
-    public class Processes
+    [ClientSample(CoreConstants.AreaName, CoreConstants.ProcessesRouteName)]
+    public class ProcessesSample : ClientSample
     {
-        readonly IConfiguration _configuration;
-        private VssBasicCredential _credentials;
-        private Uri _uri;
-
-        public Processes(IConfiguration configuration)
+        public ProcessesSample(ClientSampleConfiguration configuration) : base(configuration)
         {
-            _configuration = configuration;
-            _credentials = new VssBasicCredential("", _configuration.PersonalAccessToken);
-            _uri = new Uri(_configuration.UriString);
         }
 
+        [ClientSampleMethod]
         public List<Process> GetProcesses()
         {
-            // Create instance of VssConnection using passed credentials
-            VssConnection connection = new VssConnection(_uri, _credentials);
-            ProcessHttpClient processHttpClient = connection.GetClient<ProcessHttpClient>();
+            VssConnection connection = this.Connection;
+            ProcessHttpClient processClient = connection.GetClient<ProcessHttpClient>();
 
-            List<Process> processes = processHttpClient.GetProcessesAsync().Result;
+            List<Process> processes = processClient.GetProcessesAsync().Result;
+
             return processes;
         }
 
+        [ClientSampleMethod]
         public Process GetProcess(System.Guid processId)
         {
-            // create project object
-            using (ProcessHttpClient processHttpClient = new ProcessHttpClient(_uri, _credentials))
-            {
-                Process process = processHttpClient.GetProcessByIdAsync(processId).Result;
-                return process;
-            }
+            VssConnection connection = this.Connection;
+            ProcessHttpClient processClient = connection.GetClient<ProcessHttpClient>();
+
+            Process process = processClient.GetProcessByIdAsync(processId).Result;
+
+            return process;
         }
     }
 }

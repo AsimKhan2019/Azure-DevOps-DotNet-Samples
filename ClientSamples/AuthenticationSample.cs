@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using AadAuthenticationContext = Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext;
 
-namespace VstsClientLibrariesSamples.GettingStarted
+namespace VstsSamples.Client.Common
 {
     public class Authentication
     {
@@ -80,14 +80,8 @@ namespace VstsClientLibrariesSamples.GettingStarted
             ProjectHttpClient projectHttpClient = connection.GetClient<ProjectHttpClient>();
 
             IEnumerable<TeamProjectReference> projects = projectHttpClient.GetProjects().Result;
-            if (projects != null)
-            {
-                return projects;
-            }
-            else
-            {
-                return null;
-            }
+
+            return projects;
         }
 
         // MSA backed accounts will return Guid.Empty

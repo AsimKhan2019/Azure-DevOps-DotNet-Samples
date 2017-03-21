@@ -4,38 +4,46 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace VstsClientLibrariesSamples.WorkItemTracking
+namespace VstsSamples.Client.WorkItemTracking
 {
-    public class Fields
+    /// <summary>
+    /// 
+    /// Samples for accessing work item field metadata.
+    /// 
+    /// See https://www.visualstudio.com/docs/integrate/api/wit/fields for more details.
+    /// 
+    /// </summary>
+    [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.Fields)]
+    public class FieldsSample : ClientSample
     {
-        readonly IConfiguration _configuration;
-        private VssBasicCredential _credentials;
-        private Uri _uri;
-
-        public Fields(IConfiguration configuration)
+        public FieldsSample(ClientSampleConfiguration configuration) : base(configuration)
         {
-            _configuration = configuration;
-            _credentials = new VssBasicCredential("", _configuration.PersonalAccessToken);
-            _uri = new Uri(_configuration.UriString);
         }
 
-        public string GetListOfWorkItemFields(string fieldName)
+        [ClientSampleMethod]
+        public WorkItemField GetFieldDetails(string fieldName = "System.Title")
         {
-            VssConnection connection = new VssConnection(_uri, _credentials);
-            WorkItemTrackingHttpClient workItemTrackingHttpClient = connection.GetClient<WorkItemTrackingHttpClient>();
-            List<WorkItemField> result = workItemTrackingHttpClient.GetFieldsAsync(null).Result;
+            VssConnection connection = this.Connection;
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            var item = result.Find(x => x.Name == fieldName);
+            List<WorkItemField> result = workItemTrackingClient.GetFieldsAsync().Result;
 
-            if (item == null)
-            {
-                return "field not found";
-            }
-            else
-            {
-                return item.ReferenceName;
-            }         
+            WorkItemField field = result.Find(x => x.Name == fieldName);
+            
+            return field;
+        }
+
+        [ClientSampleMethod]
+        public IEnumerable<WorkItemField> GetReadOnlyWorkItemFields()
+        {
+            VssConnection connection = this.Connection;
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            List<WorkItemField> result = workItemTrackingClient.GetFieldsAsync().Result;
+
+            return result.Where(field => field.ReadOnly);
         }
     }
 }

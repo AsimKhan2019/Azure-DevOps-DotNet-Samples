@@ -1,69 +1,102 @@
 ﻿using Microsoft.TeamFoundation.Core.WebApi;
-using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace VstsClientLibrariesSamples.ProjectsAndTeams
+namespace VstsSamples.Client.Core
 {
-    public class Teams
+    [ClientSample(CoreConstants.AreaName, CoreConstants.TeamsResource)]
+    public class TeamsSample : ClientSample
     {
-        readonly IConfiguration _configuration;
-        private VssBasicCredential _credentials;
-        private Uri _uri;
-
-        public Teams(IConfiguration configuration)
+        public TeamsSample(ClientSampleConfiguration configuration) : base(configuration)
         {
-            _configuration = configuration;
-            _credentials = new VssBasicCredential("", _configuration.PersonalAccessToken);
-            _uri = new Uri(_configuration.UriString);
         }
 
-        public IEnumerable<WebApiTeam> GetTeams(string project)
+        [ClientSampleMethod]
+        public IEnumerable<WebApiTeam> GetOrderedTeamsList(string projectName = "Fabrikam")
         {
-            VssConnection connection = new VssConnection(_uri, _credentials);
-            TeamHttpClient teamHttpClient = connection.GetClient<TeamHttpClient>();
-            IEnumerable<WebApiTeam> results = teamHttpClient.GetTeamsAsync(project).Result;
+            VssConnection connection = this.Connection;
+            TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
+            
+            IEnumerable<WebApiTeam> teams = teamClient.GetTeamsAsync(projectName).Result;
+
+            teams = teams.OrderBy(team => { return team.Name; });
+
+            return teams;
+        }
+
+        [ClientSampleMethod]
+        public WebApiTeam GetTeam(string projectName, string teamName)
+        {
+            VssConnection connection = this.Connection;
+            TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
+
+            WebApiTeam team = teamClient.GetTeamAsync(projectName, teamName).Result;
+
+            return team;
+        }
+
+        [ClientSampleMethod(resource:CoreConstants.TeamMembersResource)]
+        public IEnumerable<IdentityRef> GetTeamMembers(string projectName, string teamName)
+        {
+            VssConnection connection = this.Connection;
+            TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
+
+            IEnumerable<IdentityRef> results = teamClient.GetTeamMembersAsync(projectName, teamName).Result;
+
             return results;
         }
 
-        public WebApiTeam GetTeam(string project, string team)
+        [ClientSampleMethod]
+        public WebApiTeam CreateTeam(string projectName = "Fabikam", string name = "Fabrikam Ops Team", string description = "Team focused on operations for Fabrikam")
         {
-            VssConnection connection = new VssConnection(_uri, _credentials);
-            TeamHttpClient teamHttpClient = connection.GetClient<TeamHttpClient>();
-            WebApiTeam result = teamHttpClient.GetTeamAsync(project, team).Result;
-            return result;
+            VssConnection connection = this.Connection;
+            TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
+
+            WebApiTeam newTeamCreateParameters = new WebApiTeam()
+            {
+                Name = name,
+                Description = description
+            };
+
+            WebApiTeam newTeam = teamClient.CreateTeamAsync(newTeamCreateParameters, projectName).Result;
+
+            return newTeam;
         }
 
-        public IEnumerable<IdentityRef> GetTeamMembers(string project, string team)
+        [ClientSampleMethod]
+        public WebApiTeam RenameTeam(string projectName = "Fabrikam", string currentTeamName = "Fabrikam Ops Team", string newTeamName = "Fabrikam Ops Team (renamed)")
         {
-            VssConnection connection = new VssConnection(_uri, _credentials);
-            TeamHttpClient teamHttpClient = connection.GetClient<TeamHttpClient>();
-            IEnumerable<IdentityRef> results = teamHttpClient.GetTeamMembersAsync(project, team).Result;
-            return results;
+            VssConnection connection = this.Connection;
+            TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
+
+            WebApiTeam teamUpdateParameters = new WebApiTeam()
+            {
+                Name = newTeamName
+            };
+
+            WebApiTeam updatedTeam = teamClient.UpdateTeamAsync(teamUpdateParameters, projectName, currentTeamName).Result;
+
+            return updatedTeam;
         }
 
-        public WebApiTeam CreateTeam(string project, WebApiTeam teamData)
+        [ClientSampleMethod]
+        public bool DeleteTeam(string projectName = "Fabrikam", string teamName = "Fabrikam Ops Team")
         {
-            VssConnection connection = new VssConnection(_uri, _credentials);
-            TeamHttpClient teamHttpClient = connection.GetClient<TeamHttpClient>();
-            WebApiTeam result = teamHttpClient.CreateTeamAsync(teamData, project).Result;
-            return result;
+            VssConnection connection = this.Connection;
+            TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
+
+            try
+            {
+                teamClient.DeleteTeamAsync(projectName, teamName).SyncResult();
+                return true;             
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
-        public WebApiTeam UpdateTeam(string project, string team, WebApiTeam teamData)
-        {
-            VssConnection connection = new VssConnection(_uri, _credentials);
-            TeamHttpClient teamHttpClient = connection.GetClient<TeamHttpClient>();
-            WebApiTeam result = teamHttpClient.UpdateTeamAsync(teamData, project, team).Result;
-            return result;
-        }
-
-        public void DeleteTeam(string project, string team)
-        {
-            VssConnection connection = new VssConnection(_uri, _credentials);
-            TeamHttpClient teamHttpClient = connection.GetClient<TeamHttpClient>();
-            teamHttpClient.DeleteTeamAsync(project, team).SyncResult();                
-        }
     }
 }

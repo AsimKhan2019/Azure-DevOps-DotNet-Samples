@@ -1,37 +1,31 @@
 ﻿using Microsoft.VisualStudio.Services.WebApi;
 using Microsoft.TeamFoundation.Core.WebApi.Types;
 using Microsoft.TeamFoundation.Work.WebApi;
-using Microsoft.VisualStudio.Services.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace VstsClientLibrariesSamples.Work
+namespace VstsSamples.Client.Work
 {
-    public class TeamSettings
+    public class TeamSettingsSample : ClientSample
     {
-        readonly IConfiguration _configuration;
-        private VssBasicCredential _credentials;
-        private Uri _uri;
-
-        public TeamSettings(IConfiguration configuration)
+  
+        public TeamSettingsSample(ClientSampleConfiguration configuration) : base(configuration)
         {
-            _configuration = configuration;
-            _credentials = new VssBasicCredential("", _configuration.PersonalAccessToken);
-            _uri = new Uri(_configuration.UriString);
         }
 
+        [ClientSampleMethod]
         public TeamSetting GetTeamSettings(string project)
         {    
-            VssConnection connection = new VssConnection(_uri, _credentials);
-            WorkHttpClient workHttpClient = connection.GetClient<WorkHttpClient>();        
-            var teamContext = new TeamContext(project);
-            TeamSetting result = workHttpClient.GetTeamSettingsAsync(teamContext).Result;
+            VssConnection connection = this.Connection;
+            WorkHttpClient workClient = connection.GetClient<WorkHttpClient>();   
+                 
+            var context = new TeamContext(project);
+            TeamSetting result = workClient.GetTeamSettingsAsync(context).Result;
+
             return result;
         }
 
+        [ClientSampleMethod]
         public TeamSetting UpdateTeamSettings(string project)
         {
             IDictionary<string, bool> backlogVisibilities = new Dictionary<string, bool>() {
@@ -40,16 +34,19 @@ namespace VstsClientLibrariesSamples.Work
                 { "Microsoft.RequirementCategory", true }
             };
 
-            TeamSettingsPatch patchDocument = new TeamSettingsPatch() {
+            TeamSettingsPatch updatedTeamSettings = new TeamSettingsPatch() {
                 BugsBehavior = BugsBehavior.AsRequirements,
                 WorkingDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday },
                 BacklogVisibilities = backlogVisibilities
             };
 
-            VssConnection connection = new VssConnection(_uri, _credentials);
-            WorkHttpClient workHttpClient = connection.GetClient<WorkHttpClient>();
-            var teamContext = new TeamContext(project);
-            TeamSetting result = workHttpClient.UpdateTeamSettingsAsync(patchDocument, teamContext).Result;
+            VssConnection connection = this.Connection;
+            WorkHttpClient workClient = connection.GetClient<WorkHttpClient>();
+
+            var context = new TeamContext(project);
+
+            TeamSetting result = workClient.UpdateTeamSettingsAsync(updatedTeamSettings, context).Result;
+
             return result;
         }
     }

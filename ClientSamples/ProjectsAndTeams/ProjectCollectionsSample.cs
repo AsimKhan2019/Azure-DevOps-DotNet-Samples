@@ -3,37 +3,37 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
+using VstsSamples.Client;
 
-namespace VstsClientLibrariesSamples.ProjectsAndTeams
+namespace VstsSamples.Client.Core
 {
-    public class ProjectCollections
+    [ClientSample(CoreConstants.AreaName, CoreConstants.ProjectCollectionsResource)]
+    public class ProjectCollectionsSample : ClientSample
     {
-        readonly IConfiguration _configuration;
-        private VssBasicCredential _credentials;
-        private Uri _uri;
-
-        public ProjectCollections(IConfiguration configuration)
+        public ProjectCollectionsSample(ClientSampleConfiguration configuration) : base(configuration)
         {
-            _configuration = configuration;
-            _credentials = new VssBasicCredential("", _configuration.PersonalAccessToken);
-            _uri = new Uri(_configuration.UriString);
         }
 
+        [ClientSampleMethod]
         public IEnumerable<TeamProjectCollectionReference> GetProjectCollections()
         {         
             // Create instance of VssConnection using passed credentials
-            VssConnection connection = new VssConnection(_uri, _credentials);
-            ProjectCollectionHttpClient projectCollectionHttpClient = connection.GetClient<ProjectCollectionHttpClient>();
-            IEnumerable<TeamProjectCollectionReference> teamProjectCollectionReference = projectCollectionHttpClient.GetProjectCollections(null).Result;
-            return teamProjectCollectionReference;
+            VssConnection connection = this.Connection;
+            ProjectCollectionHttpClient projectCollectionClient = connection.GetClient<ProjectCollectionHttpClient>();
+
+            IEnumerable<TeamProjectCollectionReference> projectCollections = projectCollectionClient.GetProjectCollections().Result;
+
+            return projectCollections;
         }
 
-        public TeamProjectCollectionReference GetProjectCollection(string id)
+        [ClientSampleMethod]
+        public TeamProjectCollectionReference GetProjectCollection(string collectionName)
         {
-            // Create instance of VssConnection using passed credentials
-            VssConnection connection = new VssConnection(_uri, _credentials);
-            ProjectCollectionHttpClient projectCollectionHttpClient = connection.GetClient<ProjectCollectionHttpClient>();
-            TeamProjectCollectionReference teamProjectCollectionReference = projectCollectionHttpClient.GetProjectCollection(id).Result;
+            VssConnection connection = this.Connection;
+            ProjectCollectionHttpClient projectCollectionClient = connection.GetClient<ProjectCollectionHttpClient>();
+
+            TeamProjectCollectionReference teamProjectCollectionReference = projectCollectionClient.GetProjectCollection(collectionName).Result;
+
             return teamProjectCollectionReference;
         }
     }

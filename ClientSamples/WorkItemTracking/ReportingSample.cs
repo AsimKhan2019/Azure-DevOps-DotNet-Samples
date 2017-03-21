@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VstsClientLibrariesSamples.WorkItemTracking
+﻿namespace VstsSamples.Client.WorkItemTracking
 {
-    public class Reporting
+    [ClientSample]
+    public class ReportingSample : ClientSample
     {
+        public ReportingSample(ClientSampleConfiguration configuration) : base(configuration)
+        {
+        }
+
     }
 }
