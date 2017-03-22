@@ -12,8 +12,10 @@ namespace Vsts.ClientSamples.WorkItemTracking
     {
 
         [ClientSampleMethod]
-        public List<WorkItemDeleteShallowReference> GetDeletedItems(string project)
+        public List<WorkItemDeleteShallowReference> GetDeletedWorkItems()
         {
+            string project = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
@@ -23,8 +25,10 @@ namespace Vsts.ClientSamples.WorkItemTracking
         }
 
         [ClientSampleMethod]
-        public WorkItemDelete GetDeletedItem(int workItemId)
+        public WorkItemDelete GetDeletedWorkItem()
         {
+            int workItemId = -1; // TODO
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
@@ -34,8 +38,10 @@ namespace Vsts.ClientSamples.WorkItemTracking
         }
 
         [ClientSampleMethod]
-        public WorkItemDelete RestoreItem(int workItemId)
+        public WorkItemDelete RestoreWorkItem()
         {
+            int workItemId = -1; // TODO
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
@@ -49,8 +55,10 @@ namespace Vsts.ClientSamples.WorkItemTracking
         }
 
         [ClientSampleMethod]
-        public void PermenentlyDeleteItem(int workItemId)
+        public void PermenentlyDeleteWorkItem()
         {
+            int workItemId = -1; // TODO
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 

@@ -12,8 +12,11 @@ namespace Vsts.ClientSamples.WorkItemTracking
     {
 
         [ClientSampleMethod]
-        public QueryHierarchyItem GetQueryByName(string project, string queryName)
+        public QueryHierarchyItem GetQueryByName()
         {
+            string project = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+            string queryName = "Shared Queries/Current Sprint";
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
@@ -25,31 +28,32 @@ namespace Vsts.ClientSamples.WorkItemTracking
             }
             else
             {
-                throw new NullReferenceException("Query '" + queryName + "' not found in project");
+                throw new Exception(String.Format("Query '{0}' not found", queryName));
             }
         }
 
         [ClientSampleMethod]
-        public WorkItemQueryResult ExecuteQuery(Guid queryId)
+        public WorkItemQueryResult ExecuteQuery()
         {
+            Guid queryId = Guid.Parse("6e511ae8-aafe-455a-b318-a4158bbd0f1e"); // TODO
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItemQueryResult queryResult = workItemTrackingClient.QueryByIdAsync(queryId).Result;
 
-            if (queryResult != null && queryResult.WorkItems.Count() > 0)
-            {
-                return queryResult;
-            }
-            else
-            {
-                throw new NullReferenceException("Query '" + queryId.ToString().ToLower() + "' did not find any results");
-            }
+            return queryResult;
         }
 
         [ClientSampleMethod]
-        public WorkItemQueryResult ExecuteByWiql(Wiql wiql, string project)
+        public WorkItemQueryResult ExecuteByWiql()
         {
+            string project = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+            Wiql wiql = new Wiql()
+            {
+                Query = "Select ID, Title from Issue where (State = 'Active') order by Title"
+            };            
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
@@ -59,8 +63,11 @@ namespace Vsts.ClientSamples.WorkItemTracking
         }
 
         [ClientSampleMethod]
-        public IEnumerable<WorkItem> GetWorkItemsFromQuery(string projectName, string queryName)
+        public IEnumerable<WorkItem> GetWorkItemsFromQuery()
         {
+            string project = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+            string queryName = "Shared Queries/Current Sprint";
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
@@ -69,7 +76,7 @@ namespace Vsts.ClientSamples.WorkItemTracking
             try
             {
                 // get the query object based on the query name and project
-                queryItem = workItemTrackingClient.GetQueryAsync(projectName, queryName).Result;
+                queryItem = workItemTrackingClient.GetQueryAsync(project, queryName).Result;
             }
             catch (Exception ex)
             {
@@ -103,17 +110,19 @@ namespace Vsts.ClientSamples.WorkItemTracking
             }
         }
 
-        public IEnumerable<WorkItem> GetWorkItemsFromWiql(string project, string wiqlString = null)
+        public IEnumerable<WorkItem> GetWorkItemsFromWiql()
         {
+            string project = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
             // create a query to get your list of work items needed
             Wiql wiql = new Wiql()
             {
-                Query = (string.IsNullOrEmpty(wiqlString) ? "Select [State], [Title] " +
+                Query = "Select [State], [Title] " +
                         "From WorkItems " +
                         "Where [Work Item Type] = 'Bug' " +
                         "And [System.TeamProject] = '" + project + "' " +
                         "And [System.State] = 'New' " +
-                        "Order By [State] Asc, [Changed Date] Desc" : wiqlString)
+                        "Order By [State] Asc, [Changed Date] Desc"
             };
 
             VssConnection connection = Context.Connection;
@@ -140,7 +149,10 @@ namespace Vsts.ClientSamples.WorkItemTracking
                         "System.State"
                     };
 
-                IEnumerable<WorkItem> workItems = workItemTrackingClient.GetWorkItemsAsync(workItemIds, fields, queryResult.AsOf).Result;
+                IEnumerable<WorkItem> workItems = workItemTrackingClient.GetWorkItemsAsync(
+                    workItemIds, 
+                    fields, 
+                    queryResult.AsOf).Result;
 
                 return workItems;
             }

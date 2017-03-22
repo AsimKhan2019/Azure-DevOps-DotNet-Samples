@@ -20,8 +20,10 @@ namespace Vsts.ClientSamples.WorkItemTracking
     {
 
         [ClientSampleMethod]
-        public WorkItemField GetFieldDetails(string fieldName = "System.Title")
+        public WorkItemField GetFieldDetails()
         {
+            string fieldName = "System.Title";
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
