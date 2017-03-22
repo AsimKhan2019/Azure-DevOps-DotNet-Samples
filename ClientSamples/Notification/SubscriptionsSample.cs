@@ -179,9 +179,6 @@ namespace Vsts.ClientSamples.Notification
 
             List<NotificationSubscription> subscriptions = notificationClient.ListSubscriptionsAsync().Result;
 
-            Context.Log("Custom subscriptions");
-            Context.Log("--------------------");
-
             foreach (var subscription in subscriptions)
             {
                 LogSubscription(subscription);
@@ -213,9 +210,6 @@ namespace Vsts.ClientSamples.Notification
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             List<NotificationSubscription> subscriptions = notificationClient.QuerySubscriptionsAsync(query).Result;
-
-            Context.Log("Default subscriptions");
-            Context.Log("---------------------");
 
             foreach (var subscription in subscriptions)
             {
@@ -255,9 +249,6 @@ namespace Vsts.ClientSamples.Notification
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             IEnumerable<NotificationSubscription> subscriptions = notificationClient.QuerySubscriptionsAsync(query).Result;
-
-            Context.Log("Custom subscriptions for event type: {0}", eventType);
-            Context.Log("------------------------------------------------------------");
 
             foreach(NotificationSubscription subscription in subscriptions)
             {
@@ -313,9 +304,6 @@ namespace Vsts.ClientSamples.Notification
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             IEnumerable<NotificationSubscription> subscriptions = notificationClient.ListSubscriptionsAsync(subscriber: team.Id).Result;
-
-            Context.Log("Subscriptions for {0} in {1}", teamName, projectName);
-            Context.Log("-------------------------------------------------------------------");
 
             foreach (var subscription in subscriptions)
             {
@@ -388,9 +376,6 @@ namespace Vsts.ClientSamples.Notification
                 // Find the corresponding team for this group
                 WebApiTeam team = teams.First(t => { return t.Id.Equals(group.Key); });
 
-                Context.Log("Subscriptions for team {0} (subscriber ID: {1})", team.Name, team.Id);
-                Context.Log("--------------------------------------------------------------------------------------");
-
                 // Show the details for each subscription owned by this team 
                 foreach (NotificationSubscription subscription in group)
                 {
@@ -432,10 +417,10 @@ namespace Vsts.ClientSamples.Notification
 
         protected void LogSubscription(NotificationSubscription subscription)
         {
-            Context.Log(" {0}: {1}, last modified on {2} by {3}",
-                subscription.Id,
-                subscription.Description,
-                subscription.ModifiedDate,
+            Context.Log(" {0} {1} {2} {3}",
+                subscription.Id.PadRight(8),
+                subscription.Description.PadRight(60),
+                subscription.ModifiedDate.ToShortDateString().PadRight(10),
                 subscription.LastModifiedBy?.DisplayName);
         }
 

@@ -42,10 +42,12 @@ namespace Vsts.ClientSamples.Runner
                     {
                         try
                         {
-                            context.Log("----------------------------------------------------------");
-                            context.Log("Method: {0}", runnableMethod.MethodBase.Name);
-                            context.Log("Area: {0}", runnableMethod.Area);
-                            context.Log("Resource: {0}", runnableMethod.Resource);
+
+                            context.Log("--------------------------------------------------------------------------------------");
+                            context.Log("Running method {0}...", runnableMethod.MethodBase.Name);
+                            context.Log(" Area:     {0}", runnableMethod.Area);
+                            context.Log(" Resource: {0}", runnableMethod.Resource);
+                            context.Log("===========================================================");
                             context.Log("");
 
                             runnableMethod.MethodBase.Invoke(clientSample, null);
@@ -57,7 +59,6 @@ namespace Vsts.ClientSamples.Runner
                         }
                         finally
                         {
-                            
                             context.Log("");
                         }
                     }

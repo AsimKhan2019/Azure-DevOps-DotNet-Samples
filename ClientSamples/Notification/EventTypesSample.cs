@@ -63,9 +63,9 @@ namespace Vsts.ClientSamples.Notification
             int index = 1;
             foreach (var eventType in eventTypes)
             {
-                Context.Log("{0}. {1} (ID: {2})",
-                    index,
-                    string.IsNullOrEmpty(eventType.Name) ? "Unnamed" : eventType.Name,
+                Context.Log("{0}. {1} {2}",
+                    index.ToString().PadLeft(3),
+                    (string.IsNullOrEmpty(eventType.Name) ? "Unnamed" : eventType.Name).PadRight(40),
                     eventType.Id);
 
                 index++;
