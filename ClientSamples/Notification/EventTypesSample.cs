@@ -8,9 +8,14 @@ namespace Vsts.ClientSamples.Notification
     /// <summary>
     /// Samples for getting details about available notification event types.
     /// </summary>
-    [ClientSample(NotificationApiConstants.AreaName)]
+    [ClientSample(NotificationApiConstants.AreaName, NotificationApiConstants.EventTypesResource.Name)]
     public class EventTypesSample : ClientSample
     {
+        public EventTypesSample(): base()
+        {
+
+        }
+
         public EventTypesSample(ClientSampleContext context): base(context)
         {
         }
@@ -27,6 +32,8 @@ namespace Vsts.ClientSamples.Notification
 
             List<NotificationEventType> eventTypes = notificationClient.ListEventTypesAsync().Result;
 
+            LogEventTypes(eventTypes);
+
             return eventTypes;
         }
 
@@ -42,11 +49,27 @@ namespace Vsts.ClientSamples.Notification
 
             List<NotificationEventType> eventTypes = notificationClient.ListEventTypesAsync().Result;
 
-            List<NotificationEventType> filteredEventTypes = this.GetAllEventTypes().FindAll(e => {
+            List<NotificationEventType> filteredEventTypes = eventTypes.FindAll(e => {
                 return e.CustomSubscriptionsAllowed;
             });
 
+            LogEventTypes(filteredEventTypes);
+
             return filteredEventTypes;
+        }
+
+        private void LogEventTypes(IEnumerable<NotificationEventType> eventTypes)
+        {
+            int index = 1;
+            foreach (var eventType in eventTypes)
+            {
+                Context.Log("{0}. {1} (ID: {2})",
+                    index,
+                    string.IsNullOrEmpty(eventType.Name) ? "Unnamed" : eventType.Name,
+                    eventType.Id);
+
+                index++;
+            }
         }
     }
 
