@@ -14,8 +14,10 @@ namespace Vsts.ClientSamples.Core
         }
 
         [ClientSampleMethod]
-        public IEnumerable<WebApiTeam> GetOrderedTeamsList(string projectName = "Fabrikam")
+        public IEnumerable<WebApiTeam> GetOrderedTeamsList()
         {
+            string projectName = ClientSampleHelpers.GetDefaultProject(this.Context).Name;
+
             VssConnection connection = Context.Connection;
             TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
             

@@ -42,18 +42,22 @@ namespace Vsts.ClientSamples.Runner
                     {
                         try
                         {
-                            context.Log("Running client sample {0}/{1}/{2}:", runnableMethod.Area, runnableMethod.Resource, runnableMethod.MethodBase.Name);
+                            context.Log("----------------------------------------------------------");
+                            context.Log("Method: {0}", runnableMethod.MethodBase.Name);
+                            context.Log("Area: {0}", runnableMethod.Area);
+                            context.Log("Resource: {0}", runnableMethod.Resource);
                             context.Log("");
 
                             runnableMethod.MethodBase.Invoke(clientSample, null);
                         }
                         catch (Exception ex)
                         {
-                            context.Log(" Excception during run: " + ex.Message);
+                            Console.WriteLine(ex);
+                            //context.Log(" Excception during run: " + ex.Message);
                         }
                         finally
                         {
-                            context.Log("--------------------------------------");
+                            
                             context.Log("");
                         }
                     }

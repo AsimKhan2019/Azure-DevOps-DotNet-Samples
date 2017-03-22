@@ -6,27 +6,34 @@ using System.Collections.Generic;
 
 namespace Vsts.ClientSamples.Work
 {
+    [ClientSample(WorkWebConstants.RestArea, "teamsettings")]
     public class TeamSettingsSample : ClientSample
     {
-  
+
+        public TeamSettingsSample(): base()
+        {
+        }
+
         public TeamSettingsSample(ClientSampleContext context) : base(context)
         {
         }
 
         [ClientSampleMethod]
-        public TeamSetting GetTeamSettings(string project)
+        public TeamSetting GetTeamSettings()
         {    
             VssConnection connection = Context.Connection;
-            WorkHttpClient workClient = connection.GetClient<WorkHttpClient>();   
+            WorkHttpClient workClient = connection.GetClient<WorkHttpClient>();
+
+            Guid projectId = ClientSampleHelpers.GetDefaultProject(this.Context).Id;
                  
-            var context = new TeamContext(project);
+            var context = new TeamContext(projectId);
             TeamSetting result = workClient.GetTeamSettingsAsync(context).Result;
 
             return result;
         }
 
         [ClientSampleMethod]
-        public TeamSetting UpdateTeamSettings(string project)
+        public TeamSetting UpdateTeamSettings()
         {
             IDictionary<string, bool> backlogVisibilities = new Dictionary<string, bool>() {
                 { "Microsoft.EpicCategory", false },
@@ -43,7 +50,8 @@ namespace Vsts.ClientSamples.Work
             VssConnection connection = Context.Connection;
             WorkHttpClient workClient = connection.GetClient<WorkHttpClient>();
 
-            var context = new TeamContext(project);
+            Guid projectId = ClientSampleHelpers.GetDefaultProject(this.Context).Id;
+            var context = new TeamContext(projectId);
 
             TeamSetting result = workClient.UpdateTeamSettingsAsync(updatedTeamSettings, context).Result;
 

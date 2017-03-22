@@ -9,16 +9,13 @@ namespace Vsts.ClientSamples
     /// <summary>
     /// Base class that all client samples extend from.
     /// </summary>
+    [InheritedExport]
     public abstract class ClientSample
     {
         public ClientSampleContext Context { get; set; }
-
+        
         [ImportingConstructor]
-        public ClientSample(): this(null)
-        {
-        }
-
-        public ClientSample(ClientSampleContext context)
+        public ClientSample(ClientSampleContext context = null)
         {
             this.Context = context;
         }

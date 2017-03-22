@@ -76,9 +76,9 @@ namespace Vsts.ClientSamples.Notification
             ProjectHttpClient projectClient = this.Context.Connection.GetClient<ProjectHttpClient>();
 
             Guid projectId;
-            String projectName = this.Context.Get<String>("projectName", null);
+            String projectName;
   
-            if (String.IsNullOrEmpty(projectName))
+            if (!this.Context.TryGetValue<String>("projectName", out projectName))
             {
                 // Get the ID of the first project
                 projectId = projectClient.GetProjects().Result.First().Id;
@@ -204,7 +204,7 @@ namespace Vsts.ClientSamples.Notification
                 {
                     new SubscriptionQueryCondition()
                     {
-                        SubscriptionType = SubscriptionType.Default
+                        SubscriptionType = SubscriptionType.Shared
                     }
                 }
             };
@@ -231,12 +231,12 @@ namespace Vsts.ClientSamples.Notification
         /// <param name="eventType"></param>
         /// <returns></returns>
         [ClientSampleMethod]
-        public IEnumerable<NotificationSubscription> GetCustomSubscriptionsForEventType(string eventType = null)
+        public IEnumerable<NotificationSubscription> GetCustomSubscriptionsForEventType()
         {
-            // Get the event type from the arguments, configuration, or just fallback and use "work item change"
-            if (String.IsNullOrEmpty(eventType))
+            String eventType;
+            if (!Context.TryGetValue<string>("notification.subscriptions.eventType", out eventType))
             {
-                eventType = this.Context.Get<string>("notification.subscriptions.eventType", "ms.vss-work.workitem-changed-event");
+                eventType = "ms.vss-work.workitem-changed-event";
             }
 
             // Setup the query
@@ -300,8 +300,11 @@ namespace Vsts.ClientSamples.Notification
         /// <param name="teamName">Name of the team</param>
         /// <returns></returns>
         [ClientSampleMethod]
-        public IEnumerable<NotificationSubscription> GetSubscriptionsForTeam(string projectName, string teamName)
+        public IEnumerable<NotificationSubscription> GetSubscriptionsForTeam()
         {
+            string projectName = ClientSampleHelpers.GetDefaultProject(this.Context).Name;
+            string teamName = ClientSampleHelpers.GetDefaultTeam(this.Context).Name;
+
             VssConnection connection = Context.Connection;
             TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
 
@@ -323,8 +326,11 @@ namespace Vsts.ClientSamples.Notification
         }
 
         [ClientSampleMethod]
-        public IEnumerable<NotificationSubscription> GetSubscriptionsForGroup(Guid groupId)
+        public IEnumerable<NotificationSubscription> GetSubscriptionsForGroup()
         {
+            Guid groupId = Guid.Empty;
+
+
             VssConnection connection = Context.Connection;
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
@@ -338,7 +344,7 @@ namespace Vsts.ClientSamples.Notification
         /// </summary>
         /// <param name="projectName"></param>
         [ClientSampleMethod]
-        public void ShowAllTeamSubscriptions(String projectName = null)
+        public void ShowAllTeamSubscriptions()
         {
             // Get clients
             VssConnection connection = Context.Connection;
@@ -349,10 +355,7 @@ namespace Vsts.ClientSamples.Notification
             // Step 1: construct query to find all subscriptions belonging to teams in the project
             //
 
-            if (String.IsNullOrEmpty(projectName))
-            {
-                projectName = this.Context.Get<String>("projectName", null);
-            }
+            string projectName = ClientSampleHelpers.GetDefaultProject(this.Context).Name;
 
             // Get all teams in the project
             IEnumerable<WebApiTeam> teams = teamClient.GetTeamsAsync(projectName).Result;
@@ -403,8 +406,10 @@ namespace Vsts.ClientSamples.Notification
         /// <param name="workItemId"></param>
         /// <returns></returns>
         [ClientSampleMethod]
-        public NotificationSubscription FollowWorkItem(int workItemId)
+        public NotificationSubscription FollowWorkItem()
         {
+            int workItemId = 0; // TODO: pick a work item
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient witClient = connection.GetClient<WorkItemTrackingHttpClient>();
             WorkItem workItem = witClient.GetWorkItemAsync(workItemId).Result;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using System.Net.Http;
+using Microsoft.VisualStudio.Services.Client;
 
 namespace Vsts.ClientSamples
 {
@@ -48,7 +49,7 @@ namespace Vsts.ClientSamples
         public ClientSampleContext(Uri url)
         {
             this.Url = url;
-            this.Credentials = new VssCredentials();
+            this.Credentials = new VssClientCredentials();
         }
 
         public ClientSampleContext(Uri url, VssCredentials credentials)
@@ -62,20 +63,12 @@ namespace Vsts.ClientSamples
             this.Connection = connection;
         }
 
-        public T Get<T>(string name, T defaultValueIfMissing)
+        public bool TryGetValue<T>(string name, out T result)
         {
-            T result;
-            if (Properties.TryGetValue<T>(name, out result))
-            {
-                return result;
-            }
-            else
-            {
-                return defaultValueIfMissing;
-            }
+            return Properties.TryGetValue<T>(name, out result);
         }
 
-        public void Set<T>(string name, T value)
+        public void SetValue<T>(string name, T value)
         {
             Properties[name] = value;
         }

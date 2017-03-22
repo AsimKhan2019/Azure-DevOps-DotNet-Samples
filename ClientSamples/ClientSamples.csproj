@@ -119,6 +119,7 @@
     <Compile Include="Build\BuildsSample.cs" />
     <Compile Include="ClientSample.cs" />
     <Compile Include="ClientSampleContext.cs" />
+    <Compile Include="ClientSampleHelpers.cs" />
     <Compile Include="ClientSampleUtils.cs" />
     <Compile Include="Core\*.cs" />
     <Compile Include="Notification\*.cs" />
