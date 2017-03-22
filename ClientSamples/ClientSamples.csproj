@@ -120,7 +120,7 @@
     <Compile Include="ClientSampleAttributes.cs" />
     <Compile Include="ClientSampleConfiguration.cs" />
     <Compile Include="ClientSampleHttpLogger.cs" />
-    <Compile Include="Common\*.cs" />
+    <Compile Include="AuthenticationSample.cs" />
     <Compile Include="Notification\*.cs" />
     <Compile Include="ProjectsAndTeams\*.cs" />
     <Compile Include="WorkItemTracking\AttachmentsSample.cs" />
@@ -135,7 +135,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

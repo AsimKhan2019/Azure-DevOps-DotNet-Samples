@@ -62,55 +62,65 @@ namespace VstsSamples.Client
     }
 
     /// <summary>
-    /// Utilities for discovering client samples.
+    /// Interface representing a client sample method. Provides a way to discover client samples for a particular area, resource, or operation.
     /// </summary>
-    public static class ClientSampleMetadataUtils
+    public interface IClientSampleMethod
     {
-        public static IEnumerable<IClientSampleMethod> GetClientSampleMethods(string area = null)
-        {
-            List<IClientSampleMethod> methods = new List<IClientSampleMethod>();
+        string Area { get; }
 
-            CompositionContainer container = new CompositionContainer(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
-            IEnumerable<Lazy<ClientSample>> samples = container.GetExports<ClientSample>();
+        string Resource { get; }
 
-            foreach (Lazy<ClientSample> cs in samples)
-            {
-                Type csType = cs.Value.GetType();
-
-                ClientSampleAttribute csAttr = csType.GetCustomAttribute<ClientSampleAttribute>();
-
-                foreach (MethodInfo m in csType.GetMethods())
-                {
-                    ClientSampleMethodAttribute[] attrs = (ClientSampleMethodAttribute[])m.GetCustomAttributes(typeof(ClientSampleMethodAttribute), false);
-                    foreach (var ma in attrs)
-                    {
-                        if (string.IsNullOrEmpty(ma.Area))
-                        {
-                            ma.Area = csAttr.Area;
-                        }
-
-                        if (string.IsNullOrEmpty(ma.Resource))
-                        {
-                            ma.Resource = csAttr.Resource;
-                        }
-
-                        if (!string.IsNullOrEmpty(ma.Area) && !string.IsNullOrEmpty(ma.Resource) && !string.IsNullOrEmpty(ma.Operation))
-                        {
-                            methods.Add(ma);
-                        }
-                    }
-                }
-            }
-
-            if (!String.IsNullOrEmpty(area))
-            {
-                methods = methods.FindAll(csm => { return String.Equals(area, csm.Area, StringComparison.OrdinalIgnoreCase); });
-            }
-
-            return methods;
-        }
-
+        string Operation { get; }
     }
+
+
+    public class ClientSampleMethodInfo : IClientSampleMethod
+    {
+        public string Area { get; set; }
+
+        public string Operation { get; set; }
+
+        public string Resource { get; set; }
+    }
+
+    /// <summary>
+    /// Attribute applied to all client samples. Optionally indicates the API "area" and/or "resource" the sample is associatd with.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class ClientSampleAttribute : ExportAttribute
+    {
+        public string Area { get; private set; }
+
+        public string Resource { get; private set; }
+
+        public ClientSampleAttribute(String area = null, String resource = null) : base(typeof(ClientSample))
+        {
+            this.Area = area;
+            this.Resource = resource;
+        }
+    }
+
+    /// <summary>
+    /// Attribute applied to methods within a client sample. Allow overriding the area or resource of the containing client sample.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public class ClientSampleMethodAttribute : Attribute, IClientSampleMethod
+    {
+        public string Area { get; internal set; }
+
+        public string Resource { get; internal set; }
+
+        public string Operation { get; internal set; }
+
+        public ClientSampleMethodAttribute(String area = null, String resource = null, String operation = null)
+        {
+            this.Area = area;
+            this.Resource = resource;
+            this.Operation = operation;
+        }
+    }
+
+
 
 
 }

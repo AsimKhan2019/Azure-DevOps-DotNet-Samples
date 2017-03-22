@@ -9,9 +9,9 @@ using System.Linq;
 using System.Net.Http;
 using AadAuthenticationContext = Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext;
 
-namespace VstsSamples.Client.Common
+namespace VstsSamples.Client.Auth
 {
-    public class Authentication
+    public class InteractiveAuthSample
     {
         // This is the hard coded Resource ID for Visual Studio Team Services, do not change this value
         internal const string VSTSResourceId = "499b84ac-1321-427f-aa17-267ca6975798";

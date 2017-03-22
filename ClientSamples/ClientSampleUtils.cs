@@ -1,4 +1,12 @@
-﻿using System;
+using System;
+using System.Reflection;
+using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition;
+using Microsoft.VisualStudio.Services.WebApi;
+using System.Net.Http;
+using Microsoft.VisualStudio.Services.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -14,9 +22,68 @@ using System.Reflection;
 
 namespace VstsSamples.Client
 {
+
+    /// <summary>
+    /// Utilities for discovering client samples.
+    /// </summary>
+    public static class ClientSampleUtils
+    {
+        public static Dictionary<ClientSample, IEnumerable<IClientSampleMethod>> GetClientSampleMethods(string area = null, string resource = null)
+        {
+            List<IClientSampleMethod> methods = new List<IClientSampleMethod>();
+
+            CompositionContainer container = new CompositionContainer(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+            IEnumerable<Lazy<ClientSample>> samples = container.GetExports<ClientSample>();
+
+            foreach (Lazy<ClientSample> cs in samples)
+            {
+                Type csType = cs.Value.GetType();
+
+                ClientSampleAttribute csAttr = csType.GetCustomAttribute<ClientSampleAttribute>();
+
+                foreach (MethodInfo m in csType.GetMethods())
+                {
+                    ClientSampleMethodAttribute[] attrs = (ClientSampleMethodAttribute[])m.GetCustomAttributes(typeof(ClientSampleMethodAttribute), false);
+                    foreach (var ma in attrs)
+                    {
+                        if (string.IsNullOrEmpty(ma.Area))
+                        {
+                            ma.Area = csAttr.Area;
+                        }
+
+                        if (string.IsNullOrEmpty(ma.Resource))
+                        {
+                            ma.Resource = csAttr.Resource;
+                        }
+
+                        if (!string.IsNullOrEmpty(ma.Area) && !string.IsNullOrEmpty(ma.Resource) && !string.IsNullOrEmpty(ma.Operation))
+                        {
+                            methods.Add(ma);
+                        }
+                    }
+                }
+            }
+
+            if (!String.IsNullOrEmpty(area))
+            {
+                methods = methods.FindAll(csm => { return String.Equals(area, csm.Area, StringComparison.OrdinalIgnoreCase); });
+            }
+
+            return methods;
+        }
+    }
+
+    public class ClientSampleInstanceWithMethods
+    {
+        public ClientSample ClientSample { get; set; }
+
+        public IEnumerable<Method>
+
+    }
+
+
     public class ClientSampleHttpLogger : DelegatingHandler
     {
-
         private JsonSerializerSettings serializerSettings;
 
         private static HashSet<string> s_excludedHeaders = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
@@ -125,4 +192,5 @@ namespace VstsSamples.Client
 
       
     } 
+    
 }

@@ -15,6 +15,11 @@ namespace VstsSamples.Client
 
         protected Dictionary<String, Object> Properties { get; set; } = new Dictionary<String, Object>();
 
+        public ClientSampleConfiguration(Uri url): this(url, new VssCredentials())
+        {
+            
+        }
+
         public ClientSampleConfiguration(Uri url, VssCredentials credentials)
         {
             this.Url = url;
