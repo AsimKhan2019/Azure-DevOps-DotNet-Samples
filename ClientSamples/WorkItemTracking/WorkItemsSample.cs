@@ -105,8 +105,11 @@ namespace Vsts.ClientSamples.WorkItemTracking
         }
 
         [ClientSampleMethod]
-        public WorkItem CreateWorkItem(string projectName, string title = "Sample task")
+        public WorkItem CreateWorkItem()
         {
+            string projectName = ClientSampleHelpers.GetDefaultProject(this.Context).Name;
+            string title = "Sample task";
+
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
             patchDocument.Add(

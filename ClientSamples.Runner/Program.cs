@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Vsts.ClientSamples.Runner
@@ -32,6 +33,9 @@ namespace Vsts.ClientSamples.Runner
             if (runnableMethodsBySample.Any())
             {
                 ClientSampleContext context = new ClientSampleContext(connectionUrl);
+               
+                string baseOutputPath = Path.Combine(Directory.GetCurrentDirectory(), "SampleRequests");
+                context.SetValue<string>(ClientSampleHttpLogger.PropertyBaseOutputPath, baseOutputPath);
 
                 foreach (var item in runnableMethodsBySample)
                 {
@@ -47,6 +51,13 @@ namespace Vsts.ClientSamples.Runner
                             context.Log(" Resource: {0}", runnableMethod.Resource);
                             context.Log("===========================================================");
                             context.Log("");
+
+                            // Set these so the HTTP logger has access to them when it needs to write the output
+                            ClientSampleContext.CurrentRunnableMethod = runnableMethod;
+                            ClientSampleContext.CurrentContext = context;
+
+                            // Reset suppression (if the previous method happened to leave output suppressed)
+                            ClientSampleHttpLogger.SetSuppressOutput(context, false); 
 
                             runnableMethod.MethodBase.Invoke(clientSample, null);
                         }

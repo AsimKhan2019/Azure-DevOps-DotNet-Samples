@@ -74,6 +74,11 @@ namespace Vsts.ClientSamples
 
             return team;
         }
+
+        public static Guid GetCurrentUserId(ClientSampleContext context)
+        {
+            return context.Connection.AuthorizedIdentity.Id;
+        }
     }
 }
 

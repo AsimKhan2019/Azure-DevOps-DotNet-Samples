@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Services.WebApi;
 using Microsoft.TeamFoundation.Core.WebApi;
 using System;
 using System.Linq;
+using Vsts.ClientSamples.WorkItemTracking;
 
 namespace Vsts.ClientSamples.Notification
 {
@@ -172,7 +173,7 @@ namespace Vsts.ClientSamples.Notification
         /// </summary>
         /// <returns></returns>
         [ClientSampleMethod]
-        public IEnumerable<NotificationSubscription> GetCustomSubscriptions()
+        public IEnumerable<NotificationSubscription> ListCustomSubscriptions()
         {
             VssConnection connection = Context.Connection;
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
@@ -188,44 +189,12 @@ namespace Vsts.ClientSamples.Notification
         }
 
         /// <summary>
-        /// Returns all "out of the box" default subscriptions available to the caller.
-        /// </summary>
-        /// <returns></returns>
-        [ClientSampleMethod]
-        public IEnumerable<NotificationSubscription> GetDefaultSubscriptions()
-        {
-            // Setup query  to only return default subscriptions
-            SubscriptionQuery query = new SubscriptionQuery()
-            {
-                Conditions = new[]
-                {
-                    new SubscriptionQueryCondition()
-                    {
-                        SubscriptionType = SubscriptionType.Shared
-                    }
-                }
-            };
-
-            VssConnection connection = Context.Connection;
-            NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
-
-            List<NotificationSubscription> subscriptions = notificationClient.QuerySubscriptionsAsync(query).Result;
-
-            foreach (var subscription in subscriptions)
-            {
-                LogSubscription(subscription);
-            }
-
-            return subscriptions;
-        }
-
-        /// <summary>
         /// Returns all custom subscriptions for the specified event type.
         /// </summary>
         /// <param name="eventType"></param>
         /// <returns></returns>
         [ClientSampleMethod]
-        public IEnumerable<NotificationSubscription> GetCustomSubscriptionsForEventType()
+        public IEnumerable<NotificationSubscription> QuerySubscriptionsByEventType()
         {
             String eventType;
             if (!Context.TryGetValue<string>("notification.subscriptions.eventType", out eventType))
@@ -240,6 +209,7 @@ namespace Vsts.ClientSamples.Notification
                 {
                     new SubscriptionQueryCondition()
                     {
+                        SubscriptionType = SubscriptionType.Shared,
                         Filter = new ExpressionFilter(eventType)
                     }
                 }
@@ -259,11 +229,11 @@ namespace Vsts.ClientSamples.Notification
         }
 
         /// <summary>
-        /// Creates a custom subscription where the caller is the subscriber. 
+        /// Creates a custom personal subscription for the calling user. 
         /// </summary>
         /// <returns></returns>
         [ClientSampleMethod]
-        public NotificationSubscription CreateCustomPersonalSubscription()
+        public NotificationSubscription CreateSubscriptionForUser()
         {        
             NotificationHttpClient notificationClient = Context.Connection.GetClient<NotificationHttpClient>();
 
@@ -285,13 +255,46 @@ namespace Vsts.ClientSamples.Notification
         }
 
         /// <summary>
+        /// Creates a custom team subscription.
+        /// </summary>
+        /// <returns></returns>
+        [ClientSampleMethod]
+        public NotificationSubscription CreateSubscriptionForTeam()
+        {
+            WebApiTeamRef team = ClientSampleHelpers.GetDefaultTeam(this.Context);
+
+            NotificationHttpClient notificationClient = Context.Connection.GetClient<NotificationHttpClient>();
+
+            // Query the available event types and find the first that can be used in a custom subscription
+            List<NotificationEventType> eventTypes = notificationClient.ListEventTypesAsync().Result;
+            NotificationEventType eventType = eventTypes.Find(e => { return e.CustomSubscriptionsAllowed; });
+
+            NotificationSubscriptionCreateParameters createParams = new NotificationSubscriptionCreateParameters()
+            {
+                Description = "My first subscription!",
+                Filter = new ExpressionFilter(eventType.Id),
+                Channel = new UserSubscriptionChannel(),
+                Subscriber = new IdentityRef()
+                {
+                    Id = team.Id.ToString()
+                }
+            };
+
+            NotificationSubscription newSubscription = notificationClient.CreateSubscriptionAsync(createParams).Result;
+
+            LogSubscription(newSubscription);
+
+            return newSubscription;
+        }
+
+        /// <summary>
         /// Returns all subscriptions for the specified team.
         /// </summary>
         /// <param name="projectName">Name or ID of the project that contains the team</param>
         /// <param name="teamName">Name of the team</param>
         /// <returns></returns>
         [ClientSampleMethod]
-        public IEnumerable<NotificationSubscription> GetSubscriptionsForTeam()
+        public IEnumerable<NotificationSubscription> ListSubscriptionsForTeam()
         {
             string projectName = ClientSampleHelpers.GetDefaultProject(this.Context).Name;
             string teamName = ClientSampleHelpers.GetDefaultTeam(this.Context).Name;
@@ -313,11 +316,9 @@ namespace Vsts.ClientSamples.Notification
             return subscriptions;
         }
 
-        [ClientSampleMethod]
-        public IEnumerable<NotificationSubscription> GetSubscriptionsForGroup()
+        public IEnumerable<NotificationSubscription> ListSubscriptionsForGroup()
         {
-            Guid groupId = Guid.Empty;
-
+            Guid groupId = Guid.Empty; // TODO fix
 
             VssConnection connection = Context.Connection;
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
@@ -393,26 +394,68 @@ namespace Vsts.ClientSamples.Notification
         [ClientSampleMethod]
         public NotificationSubscription FollowWorkItem()
         {
-            int workItemId = 0; // TODO: pick a work item
+            NotificationSubscription newFollowSubscription;
 
-            VssConnection connection = Context.Connection;
-            WorkItemTrackingHttpClient witClient = connection.GetClient<WorkItemTrackingHttpClient>();
-            WorkItem workItem = witClient.GetWorkItemAsync(workItemId).Result;
+            // Get a work item to follow. For this sample, just create a temporary work item.
+            WorkItem newWorkItem;
+            using (new ClientSampleHttpLoggerOutputSuppression())
+            {
+                WorkItemsSample witSample = new WorkItemsSample();
+                witSample.Context = this.Context;
+                newWorkItem = witSample.CreateWorkItem();
+            }
 
-            string workItemUri = "vstfs:///WorkItemTracking/WorkItem/" + workItem.Id;
+            string workItemArtifactUri = "vstfs:///WorkItemTracking/WorkItem/" + newWorkItem.Id;
 
             NotificationSubscriptionCreateParameters createParams = new NotificationSubscriptionCreateParameters()
             {
-                Filter = new ArtifactFilter(workItemUri),
+                Filter = new ArtifactFilter(workItemArtifactUri),
                 Channel = new UserSubscriptionChannel()
             };
 
-            NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
-            NotificationSubscription newFollowSubscription = notificationClient.CreateSubscriptionAsync(createParams).Result;
+            VssConnection connection = Context.Connection;
+            NotificationHttpClient notificationClient = Context.Connection.GetClient<NotificationHttpClient>();
+            newFollowSubscription  = notificationClient.CreateSubscriptionAsync(createParams).Result;
 
             LogSubscription(newFollowSubscription);
 
+            // Cleanup the temporary work item
+            using (new ClientSampleHttpLoggerOutputSuppression())
+            {
+                WorkItemTrackingHttpClient witClient = connection.GetClient<WorkItemTrackingHttpClient>();
+                witClient.DeleteWorkItemAsync(newWorkItem.Id.Value, destroy: true);
+            }
+
             return newFollowSubscription;
+        }
+
+        /// <summary>
+        /// Opts the calling user out of a team subscription. This creates a temporary team subscription for the purpose of opting out.
+        /// </summary>
+        /// <returns></returns>
+        [ClientSampleMethod]
+        public SubscriptionUserSettings OptOutfTeamSubscription()
+        {
+            NotificationSubscription teamSubscription;
+
+            using (new ClientSampleHttpLoggerOutputSuppression())
+            {
+                teamSubscription = CreateSubscriptionForTeam();
+            }
+
+            Guid teamMemberId = ClientSampleHelpers.GetCurrentUserId(Context);
+
+            SubscriptionUserSettings userSettings = new SubscriptionUserSettings() { OptedOut = true };
+            NotificationHttpClient notificationClient = this.Context.Connection.GetClient<NotificationHttpClient>();
+
+            userSettings = notificationClient.UpdateSubscriptionUserSettingsAsync(userSettings, teamSubscription.Id, teamMemberId.ToString()).Result;
+
+            using (new ClientSampleHttpLoggerOutputSuppression())
+            {
+                notificationClient.DeleteSubscriptionAsync(teamSubscription.Id);
+            }
+
+            return userSettings;
         }
 
         protected void LogSubscription(NotificationSubscription subscription)

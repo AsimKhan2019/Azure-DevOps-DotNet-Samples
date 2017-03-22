@@ -83,6 +83,10 @@ namespace Vsts.ClientSamples
             System.Console.WriteLine(message, args);
         }
 
+        public static RunnableClientSampleMethod CurrentRunnableMethod { get; set; }
+
+        public static ClientSampleContext CurrentContext { get; set; }
+
         /// <summary>
         /// Creates a new client sample configuration from the supplied Team Services account name and personal access token.
         /// </summary>
