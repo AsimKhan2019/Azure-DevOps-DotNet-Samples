@@ -42,8 +42,6 @@ namespace Vsts.ClientSamples.Runner
                     {
                         try
                         {
-
-                            context.Log("--------------------------------------------------------------------------------------");
                             context.Log("Running method {0}...", runnableMethod.MethodBase.Name);
                             context.Log(" Area:     {0}", runnableMethod.Area);
                             context.Log(" Resource: {0}", runnableMethod.Resource);
@@ -55,7 +53,6 @@ namespace Vsts.ClientSamples.Runner
                         catch (Exception ex)
                         {
                             Console.WriteLine(ex);
-                            //context.Log(" Excception during run: " + ex.Message);
                         }
                         finally
                         {
@@ -110,9 +107,9 @@ namespace Vsts.ClientSamples.Runner
         private static void ShowUsage() {
             Console.WriteLine("Runs the client samples on a Team Services account or Team Foundation Server instance.");
             Console.WriteLine("");
-            Console.WriteLine("WARNING: Some samples are destructive. Always run on a test account or collection.");
+            Console.WriteLine("!!WARNING!! Some samples are destructive. Always run on a test account or collection.");
             Console.WriteLine("");
-            Console.WriteLine("Usage: ClientSampleProgram url [area [resource]]");
+            Console.WriteLine("Usage: Vsts.ClientSamples.Runner url [area [resource]]");
             Console.WriteLine("");
             Console.WriteLine("  url        URL for the account or collection to run the samples on");
             Console.WriteLine("             Example: https://fabrikam.visualstudio.com");
