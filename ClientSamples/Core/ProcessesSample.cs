@@ -8,10 +8,7 @@ namespace Vsts.ClientSamples.Core
     [ClientSample(CoreConstants.AreaName, CoreConstants.ProcessesRouteName)]
     public class ProcessesSample : ClientSample
     {
-        public ProcessesSample(ClientSampleContext context) : base(context)
-        {
-        }
-
+ 
         [ClientSampleMethod]
         public List<Process> GetProcesses()
         {

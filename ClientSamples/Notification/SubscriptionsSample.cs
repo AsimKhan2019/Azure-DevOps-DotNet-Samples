@@ -22,13 +22,6 @@ namespace Vsts.ClientSamples.Notification
     [ClientSample(NotificationApiConstants.AreaName, NotificationApiConstants.SubscriptionsResource.Name)]
     public class SubscriptionsSample : ClientSample
     {
-        public SubscriptionsSample()
-        {
-        }
-
-        public SubscriptionsSample(ClientSampleContext context): base(context)
-        { 
-        }
 
         /// <summary>
         //  List the user's subscriptions, creates, updates, and deletes a new subscription. 

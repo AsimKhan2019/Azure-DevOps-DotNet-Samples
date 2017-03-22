@@ -11,10 +11,6 @@ namespace Vsts.ClientSamples.WorkItemTracking
     public class QueriesSample : ClientSample
     {
 
-        public QueriesSample(ClientSampleContext context) : base(context)
-        {
-        }
-
         [ClientSampleMethod]
         public QueryHierarchyItem GetQueryByName(string project, string queryName)
         {

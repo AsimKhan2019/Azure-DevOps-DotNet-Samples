@@ -13,12 +13,7 @@ namespace Vsts.ClientSamples
     public abstract class ClientSample
     {
         public ClientSampleContext Context { get; set; }
-        
-        [ImportingConstructor]
-        public ClientSample(ClientSampleContext context = null)
-        {
-            this.Context = context;
-        }
+
     }
 
     /// <summary>

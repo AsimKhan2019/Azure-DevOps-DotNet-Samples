@@ -8,11 +8,7 @@ namespace Vsts.ClientSamples.Core
 {
     [ClientSample(CoreConstants.AreaName, CoreConstants.TeamsResource)]
     public class TeamsSample : ClientSample
-    {
-        public TeamsSample(ClientSampleContext context) : base(context)
-        {
-        }
-
+    { 
         [ClientSampleMethod]
         public IEnumerable<WebApiTeam> GetOrderedTeamsList()
         {

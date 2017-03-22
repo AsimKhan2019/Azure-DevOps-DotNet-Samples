@@ -17,9 +17,6 @@ namespace Vsts.ClientSamples.WorkItemTracking
     [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.Attachments)]
     public class AttachmentsSample : ClientSample
     {
-        public AttachmentsSample(ClientSampleContext context) : base(context)
-        {
-        }
 
         [ClientSampleMethod]
         public void DownloadAttachment(Guid attachmentId, string saveToFile)

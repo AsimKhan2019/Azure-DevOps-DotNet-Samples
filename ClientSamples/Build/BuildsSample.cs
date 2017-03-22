@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace Vsts.ClientSamples.Build
 {
-    [ClientSample]
+    [ClientSample(BuildResourceIds.AreaName, BuildResourceIds.BuildsResource)]
     public class BuildsSample : ClientSample
-    {
-        public BuildsSample(ClientSampleContext context) : base(context)
-        {
-        }
-
+    { 
         [ClientSampleMethod]
-        public IEnumerable<BuildDefinitionReference> ListBuildDefinitions(string projectName = null)
+        public IEnumerable<BuildDefinitionReference> ListBuildDefinitions()
         {
+            string projectName = ClientSampleHelpers.GetDefaultProject(this.Context).Name;
+
             VssConnection connection = Context.Connection;
             BuildHttpClient buildClient = connection.GetClient<BuildHttpClient>();
 
-            return buildClient.GetDefinitionsAsync2(project: projectName).Result;
+            IEnumerable<BuildDefinitionReference> buildDefinitions = buildClient.GetDefinitionsAsync2(project: projectName).Result;
+
+            return buildDefinitions;
         }
     }
 }

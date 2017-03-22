@@ -18,9 +18,6 @@ namespace Vsts.ClientSamples.WorkItemTracking
     [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.Fields)]
     public class FieldsSample : ClientSample
     {
-        public FieldsSample(ClientSampleContext context) : base(context)
-        {
-        }
 
         [ClientSampleMethod]
         public WorkItemField GetFieldDetails(string fieldName = "System.Title")

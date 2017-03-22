@@ -16,11 +16,6 @@ namespace Vsts.ClientSamples.WorkItemTracking
     [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.ClassificationNodes)]
     public class ClassificationNodesSample : ClientSample
     {
- 
-        public ClassificationNodesSample(ClientSampleContext context) : base(context)
-        {
-        }
-
         [ClientSampleMethod]
         public WorkItemClassificationNode GetAreas(string project, int depth)
         {

@@ -11,14 +11,6 @@ namespace Vsts.ClientSamples.Notification
     [ClientSample(NotificationApiConstants.AreaName, NotificationApiConstants.EventTypesResource.Name)]
     public class EventTypesSample : ClientSample
     {
-        public EventTypesSample(): base()
-        {
-
-        }
-
-        public EventTypesSample(ClientSampleContext context): base(context)
-        {
-        }
 
         /// <summary>
         /// Returns all event types.

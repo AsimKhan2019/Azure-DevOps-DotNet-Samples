@@ -20,17 +20,20 @@ namespace Vsts.ClientSamples
                 VssConnection connection = context.Connection;
                 ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
 
-                // Check if an ID was already set (this could have been provided by the caller)
-                Guid projectId;
-                if (!context.TryGetValue<Guid>("projectId", out projectId))
+                using (new ClientSampleHttpLoggerOutputSuppression())
                 {
-                    // Get the first project
-                    project = projectClient.GetProjects(null, top: 1).Result.FirstOrDefault();
-                }
-                else
-                {
-                    // Get the details for this project
-                    project = projectClient.GetProject(projectId.ToString()).Result;
+                    // Check if an ID was already set (this could have been provided by the caller)
+                    Guid projectId;
+                    if (!context.TryGetValue<Guid>("projectId", out projectId))
+                    {
+                        // Get the first project
+                        project = projectClient.GetProjects(null, top: 1).Result.FirstOrDefault();
+                    }
+                    else
+                    {
+                        // Get the details for this project
+                        project = projectClient.GetProject(projectId.ToString()).Result;
+                    }
                 }
 
                 if (project != null)
@@ -58,7 +61,10 @@ namespace Vsts.ClientSamples
                 {
                     TeamHttpClient teamClient = context.Connection.GetClient<TeamHttpClient>();
 
-                    team = teamClient.GetTeamsAsync(project.Name, top: 1).Result.FirstOrDefault();
+                    using (new ClientSampleHttpLoggerOutputSuppression())
+                    {
+                        team = teamClient.GetTeamsAsync(project.Name, top: 1).Result.FirstOrDefault();
+                    }
 
                     if (team != null)
                     {

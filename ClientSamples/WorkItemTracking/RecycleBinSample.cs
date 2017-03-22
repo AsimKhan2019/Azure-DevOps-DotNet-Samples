@@ -11,10 +11,6 @@ namespace Vsts.ClientSamples.WorkItemTracking
     public class RecycleBinSample : ClientSample
     {
 
-        public RecycleBinSample(ClientSampleContext context) : base(context)
-        {
-        }
-
         [ClientSampleMethod]
         public List<WorkItemDeleteShallowReference> GetDeletedItems(string project)
         {

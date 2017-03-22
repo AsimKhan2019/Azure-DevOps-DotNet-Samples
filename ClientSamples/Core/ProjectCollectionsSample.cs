@@ -10,9 +10,6 @@ namespace Vsts.ClientSamples.Core
     [ClientSample(CoreConstants.AreaName, CoreConstants.ProjectCollectionsResource)]
     public class ProjectCollectionsSample : ClientSample
     {
-        public ProjectCollectionsSample(ClientSampleContext context) : base(context)
-        {
-        }
 
         [ClientSampleMethod]
         public IEnumerable<TeamProjectCollectionReference> GetProjectCollections()

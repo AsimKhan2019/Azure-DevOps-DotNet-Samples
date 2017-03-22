@@ -10,14 +10,6 @@ namespace Vsts.ClientSamples.Work
     public class TeamSettingsSample : ClientSample
     {
 
-        public TeamSettingsSample(): base()
-        {
-        }
-
-        public TeamSettingsSample(ClientSampleContext context) : base(context)
-        {
-        }
-
         [ClientSampleMethod]
         public TeamSetting GetTeamSettings()
         {    

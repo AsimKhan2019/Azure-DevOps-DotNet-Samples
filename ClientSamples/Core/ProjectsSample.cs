@@ -10,9 +10,6 @@ namespace Vsts.ClientSamples.Core
     [ClientSample(CoreConstants.AreaName, CoreConstants.ProjectsRouteName)]
     public class ProjectsSample: ClientSample
     {
-        public ProjectsSample(ClientSampleContext context) : base(context)
-        {
-        }
 
         /// <summary>
         /// Returns all team projects.
