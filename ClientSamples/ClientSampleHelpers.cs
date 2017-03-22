@@ -10,12 +10,21 @@ namespace Vsts.ClientSamples
 {
     public static class ClientSampleHelpers
     {
-        public static TeamProjectReference GetDefaultProject(ClientSampleContext context)
+        public static TeamProjectReference FindAnyProject(ClientSampleContext context)
         {
             TeamProjectReference project;
+            if (!FindAnyProject(context, out project))
+            {
+                throw new Exception("No sample projects available. Create a project in this collection and run the sample again.");
+            }
 
+            return project;
+        }
+
+        public static bool FindAnyProject(ClientSampleContext context, out TeamProjectReference project)
+        {  
             // Check if we already have a default project loaded
-            if (!context.TryGetValue<TeamProjectReference>("project", out project))
+            if (!context.TryGetValue<TeamProjectReference>("$defautProject", out project))
             {
                 VssConnection connection = context.Connection;
                 ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
@@ -38,7 +47,7 @@ namespace Vsts.ClientSamples
 
                 if (project != null)
                 {
-                    context.SetValue<TeamProjectReference>("project", project);
+                    context.SetValue<TeamProjectReference>("$defautProject", project);
                 }
                 else
                 {
@@ -47,38 +56,53 @@ namespace Vsts.ClientSamples
                 }
             }
 
-            return project;
+            return project != null;
         }
 
-        public static WebApiTeamRef GetDefaultTeam(ClientSampleContext context)
+        public static WebApiTeamRef FindAnyTeam(ClientSampleContext context, Guid? projectId)
         {
             WebApiTeamRef team;
-           
-            if (!context.TryGetValue<WebApiTeamRef>("team", out team))
+            if (!FindAnyTeam(context, projectId, out team))
             {
-                TeamProjectReference project = GetDefaultProject(context);
-                if (project != null)
-                {
-                    TeamHttpClient teamClient = context.Connection.GetClient<TeamHttpClient>();
-
-                    using (new ClientSampleHttpLoggerOutputSuppression())
-                    {
-                        team = teamClient.GetTeamsAsync(project.Name, top: 1).Result.FirstOrDefault();
-                    }
-
-                    if (team != null)
-                    {
-                        context.SetValue<WebApiTeamRef>("team", team);
-                    }
-                    else
-                    {
-                        // create a team?
-                        throw new Exception("No team available for running this sample.");
-                    }
-                }
+                throw new Exception("No sample teams available. Create a project/team in this collection and run the sample again.");
             }
 
             return team;
+        }
+
+        public static bool FindAnyTeam(ClientSampleContext context, Guid? projectId, out WebApiTeamRef team)
+        {
+            if (!projectId.HasValue)
+            {
+                TeamProjectReference project;
+                if (FindAnyProject(context, out project))
+                {
+                    projectId = project.Id;
+                }
+            }
+
+            // Check if we already have a team that has been cached for this project
+            if (!context.TryGetValue<WebApiTeamRef>("$" + projectId + "Team", out team))
+            {
+                TeamHttpClient teamClient = context.Connection.GetClient<TeamHttpClient>();
+
+                using (new ClientSampleHttpLoggerOutputSuppression())
+                {
+                    team = teamClient.GetTeamsAsync(projectId.ToString(), top: 1).Result.FirstOrDefault();
+                }
+
+                if (team != null)
+                {
+                    context.SetValue<WebApiTeamRef>("$" + projectId + "Team", team);
+                }
+                else
+                {
+                    // create a team?
+                    throw new Exception("No team available for running this sample.");
+                }
+            }
+
+            return team != null;
         }
 
         public static Guid GetCurrentUserId(ClientSampleContext context)

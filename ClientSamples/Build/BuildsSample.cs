@@ -14,7 +14,7 @@ namespace Vsts.ClientSamples.Build
         [ClientSampleMethod]
         public IEnumerable<BuildDefinitionReference> ListBuildDefinitions()
         {
-            string projectName = ClientSampleHelpers.GetDefaultProject(this.Context).Name;
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
             VssConnection connection = Context.Connection;
             BuildHttpClient buildClient = connection.GetClient<BuildHttpClient>();

@@ -15,8 +15,9 @@ namespace Vsts.ClientSamples
 {
     public class ClientSampleHttpLogger : DelegatingHandler
     {
-        public static readonly string PropertyBaseOutputPath = "$baseOutputPath";   // value is a string indicating the folder to output files to
-        public static readonly string PropertySuppressOutput = "#suppressOutput";   // value is a boolan indicating whether to suppress output
+        public static readonly string PropertyOutputFilePath = "$outputFilePath";   // value is a string indicating the folder to output files to
+        public static readonly string PropertySuppressOutput = "$suppressOutput";   // value is a boolan indicating whether to suppress output
+        //public static readonly string PropertyOutputToConsole = "$outputToConsole"; // value is a boolan indicating whether to output JSON to the console
 
         private JsonSerializerSettings serializerSettings;
 
@@ -61,7 +62,7 @@ namespace Vsts.ClientSamples
                 if (!suppressOutput)
                 {
                     string baseOutputPath;
-                    if (ClientSampleContext.CurrentContext.TryGetValue<string>(PropertyBaseOutputPath, out baseOutputPath))
+                    if (ClientSampleContext.CurrentContext.TryGetValue<string>(PropertyOutputFilePath, out baseOutputPath))
                     {
                         Dictionary<string, string> requestHeaders = new Dictionary<string, string>();
                         foreach (var h in request.Headers.Where(kvp => { return !s_excludedHeaders.Contains(kvp.Key); }))

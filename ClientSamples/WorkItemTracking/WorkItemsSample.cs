@@ -1,4 +1,5 @@
-﻿using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
+﻿using Microsoft.TeamFoundation.Core.WebApi;
+using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.WebApi;
 using Microsoft.VisualStudio.Services.WebApi.Patch;
@@ -107,7 +108,8 @@ namespace Vsts.ClientSamples.WorkItemTracking
         [ClientSampleMethod]
         public WorkItem CreateWorkItem()
         {
-            string projectName = ClientSampleHelpers.GetDefaultProject(this.Context).Name;
+            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
+
             string title = "Sample task";
 
             JsonPatchDocument patchDocument = new JsonPatchDocument();
@@ -124,9 +126,11 @@ namespace Vsts.ClientSamples.WorkItemTracking
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            WorkItem result = workItemTrackingClient.CreateWorkItemAsync(patchDocument, projectName, "Task").Result;
+            WorkItem newWorkItem = workItemTrackingClient.CreateWorkItemAsync(patchDocument, project.Id, "Task").Result;
 
-            return result;
+            Console.WriteLine("Created work item ID {0} (1}", newWorkItem.Id, newWorkItem.Fields["System.Title"]);
+
+            return newWorkItem;
         }
 
         [ClientSampleMethod]

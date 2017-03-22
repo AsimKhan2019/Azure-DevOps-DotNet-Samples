@@ -16,7 +16,7 @@ namespace Vsts.ClientSamples.Work
             VssConnection connection = Context.Connection;
             WorkHttpClient workClient = connection.GetClient<WorkHttpClient>();
 
-            Guid projectId = ClientSampleHelpers.GetDefaultProject(this.Context).Id;
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
                  
             var context = new TeamContext(projectId);
             TeamSetting result = workClient.GetTeamSettingsAsync(context).Result;
@@ -42,7 +42,7 @@ namespace Vsts.ClientSamples.Work
             VssConnection connection = Context.Connection;
             WorkHttpClient workClient = connection.GetClient<WorkHttpClient>();
 
-            Guid projectId = ClientSampleHelpers.GetDefaultProject(this.Context).Id;
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
             var context = new TeamContext(projectId);
 
             TeamSetting result = workClient.UpdateTeamSettingsAsync(updatedTeamSettings, context).Result;

@@ -12,9 +12,8 @@ namespace Vsts.ClientSamples.Core
     {
 
         [ClientSampleMethod]
-        public IEnumerable<TeamProjectCollectionReference> GetProjectCollections()
+        public IEnumerable<TeamProjectCollectionReference> ListProjectCollections()
         {         
-            // Create instance of VssConnection using passed credentials
             VssConnection connection = Context.Connection;
             ProjectCollectionHttpClient projectCollectionClient = connection.GetClient<ProjectCollectionHttpClient>();
 
@@ -23,15 +22,5 @@ namespace Vsts.ClientSamples.Core
             return projectCollections;
         }
 
-        [ClientSampleMethod]
-        public TeamProjectCollectionReference GetProjectCollection(string collectionName)
-        {
-            VssConnection connection = Context.Connection;
-            ProjectCollectionHttpClient projectCollectionClient = connection.GetClient<ProjectCollectionHttpClient>();
-
-            TeamProjectCollectionReference teamProjectCollectionReference = projectCollectionClient.GetProjectCollection(collectionName).Result;
-
-            return teamProjectCollectionReference;
-        }
     }
 }

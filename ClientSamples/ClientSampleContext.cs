@@ -46,16 +46,22 @@ namespace Vsts.ClientSamples
             }
         }
 
-        public ClientSampleContext(Uri url)
-        {
-            this.Url = url;
-            this.Credentials = new VssClientCredentials();
+        public ClientSampleContext(Uri url): this(url, null)
+        {            
         }
 
         public ClientSampleContext(Uri url, VssCredentials credentials)
         {
             this.Url = url;
-            this.Credentials = credentials;
+
+            if (credentials == null)
+            {
+                this.Credentials = new VssClientCredentials();
+            }
+            else
+            {
+                this.Credentials = credentials;
+            }
         }
 
         public ClientSampleContext(VssConnection connection)

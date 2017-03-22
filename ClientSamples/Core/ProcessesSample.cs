@@ -10,7 +10,7 @@ namespace Vsts.ClientSamples.Core
     {
  
         [ClientSampleMethod]
-        public List<Process> GetProcesses()
+        public List<Process> ListProcesses()
         {
             VssConnection connection = Context.Connection;
             ProcessHttpClient processClient = connection.GetClient<ProcessHttpClient>();
@@ -21,12 +21,14 @@ namespace Vsts.ClientSamples.Core
         }
 
         [ClientSampleMethod]
-        public Process GetProcess(System.Guid processId)
+        public Process GetProcess()
         {
+            Guid scrumProcessId = Guid.Parse("adcc42ab-9882-485e-a3ed-7678f01f66bc");
+
             VssConnection connection = Context.Connection;
             ProcessHttpClient processClient = connection.GetClient<ProcessHttpClient>();
 
-            Process process = processClient.GetProcessByIdAsync(processId).Result;
+            Process process = processClient.GetProcessByIdAsync(scrumProcessId).Result;
 
             return process;
         }

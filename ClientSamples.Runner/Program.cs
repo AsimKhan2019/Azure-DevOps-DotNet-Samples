@@ -29,50 +29,8 @@ namespace Vsts.ClientSamples.Runner
                 return -1;
             }
 
-            Dictionary<ClientSample,IEnumerable<RunnableClientSampleMethod>> runnableMethodsBySample = ClientSampleUtils.GetRunnableMethods(area, resource);
-            if (runnableMethodsBySample.Any())
-            {
-                ClientSampleContext context = new ClientSampleContext(connectionUrl);
-               
-                string baseOutputPath = Path.Combine(Directory.GetCurrentDirectory(), "SampleRequests");
-                context.SetValue<string>(ClientSampleHttpLogger.PropertyBaseOutputPath, baseOutputPath);
-
-                foreach (var item in runnableMethodsBySample)
-                {
-                    ClientSample clientSample = item.Key;
-                    clientSample.Context = context;
-
-                    foreach (var runnableMethod in item.Value)
-                    {
-                        try
-                        {
-                            context.Log("Running method {0}...", runnableMethod.MethodBase.Name);
-                            context.Log(" Area:     {0}", runnableMethod.Area);
-                            context.Log(" Resource: {0}", runnableMethod.Resource);
-                            context.Log("===========================================================");
-                            context.Log("");
-
-                            // Set these so the HTTP logger has access to them when it needs to write the output
-                            ClientSampleContext.CurrentRunnableMethod = runnableMethod;
-                            ClientSampleContext.CurrentContext = context;
-
-                            // Reset suppression (if the previous method happened to leave output suppressed)
-                            ClientSampleHttpLogger.SetSuppressOutput(context, false); 
-
-                            runnableMethod.MethodBase.Invoke(clientSample, null);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex);
-                        }
-                        finally
-                        {
-                            context.Log("");
-                        }
-                    }
-                }
-            }
-
+            ClientSampleUtils.RunClientSampleMethods(connectionUrl, null, null, area, resource);            
+            
             return 0;
         }
  

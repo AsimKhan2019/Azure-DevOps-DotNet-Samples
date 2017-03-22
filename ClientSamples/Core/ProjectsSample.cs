@@ -27,7 +27,6 @@ namespace Vsts.ClientSamples.Core
             foreach(var project in projects)
             {
                 Context.Log("Teams for project {0}:", project.Name);
-                Context.Log("--------------------------------------------------");
 
                 IEnumerable<WebApiTeam> teams = teamClient.GetTeamsAsync(project.Name).Result;
                 foreach (var team in teams)
@@ -38,13 +37,46 @@ namespace Vsts.ClientSamples.Core
         }
 
         /// <summary>
+        /// Returns only the first page of projects
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        [ClientSampleMethod]
+        public IEnumerable<TeamProjectReference> ListProjectsByPage()
+        {
+            VssConnection connection = Context.Connection;
+            ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
+
+            List<TeamProjectReference> projects;
+            int page = 0;
+            int pageSize = 3;
+            do
+            {
+                projects = new List<TeamProjectReference>(projectClient.GetProjects(top: pageSize, skip: (page * pageSize)).Result);                
+
+                Context.Log("Page {0}", (page + 1));
+                foreach(var project in projects)
+                {
+                    Context.Log(" " + project.Name);
+                }
+
+                page++;
+            }
+            while (projects.Count == pageSize);
+
+            return projects;
+        }
+
+        /// <summary>
         /// Returns only team projects that have the specified state.
         /// </summary>
         /// <param name="state"></param>
         /// <returns></returns>
         [ClientSampleMethod]
-        public IEnumerable<TeamProjectReference> GetProjectsByState(ProjectState state = ProjectState.All)
+        public IEnumerable<TeamProjectReference> ListProjectsByState()
         {
+            ProjectState state = ProjectState.Deleted;
+
             VssConnection connection = Context.Connection;
             ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
 
@@ -54,8 +86,10 @@ namespace Vsts.ClientSamples.Core
         }
 
         [ClientSampleMethod]
-        public TeamProjectReference GetProjectDetails(string projectName = "Fabrikam")
+        public TeamProjectReference GetProjectDetails()
         {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
             VssConnection connection = Context.Connection;
             ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
 
@@ -65,8 +99,11 @@ namespace Vsts.ClientSamples.Core
         }
 
         [ClientSampleMethod]
-        public OperationReference CreateProject(string name = "Fabrikam", string processName = "Agile")
+        public OperationReference CreateProject()
         {
+            string name = "Fabrikam";
+            string processName = "Agile";
+
             // Setup version control properties
             Dictionary<string, string> versionControlProperties = new Dictionary<string, string>();
 
@@ -117,27 +154,13 @@ namespace Vsts.ClientSamples.Core
             return operationStatus;
         }
 
-        [ClientSampleMethod]
-        public OperationReference RenameProject(String currentName = "Fabrikam", string newName = "Fabrikam (renamed)")
-        {
-            VssConnection connection = Context.Connection;
-            ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
-
-            Guid projectId = projectClient.GetProject(currentName).Result.Id;
-
-            TeamProject updatedTeamProject = new TeamProject()
-            {
-                Name = newName
-            };
-
-            OperationReference operationStatus = projectClient.UpdateProject(projectId, updatedTeamProject).Result;
-
-            return operationStatus;
-        }
 
         [ClientSampleMethod]
-        public OperationReference ChangeProjectDescription(string projectName = "Fabrikam", string newDescription = "New description for Fabrikam")
+        public OperationReference ChangeProjectDescription()
         {
+            string projectName = "Fabrikam";
+            string newDescription = "New description for Fabrikam";
+
             TeamProject updatedTeamProject = new TeamProject()
             {
                 Description = newDescription
@@ -153,8 +176,32 @@ namespace Vsts.ClientSamples.Core
             return operationStatus;
         }
 
-        public OperationReference DeleteTeamProject(Guid projectId)
+        [ClientSampleMethod]
+        public OperationReference RenameProject()
         {
+            String currentName = "Fabrikam";
+            string newName = "Fabrikam (renamed)";
+
+            VssConnection connection = Context.Connection;
+            ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
+
+            Guid projectId = projectClient.GetProject(currentName).Result.Id;
+
+            TeamProject updatedTeamProject = new TeamProject()
+            {
+                Name = newName
+            };
+
+            OperationReference operationStatus = projectClient.UpdateProject(projectId, updatedTeamProject).Result;
+
+            return operationStatus;
+        }
+
+
+        public OperationReference DeleteTeamProject()
+        {
+            Guid projectId = Guid.Empty; // TODO
+
             VssConnection connection = Context.Connection;
             ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
            

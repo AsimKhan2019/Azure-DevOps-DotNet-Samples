@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Linq;
+using System.IO;
+using Microsoft.VisualStudio.Services.Common;
 
 namespace Vsts.ClientSamples
 {
@@ -18,7 +20,7 @@ namespace Vsts.ClientSamples
     /// </summary>
     public static class ClientSampleUtils
     {
-        public static Dictionary<ClientSample, IEnumerable<RunnableClientSampleMethod>> GetRunnableMethods(string area = null, string resource = null)
+        public static Dictionary<ClientSample, IEnumerable<RunnableClientSampleMethod>> GetRunnableClientSampleMethods(string area = null, string resource = null)
         {
             Dictionary<ClientSample, IEnumerable<RunnableClientSampleMethod>> results = new Dictionary<ClientSample, IEnumerable<RunnableClientSampleMethod>>();
 
@@ -94,13 +96,62 @@ namespace Vsts.ClientSamples
 
             return results;
         }
+
+        public static void RunClientSampleMethods(Uri connectionUrl, VssCredentials credentials, string baseOutputPath = null, string area = null, string resource = null)
+        {
+            Dictionary<ClientSample, IEnumerable<RunnableClientSampleMethod>> runnableMethodsBySample = GetRunnableClientSampleMethods(area, resource);
+
+            if (runnableMethodsBySample.Any())
+            {
+                ClientSampleContext context = new ClientSampleContext(connectionUrl, credentials);
+
+                if (String.IsNullOrEmpty(baseOutputPath))
+                {
+                    baseOutputPath = Path.Combine(Directory.GetCurrentDirectory(), "SampleRequests");
+                }
+
+                context.SetValue<string>(ClientSampleHttpLogger.PropertyOutputFilePath, baseOutputPath);
+
+                foreach (var item in runnableMethodsBySample)
+                {
+                    ClientSample clientSample = item.Key;
+                    clientSample.Context = context;
+
+                    foreach (var runnableMethod in item.Value)
+                    {
+                        try
+                        {
+                            context.Log("Area    : {0}", runnableMethod.Area);
+                            context.Log("Resource: {0}", runnableMethod.Resource);
+                            context.Log("Method  : {0}", runnableMethod.MethodBase.Name);
+                            context.Log("");
+
+                            // Set these so the HTTP logger has access to them when it needs to write the output
+                            ClientSampleContext.CurrentRunnableMethod = runnableMethod;
+                            ClientSampleContext.CurrentContext = context;
+
+                            // Reset suppression (in case the last runnable method forget to re-enable it)
+                            ClientSampleHttpLogger.SetSuppressOutput(context, false);
+
+                            runnableMethod.MethodBase.Invoke(clientSample, null);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                        }
+                        finally
+                        {
+                            context.Log("");
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public class RunnableClientSampleMethod : ClientSampleMethodInfo
     {
         public MethodBase MethodBase { get; set; }
     }
-
-  
 
 }

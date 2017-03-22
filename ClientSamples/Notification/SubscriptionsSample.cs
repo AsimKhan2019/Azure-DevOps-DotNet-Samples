@@ -254,7 +254,9 @@ namespace Vsts.ClientSamples.Notification
         [ClientSampleMethod]
         public NotificationSubscription CreateSubscriptionForTeam()
         {
-            WebApiTeamRef team = ClientSampleHelpers.GetDefaultTeam(this.Context);
+            NotificationSubscription newSubscription;
+
+            WebApiTeamRef team = ClientSampleHelpers.FindAnyTeam(this.Context, null);
 
             NotificationHttpClient notificationClient = Context.Connection.GetClient<NotificationHttpClient>();
 
@@ -264,7 +266,7 @@ namespace Vsts.ClientSamples.Notification
 
             NotificationSubscriptionCreateParameters createParams = new NotificationSubscriptionCreateParameters()
             {
-                Description = "My first subscription!",
+                Description = "A subscription for our team",
                 Filter = new ExpressionFilter(eventType.Id),
                 Channel = new UserSubscriptionChannel(),
                 Subscriber = new IdentityRef()
@@ -273,7 +275,7 @@ namespace Vsts.ClientSamples.Notification
                 }
             };
 
-            NotificationSubscription newSubscription = notificationClient.CreateSubscriptionAsync(createParams).Result;
+            newSubscription = notificationClient.CreateSubscriptionAsync(createParams).Result;
 
             LogSubscription(newSubscription);
 
@@ -289,14 +291,9 @@ namespace Vsts.ClientSamples.Notification
         [ClientSampleMethod]
         public IEnumerable<NotificationSubscription> ListSubscriptionsForTeam()
         {
-            string projectName = ClientSampleHelpers.GetDefaultProject(this.Context).Name;
-            string teamName = ClientSampleHelpers.GetDefaultTeam(this.Context).Name;
+            WebApiTeamRef team = ClientSampleHelpers.FindAnyTeam(this.Context, null);
 
             VssConnection connection = Context.Connection;
-            TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
-
-            WebApiTeam team = teamClient.GetTeamAsync(projectName, teamName).Result;
-
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             IEnumerable<NotificationSubscription> subscriptions = notificationClient.ListSubscriptionsAsync(subscriber: team.Id).Result;
@@ -328,19 +325,17 @@ namespace Vsts.ClientSamples.Notification
         [ClientSampleMethod]
         public void ShowAllTeamSubscriptions()
         {
-            // Get clients
             VssConnection connection = Context.Connection;
-            TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
-            NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             //
             // Step 1: construct query to find all subscriptions belonging to teams in the project
             //
 
-            string projectName = ClientSampleHelpers.GetDefaultProject(this.Context).Name;
+            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
 
             // Get all teams in the project
-            IEnumerable<WebApiTeam> teams = teamClient.GetTeamsAsync(projectName).Result;
+            TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
+            IEnumerable<WebApiTeam> teams = teamClient.GetTeamsAsync(project.Id.ToString()).Result;
 
             // Construct a set of query conditions (one for each team)
             IEnumerable<SubscriptionQueryCondition> conditions = 
@@ -361,6 +356,7 @@ namespace Vsts.ClientSamples.Notification
             // Part 2: query and show the results
             //
 
+            NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
             IEnumerable<NotificationSubscription> subscriptions = notificationClient.QuerySubscriptionsAsync(query).Result;
 
             var subscriptionsByTeam = subscriptions.GroupBy<NotificationSubscription, Guid>(sub => { return Guid.Parse(sub.Subscriber.Id); });
