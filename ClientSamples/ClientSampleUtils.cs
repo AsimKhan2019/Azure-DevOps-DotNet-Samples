@@ -28,9 +28,9 @@ namespace VstsSamples.Client
     /// </summary>
     public static class ClientSampleUtils
     {
-        public static Dictionary<ClientSample, IEnumerable<IClientSampleMethod>> GetClientSampleMethods(string area = null, string resource = null)
+        public static Dictionary<ClientSample, IEnumerable<RunnableClientSampleMethod>> GetRunnableMethods(string area = null, string resource = null)
         {
-            List<IClientSampleMethod> methods = new List<IClientSampleMethod>();
+            Dictionary<ClientSample,IEnumerable<RunnableClientSampleMethod>> results = new Dictionary<ClientSample,IEnumerable<RunnableClientSampleMethod>>();
 
             CompositionContainer container = new CompositionContainer(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
             IEnumerable<Lazy<ClientSample>> samples = container.GetExports<ClientSample>();
@@ -38,8 +38,9 @@ namespace VstsSamples.Client
             foreach (Lazy<ClientSample> cs in samples)
             {
                 Type csType = cs.Value.GetType();
-
                 ClientSampleAttribute csAttr = csType.GetCustomAttribute<ClientSampleAttribute>();
+
+                List<RunnableClientSampleMethod> runnableMethods = new List<RunnableClientSampleMethod>();
 
                 foreach (MethodInfo m in csType.GetMethods())
                 {
@@ -58,29 +59,43 @@ namespace VstsSamples.Client
 
                         if (!string.IsNullOrEmpty(ma.Area) && !string.IsNullOrEmpty(ma.Resource) && !string.IsNullOrEmpty(ma.Operation))
                         {
-                            methods.Add(ma);
+                            RunnableClientSampleMethod r = new RunnableClientSampleMethod();
+                            r.Instance = cs.Value;
+                            r.Method = m;
+                            r.Area = ma.Area;
+                            r.Resource = ma.Resorce;
+
+                            runnableMethods.Add(r);
                         }
                     }
                 }
+
+                if (runnableMethods.Any())
+                {
+                    if (!String.IsNullOrEmpty(area))
+                    {
+                        runnableMethods = runnableMethods.FindAll(
+                            rcsm =>
+                            { 
+                                return string.Equals(area, rcsm.Area, StringComparison.OrdinalIgnoreCase) &&
+                                    (resource == null || string.Equals(resource, rcsm.Resource, StringComparison.OrdinalIgnoreCase));
+                            }
+                        );
+                    }
+
+                    results.Add(cs.Value, runnableMethods);
+                }
             }
 
-            if (!String.IsNullOrEmpty(area))
-            {
-                methods = methods.FindAll(csm => { return String.Equals(area, csm.Area, StringComparison.OrdinalIgnoreCase); });
-            }
 
-            return methods;
+            return results;
         }
     }
 
-    public class ClientSampleInstanceWithMethods
+    public class RunnableClientSampleMethod : ClientSampleMethodInfo
     {
-        public ClientSample ClientSample { get; set; }
-
-        public IEnumerable<Method>
-
+        public MethodBase MethodBase {get; set; }
     }
-
 
     public class ClientSampleHttpLogger : DelegatingHandler
     {

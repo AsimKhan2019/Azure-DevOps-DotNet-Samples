@@ -64,7 +64,7 @@ namespace VstsSamples.Client
     /// <summary>
     /// Interface representing a client sample method. Provides a way to discover client samples for a particular area, resource, or operation.
     /// </summary>
-    public interface IClientSampleMethod
+    public interface IClientSampleMethodInfo
     {
         string Area { get; }
 
@@ -74,13 +74,13 @@ namespace VstsSamples.Client
     }
 
 
-    public class ClientSampleMethodInfo : IClientSampleMethod
+    public class ClientSampleMethodInfo : IClientSampleMethodInfo
     {
         public string Area { get; set; }
 
-        public string Operation { get; set; }
-
         public string Resource { get; set; }
+
+        public string Operation { get; set; }
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ namespace VstsSamples.Client
     /// Attribute applied to methods within a client sample. Allow overriding the area or resource of the containing client sample.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    public class ClientSampleMethodAttribute : Attribute, IClientSampleMethod
+    public class ClientSampleMethodAttribute : Attribute, IClientSampleMethodInfo
     {
         public string Area { get; internal set; }
 
