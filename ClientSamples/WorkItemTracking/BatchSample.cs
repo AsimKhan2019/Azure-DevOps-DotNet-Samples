@@ -6,14 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VstsSamples.Client.WorkItemTracking
+namespace Vsts.ClientSamples.WorkItemTracking
 {
     public class BatchSample : ClientSample
     {
 
         public void Run()
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
            

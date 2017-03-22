@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using AadAuthenticationContext = Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext;
 
-namespace VstsSamples.Client.Auth
+namespace Vsts.ClientSamples.Auth
 {
     public class InteractiveAuthSample
     {
@@ -23,7 +23,7 @@ namespace VstsSamples.Client.Auth
         // https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-oauth-code
         internal const string RedirectUri = "urn:ietf:wg:oauth:2.0:oob";
 
-        public Authentication()
+        public InteractiveAuthSample()
         {
         }
 

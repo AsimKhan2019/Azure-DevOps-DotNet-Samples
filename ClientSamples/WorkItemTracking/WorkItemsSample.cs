@@ -5,9 +5,9 @@ using Microsoft.VisualStudio.Services.WebApi.Patch;
 using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
 using System;
 using System.Collections.Generic;
-using VstsSamples.Client;
+using Vsts.ClientSamples;
 
-namespace VstsSamples.Client.WorkItemTracking
+namespace Vsts.ClientSamples.WorkItemTracking
 {
     [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.WorkItems)]
     public class WorkItemsSample : ClientSample
@@ -16,7 +16,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public List<WorkItem> GetWorkItemsByIDs(IEnumerable<int> ids)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             List<WorkItem> results = workItemTrackingClient.GetWorkItemsAsync(ids).Result;
@@ -34,7 +34,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 "Microsoft.VSTS.Scheduling.RemainingWork"
             };
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             List<WorkItem> results = workItemTrackingClient.GetWorkItemsAsync(ids, fields).Result;
@@ -52,7 +52,7 @@ namespace VstsSamples.Client.WorkItemTracking
                "Microsoft.VSTS.Scheduling.RemainingWork"
             };
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             List<WorkItem> results = workItemTrackingClient.GetWorkItemsAsync(ids, fields, asOfDate).Result;
@@ -63,7 +63,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public List<WorkItem> GetWorkItemsWithLinksAndAttachments(IEnumerable<int> ids)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             List<WorkItem> results = workItemTrackingClient.GetWorkItemsAsync(ids, null, null, WorkItemExpand.All).Result;
@@ -74,7 +74,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItem GetWorkItem(int id)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();  
              
             WorkItem result = workItemTrackingClient.GetWorkItemAsync(id).Result;
@@ -85,7 +85,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItem GetWorkItemWithLinksAndAttachments(int id)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.GetWorkItemAsync(id, null, null, WorkItemExpand.Relations).Result;
@@ -96,7 +96,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItem GetWorkItemFullyExpanded(int id)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.GetWorkItemAsync(id, null, null, WorkItemExpand.All).Result;
@@ -118,7 +118,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 }
             );            
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.CreateWorkItemAsync(patchDocument, projectName, "Task").Result;
@@ -184,7 +184,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 }
             );
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.CreateWorkItemAsync(patchDocument, projectName, "Task").Result;
@@ -224,7 +224,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 }
             );
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.CreateWorkItemAsync(patchDocument, projectName, "Task", null, true).Result;
@@ -264,7 +264,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 }
             );
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id).Result;
@@ -301,7 +301,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 }
             );           
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id).Result;
@@ -330,7 +330,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 }
             );
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id).Result;
@@ -352,7 +352,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 }
             );
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id).Result;
@@ -363,7 +363,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItem AddLinkToOtherWorkItem(int id, int targetId)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             // Get work target work item
@@ -411,7 +411,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 }
             );
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id).Result;
@@ -438,7 +438,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 }
             );
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id).Result;
@@ -449,7 +449,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItem AddAttachment(int id, string filePath)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             // upload attachment to store and get a reference to that file
@@ -516,7 +516,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 }
             );
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id).Result;
@@ -552,7 +552,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 }
             );
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id).Result;
@@ -588,7 +588,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 }
             );
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id).Result;
@@ -609,7 +609,7 @@ namespace VstsSamples.Client.WorkItemTracking
                 }
             );
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id, null, true).Result;
@@ -620,7 +620,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItemDelete DeleteWorkItem(int id)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItemDelete results = workItemTrackingClient.DeleteWorkItemAsync(id, false).Result;
@@ -663,7 +663,7 @@ namespace VstsSamples.Client.WorkItemTracking
                }
            );
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             foreach (WorkItemReference workItemReference in workItemQueryResult.WorkItems)

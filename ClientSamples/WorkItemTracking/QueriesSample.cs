@@ -5,20 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VstsSamples.Client.WorkItemTracking
+namespace Vsts.ClientSamples.WorkItemTracking
 {
     [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.Queries)]
     public class QueriesSample : ClientSample
     {
 
-        public QueriesSample(ClientSampleConfiguration configuration) : base(configuration)
+        public QueriesSample(ClientSampleContext context) : base(context)
         {
         }
 
         [ClientSampleMethod]
         public QueryHierarchyItem GetQueryByName(string project, string queryName)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             QueryHierarchyItem query = workItemTrackingClient.GetQueryAsync(project, queryName).Result;
@@ -36,7 +36,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItemQueryResult ExecuteQuery(Guid queryId)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItemQueryResult queryResult = workItemTrackingClient.QueryByIdAsync(queryId).Result;
@@ -54,7 +54,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItemQueryResult ExecuteByWiql(Wiql wiql, string project)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItemQueryResult queryResult = workItemTrackingClient.QueryByWiqlAsync(wiql, project).Result;
@@ -65,7 +65,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public IEnumerable<WorkItem> GetWorkItemsFromQuery(string projectName, string queryName)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             QueryHierarchyItem queryItem;
@@ -120,7 +120,7 @@ namespace VstsSamples.Client.WorkItemTracking
                         "Order By [State] Asc, [Changed Date] Desc" : wiqlString)
             };
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             // execute the query

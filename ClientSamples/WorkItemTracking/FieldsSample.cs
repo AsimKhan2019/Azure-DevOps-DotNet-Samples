@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VstsSamples.Client.WorkItemTracking
+namespace Vsts.ClientSamples.WorkItemTracking
 {
     /// <summary>
     /// 
@@ -18,14 +18,14 @@ namespace VstsSamples.Client.WorkItemTracking
     [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.Fields)]
     public class FieldsSample : ClientSample
     {
-        public FieldsSample(ClientSampleConfiguration configuration) : base(configuration)
+        public FieldsSample(ClientSampleContext context) : base(context)
         {
         }
 
         [ClientSampleMethod]
         public WorkItemField GetFieldDetails(string fieldName = "System.Title")
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             List<WorkItemField> result = workItemTrackingClient.GetFieldsAsync().Result;
@@ -38,7 +38,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public IEnumerable<WorkItemField> GetReadOnlyWorkItemFields()
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             List<WorkItemField> result = workItemTrackingClient.GetFieldsAsync().Result;

@@ -5,12 +5,12 @@ using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
 
-namespace VstsSamples.Client.Core
+namespace Vsts.ClientSamples.Core
 {
     [ClientSample(CoreConstants.AreaName, CoreConstants.ProjectsRouteName)]
     public class ProjectsSample: ClientSample
     {
-        public ProjectsSample(ClientSampleConfiguration configuration) : base(configuration)
+        public ProjectsSample(ClientSampleContext context) : base(context)
         {
         }
 
@@ -21,7 +21,7 @@ namespace VstsSamples.Client.Core
         [ClientSampleMethod]
         public void ListAllProjectsAndTeams()
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
             TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
 
@@ -29,13 +29,13 @@ namespace VstsSamples.Client.Core
 
             foreach(var project in projects)
             {
-                Log("Teams for project {0}:", project.Name);
-                Log("--------------------------------------------------");
+                Context.Log("Teams for project {0}:", project.Name);
+                Context.Log("--------------------------------------------------");
 
                 IEnumerable<WebApiTeam> teams = teamClient.GetTeamsAsync(project.Name).Result;
                 foreach (var team in teams)
                 {
-                    Log(" {0}: {1}", team.Name, team.Description);
+                    Context.Log(" {0}: {1}", team.Name, team.Description);
                 }
             }
         }
@@ -48,7 +48,7 @@ namespace VstsSamples.Client.Core
         [ClientSampleMethod]
         public IEnumerable<TeamProjectReference> GetProjectsByState(ProjectState state = ProjectState.All)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
 
             IEnumerable<TeamProjectReference> projects = projectClient.GetProjects(state).Result;
@@ -59,7 +59,7 @@ namespace VstsSamples.Client.Core
         [ClientSampleMethod]
         public TeamProjectReference GetProjectDetails(string projectName = "Fabrikam")
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
 
             TeamProject project = projectClient.GetProject(projectName, includeCapabilities: true, includeHistory: true).Result;
@@ -77,7 +77,7 @@ namespace VstsSamples.Client.Core
                 SourceControlTypes.Git.ToString();
 
             // Setup process properties       
-            ProcessHttpClient processClient = this.Connection.GetClient<ProcessHttpClient>();
+            ProcessHttpClient processClient = Context.Connection.GetClient<ProcessHttpClient>();
             Guid processId = processClient.GetProcessesAsync().Result.Find(process => { return process.Name.Equals(processName, StringComparison.InvariantCultureIgnoreCase); }).Id;
 
             Dictionary<string, string> processProperaties = new Dictionary<string, string>();
@@ -100,7 +100,7 @@ namespace VstsSamples.Client.Core
                 Capabilities = capabilities
             };
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
 
             OperationReference createProjectOperationStatus = projectClient.QueueCreateProject(projectCreateParameters).Result;
@@ -112,7 +112,7 @@ namespace VstsSamples.Client.Core
 
         public OperationReference GetOperationStatus(Guid operationId)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             OperationsHttpClient operationsClient = connection.GetClient<OperationsHttpClient>();
 
             OperationReference operationStatus = operationsClient.GetOperation(operationId).Result;
@@ -123,7 +123,7 @@ namespace VstsSamples.Client.Core
         [ClientSampleMethod]
         public OperationReference RenameProject(String currentName = "Fabrikam", string newName = "Fabrikam (renamed)")
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
 
             Guid projectId = projectClient.GetProject(currentName).Result.Id;
@@ -146,7 +146,7 @@ namespace VstsSamples.Client.Core
                 Description = newDescription
             };
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
 
             Guid projectId = projectClient.GetProject(projectName).Result.Id;
@@ -158,7 +158,7 @@ namespace VstsSamples.Client.Core
 
         public OperationReference DeleteTeamProject(Guid projectId)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
            
             OperationReference operationStatus = projectClient.QueueDeleteProject(projectId).Result;

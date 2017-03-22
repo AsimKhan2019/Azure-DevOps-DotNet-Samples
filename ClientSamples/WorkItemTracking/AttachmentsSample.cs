@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.IO;
 
-namespace VstsSamples.Client.WorkItemTracking
+namespace Vsts.ClientSamples.WorkItemTracking
 {
     /// <summary>
     /// 
@@ -17,15 +17,14 @@ namespace VstsSamples.Client.WorkItemTracking
     [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.Attachments)]
     public class AttachmentsSample : ClientSample
     {
-
-        public AttachmentsSample(ClientSampleConfiguration configuration) : base(configuration)
+        public AttachmentsSample(ClientSampleContext context) : base(context)
         {
         }
 
         [ClientSampleMethod]
         public void DownloadAttachment(Guid attachmentId, string saveToFile)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
             
             Stream attachmentStream = workItemTrackingClient.GetAttachmentContentAsync(attachmentId).Result;
@@ -39,7 +38,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public AttachmentReference UploadTextFile(string filePath)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             AttachmentReference attachmentReference = workItemTrackingClient.CreateAttachmentAsync(@filePath).Result;
@@ -50,7 +49,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public AttachmentReference UploadBinaryFile(string filePath)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             AttachmentReference attachmentReference = workItemTrackingClient.CreateAttachmentAsync(@filePath).Result;

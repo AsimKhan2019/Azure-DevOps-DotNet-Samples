@@ -1,10 +1,9 @@
-
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Services.Notifications.WebApi;
 using Microsoft.VisualStudio.Services.Notifications.WebApi.Clients;
 using Microsoft.VisualStudio.Services.WebApi;
 
-namespace VstsSamples.Client.Notification
+namespace Vsts.ClientSamples.Notification
 { 
     /// <summary>
     /// Samples for getting details about available notification event types.
@@ -12,7 +11,7 @@ namespace VstsSamples.Client.Notification
     [ClientSample(NotificationApiConstants.AreaName)]
     public class EventTypesSample : ClientSample
     {
-        public EventTypesSample(ClientSampleConfiguration configuration): base(configuration)
+        public EventTypesSample(ClientSampleContext context): base(context)
         {
         }
 
@@ -23,7 +22,7 @@ namespace VstsSamples.Client.Notification
         [ClientSampleMethod]
         public List<NotificationEventType> GetAllEventTypes()
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             List<NotificationEventType> eventTypes = notificationClient.ListEventTypesAsync().Result;
@@ -38,7 +37,7 @@ namespace VstsSamples.Client.Notification
         [ClientSampleMethod]
         public List<NotificationEventType> GetEventTypesAvailableForCustomSubscriptions()
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             List<NotificationEventType> eventTypes = notificationClient.ListEventTypesAsync().Result;

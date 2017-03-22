@@ -1,64 +1,27 @@
 using System;
-using System.Reflection;
-using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Services.WebApi;
 using System.Net.Http;
 using Microsoft.VisualStudio.Services.Common;
 
-namespace VstsSamples.Client
+namespace Vsts.ClientSamples
 {
     /// <summary>
     /// Base class that all client samples extend from.
     /// </summary>
     public abstract class ClientSample
     {
-        public ClientSampleConfiguration Configuration { get; set; }
-
-        private VssConnection _connection;
-
-        public VssConnection Connection
-        {
-            get
-            {
-                if (_connection == null)
-                {
-                    ClientSampleHttpLogger loggerHandler = new ClientSampleHttpLogger();
-
-                    VssHttpMessageHandler vssHandler = new VssHttpMessageHandler(Configuration.Credentials, VssClientHttpRequestSettings.Default.Clone());
-
-                    _connection = new VssConnection(Configuration.Url, vssHandler, new DelegatingHandler[] { loggerHandler });
-                }
-
-                return this._connection;
-            }
-            private set
-            {
-                _connection = value;
-            }
-        }
+        public ClientSampleContext Context { get; set; }
 
         [ImportingConstructor]
-        public ClientSample()
+        public ClientSample(): this(null)
         {
         }
 
-        public ClientSample(ClientSampleConfiguration configuration)
+        public ClientSample(ClientSampleContext context)
         {
-            this.Configuration = configuration;
+            this.Context = context;
         }
-
-        protected void Log(String message)
-        {
-            this.Log(message, null);
-        }
-
-        protected void Log(String message, params object[] args)
-        {
-            System.Console.WriteLine(message, args);
-        }
-
     }
 
     /// <summary>
@@ -119,8 +82,4 @@ namespace VstsSamples.Client
             this.Operation = operation;
         }
     }
-
-
-
-
 }

@@ -9,7 +9,7 @@ using Microsoft.TeamFoundation.Core.WebApi;
 using System;
 using System.Linq;
 
-namespace VstsSamples.Client.Notification
+namespace Vsts.ClientSamples.Notification
 {
     /// <summary>
     /// 
@@ -23,10 +23,9 @@ namespace VstsSamples.Client.Notification
     {
         public SubscriptionsSample()
         {
-
         }
 
-        public SubscriptionsSample(ClientSampleConfiguration configuration): base(configuration)
+        public SubscriptionsSample(ClientSampleContext context): base(context)
         { 
         }
 
@@ -37,7 +36,7 @@ namespace VstsSamples.Client.Notification
         public NotificationSubscription CreateUpdateDeleteSubscription()
         {
             // Get the client
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             //
@@ -74,10 +73,10 @@ namespace VstsSamples.Client.Notification
             };
 
             // Scope to only events from one project
-            ProjectHttpClient projectClient = this.Connection.GetClient<ProjectHttpClient>();
+            ProjectHttpClient projectClient = this.Context.Connection.GetClient<ProjectHttpClient>();
 
             Guid projectId;
-            String projectName = this.Configuration.Get<String>("projectName", null);
+            String projectName = this.Context.Get<String>("projectName", null);
   
             if (String.IsNullOrEmpty(projectName))
             {
@@ -95,7 +94,7 @@ namespace VstsSamples.Client.Notification
             NotificationSubscription newSubscription = notificationClient.CreateSubscriptionAsync(createParams).Result;
             String subscriptionId = newSubscription.Id;
 
-            Log("New subscription created! ID: {0}", subscriptionId);
+            Context.Log("New subscription created! ID: {0}", subscriptionId);
 
             //
             // Part 2: disable and delete the subscription
@@ -109,7 +108,7 @@ namespace VstsSamples.Client.Notification
 
             newSubscription = notificationClient.UpdateSubscriptionAsync(updateParams, subscriptionId).Result;
 
-            Log("Is subscription disabled? {0}", newSubscription.Status < 0);
+            Context.Log("Is subscription disabled? {0}", newSubscription.Status < 0);
 
             // Delete the subscription
             notificationClient.DeleteSubscriptionAsync(subscriptionId).SyncResult();
@@ -120,7 +119,7 @@ namespace VstsSamples.Client.Notification
                 newSubscription = notificationClient.GetSubscriptionAsync(subscriptionId, SubscriptionQueryFlags.IncludeFilterDetails).Result;
             } catch (Exception e)
             {
-                Log("Unable to get the deleted subscription:" + e.Message);
+                Context.Log("Unable to get the deleted subscription:" + e.Message);
             }
 
             // Try again (the default query flags says to return deleted subscriptions so this should work)
@@ -131,7 +130,7 @@ namespace VstsSamples.Client.Notification
 
         public IEnumerable<IGrouping<string, NotificationSubscription>> GetSubscriptionsGroupedByEventType()
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             // Get existing subscriptions
@@ -148,16 +147,16 @@ namespace VstsSamples.Client.Notification
                 eventType => { return eventType.Id; });
 
             // Show the subscriptions grouped by event type
-            Log("Custom subscriptions by event type");
+            Context.Log("Custom subscriptions by event type");
             foreach (IGrouping<string, NotificationSubscription> group in groupedSubscriptions)
             {
                 NotificationEventType eventType;
                 if (eventTypes.TryGetValue(group.Key, out eventType))
                 {
-                    Log("Event type {0}:", eventType.Name);
+                    Context.Log("Event type {0}:", eventType.Name);
                     foreach (NotificationSubscription subscription in group)
                     {
-                        Log(" {0}, last modified: {1} by {2}",
+                        Context.Log(" {0}, last modified: {1} by {2}",
                             subscription.Description,
                             subscription.ModifiedDate,
                             subscription.LastModifiedBy?.DisplayName);
@@ -175,13 +174,13 @@ namespace VstsSamples.Client.Notification
         [ClientSampleMethod]
         public IEnumerable<NotificationSubscription> GetCustomSubscriptions()
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             List<NotificationSubscription> subscriptions = notificationClient.ListSubscriptionsAsync().Result;
 
-            Log("Custom subscriptions");
-            Log("--------------------");
+            Context.Log("Custom subscriptions");
+            Context.Log("--------------------");
 
             foreach (var subscription in subscriptions)
             {
@@ -210,13 +209,13 @@ namespace VstsSamples.Client.Notification
                 }
             };
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             List<NotificationSubscription> subscriptions = notificationClient.QuerySubscriptionsAsync(query).Result;
 
-            Log("Default subscriptions");
-            Log("---------------------");
+            Context.Log("Default subscriptions");
+            Context.Log("---------------------");
 
             foreach (var subscription in subscriptions)
             {
@@ -237,7 +236,7 @@ namespace VstsSamples.Client.Notification
             // Get the event type from the arguments, configuration, or just fallback and use "work item change"
             if (String.IsNullOrEmpty(eventType))
             {
-                eventType = this.Configuration.Get<string>("notification.subscriptions.eventType", "ms.vss-work.workitem-changed-event");
+                eventType = this.Context.Get<string>("notification.subscriptions.eventType", "ms.vss-work.workitem-changed-event");
             }
 
             // Setup the query
@@ -252,13 +251,13 @@ namespace VstsSamples.Client.Notification
                 }
             };
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             IEnumerable<NotificationSubscription> subscriptions = notificationClient.QuerySubscriptionsAsync(query).Result;
 
-            Log("Custom subscriptions for event type: {0}", eventType);
-            Log("------------------------------------------------------------");
+            Context.Log("Custom subscriptions for event type: {0}", eventType);
+            Context.Log("------------------------------------------------------------");
 
             foreach(NotificationSubscription subscription in subscriptions)
             {
@@ -275,7 +274,7 @@ namespace VstsSamples.Client.Notification
         [ClientSampleMethod]
         public NotificationSubscription CreateCustomPersonalSubscription()
         {        
-            NotificationHttpClient notificationClient = this.Connection.GetClient<NotificationHttpClient>();
+            NotificationHttpClient notificationClient = Context.Connection.GetClient<NotificationHttpClient>();
 
             // Query the available event types and find the first that can be used in a custom subscription
             List<NotificationEventType> eventTypes = notificationClient.ListEventTypesAsync().Result;
@@ -303,7 +302,7 @@ namespace VstsSamples.Client.Notification
         [ClientSampleMethod]
         public IEnumerable<NotificationSubscription> GetSubscriptionsForTeam(string projectName, string teamName)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
 
             WebApiTeam team = teamClient.GetTeamAsync(projectName, teamName).Result;
@@ -312,8 +311,8 @@ namespace VstsSamples.Client.Notification
 
             IEnumerable<NotificationSubscription> subscriptions = notificationClient.ListSubscriptionsAsync(subscriber: team.Id).Result;
 
-            Log("Subscriptions for {0} in {1}", teamName, projectName);
-            Log("-------------------------------------------------------------------");
+            Context.Log("Subscriptions for {0} in {1}", teamName, projectName);
+            Context.Log("-------------------------------------------------------------------");
 
             foreach (var subscription in subscriptions)
             {
@@ -326,7 +325,7 @@ namespace VstsSamples.Client.Notification
         [ClientSampleMethod]
         public IEnumerable<NotificationSubscription> GetSubscriptionsForGroup(Guid groupId)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             // Return all subscriptions, includuing minimal details for subscriptions the caller doesn't have access to
@@ -342,7 +341,7 @@ namespace VstsSamples.Client.Notification
         public void ShowAllTeamSubscriptions(String projectName = null)
         {
             // Get clients
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
@@ -352,7 +351,7 @@ namespace VstsSamples.Client.Notification
 
             if (String.IsNullOrEmpty(projectName))
             {
-                projectName = this.Configuration.Get<String>("projectName", null);
+                projectName = this.Context.Get<String>("projectName", null);
             }
 
             // Get all teams in the project
@@ -386,8 +385,8 @@ namespace VstsSamples.Client.Notification
                 // Find the corresponding team for this group
                 WebApiTeam team = teams.First(t => { return t.Id.Equals(group.Key); });
 
-                Log("Subscriptions for team {0} (subscriber ID: {1})", team.Name, team.Id);
-                Log("--------------------------------------------------------------------------------------");
+                Context.Log("Subscriptions for team {0} (subscriber ID: {1})", team.Name, team.Id);
+                Context.Log("--------------------------------------------------------------------------------------");
 
                 // Show the details for each subscription owned by this team 
                 foreach (NotificationSubscription subscription in group)
@@ -406,7 +405,7 @@ namespace VstsSamples.Client.Notification
         [ClientSampleMethod]
         public NotificationSubscription FollowWorkItem(int workItemId)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient witClient = connection.GetClient<WorkItemTrackingHttpClient>();
             WorkItem workItem = witClient.GetWorkItemAsync(workItemId).Result;
 
@@ -428,7 +427,7 @@ namespace VstsSamples.Client.Notification
 
         protected void LogSubscription(NotificationSubscription subscription)
         {
-            Log(" {0}: {1}, last modified on {2} by {3}",
+            Context.Log(" {0}: {1}, last modified on {2} by {3}",
                 subscription.Id,
                 subscription.Description,
                 subscription.ModifiedDate,

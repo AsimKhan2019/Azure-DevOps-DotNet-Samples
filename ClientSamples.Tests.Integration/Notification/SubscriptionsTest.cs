@@ -2,11 +2,11 @@
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VstsSamples.Client.Tests.Integration;
-using VstsSamples.Client.Notification;
+using Vsts.ClientSamples.Tests.Integration;
+using Vsts.ClientSamples.Notification;
 using Microsoft.VisualStudio.Services.Notifications.WebApi;
 
-namespace VstsSamples.Client.Tests.Integration.Notification
+namespace Vsts.ClientSamples.Tests.Integration.Notification
 {
     [TestClass]
     public class SubscriptionTests : TestBase<SubscriptionsSample>

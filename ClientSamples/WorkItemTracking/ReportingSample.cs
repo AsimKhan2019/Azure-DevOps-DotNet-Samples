@@ -1,9 +1,9 @@
-﻿namespace VstsSamples.Client.WorkItemTracking
+﻿namespace Vsts.ClientSamples.WorkItemTracking
 {
     [ClientSample]
     public class ReportingSample : ClientSample
     {
-        public ReportingSample(ClientSampleConfiguration configuration) : base(configuration)
+        public ReportingSample(ClientSampleContext context) : base(context)
         {
         }
 

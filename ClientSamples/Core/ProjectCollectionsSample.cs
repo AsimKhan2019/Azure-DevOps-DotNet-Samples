@@ -3,14 +3,14 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
-using VstsSamples.Client;
+using Vsts.ClientSamples;
 
-namespace VstsSamples.Client.Core
+namespace Vsts.ClientSamples.Core
 {
     [ClientSample(CoreConstants.AreaName, CoreConstants.ProjectCollectionsResource)]
     public class ProjectCollectionsSample : ClientSample
     {
-        public ProjectCollectionsSample(ClientSampleConfiguration configuration) : base(configuration)
+        public ProjectCollectionsSample(ClientSampleContext context) : base(context)
         {
         }
 
@@ -18,7 +18,7 @@ namespace VstsSamples.Client.Core
         public IEnumerable<TeamProjectCollectionReference> GetProjectCollections()
         {         
             // Create instance of VssConnection using passed credentials
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             ProjectCollectionHttpClient projectCollectionClient = connection.GetClient<ProjectCollectionHttpClient>();
 
             IEnumerable<TeamProjectCollectionReference> projectCollections = projectCollectionClient.GetProjectCollections().Result;
@@ -29,7 +29,7 @@ namespace VstsSamples.Client.Core
         [ClientSampleMethod]
         public TeamProjectCollectionReference GetProjectCollection(string collectionName)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             ProjectCollectionHttpClient projectCollectionClient = connection.GetClient<ProjectCollectionHttpClient>();
 
             TeamProjectCollectionReference teamProjectCollectionReference = projectCollectionClient.GetProjectCollection(collectionName).Result;

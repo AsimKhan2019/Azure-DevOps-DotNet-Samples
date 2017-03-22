@@ -5,20 +5,20 @@ using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
 
-namespace VstsSamples.Client.WorkItemTracking
+namespace Vsts.ClientSamples.WorkItemTracking
 {
     [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.WorkItems)]
     public class RecycleBinSample : ClientSample
     {
 
-        public RecycleBinSample(ClientSampleConfiguration configuration) : base(configuration)
+        public RecycleBinSample(ClientSampleContext context) : base(context)
         {
         }
 
         [ClientSampleMethod]
         public List<WorkItemDeleteShallowReference> GetDeletedItems(string project)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             List<WorkItemDeleteShallowReference> results = workItemTrackingClient.GetDeletedWorkItemsAsync(project).Result;
@@ -29,7 +29,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItemDelete GetDeletedItem(int workItemId)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItemDelete result = workItemTrackingClient.GetDeletedWorkItemAsync(workItemId).Result;
@@ -40,7 +40,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItemDelete RestoreItem(int workItemId)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItemDeleteUpdate updateParameters = new WorkItemDeleteUpdate() {
@@ -55,7 +55,7 @@ namespace VstsSamples.Client.WorkItemTracking
         [ClientSampleMethod]
         public void PermenentlyDeleteItem(int workItemId)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             workItemTrackingClient.DestroyWorkItemAsync(workItemId);

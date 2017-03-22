@@ -4,19 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VstsSamples.Client.Core
+namespace Vsts.ClientSamples.Core
 {
     [ClientSample(CoreConstants.AreaName, CoreConstants.TeamsResource)]
     public class TeamsSample : ClientSample
     {
-        public TeamsSample(ClientSampleConfiguration configuration) : base(configuration)
+        public TeamsSample(ClientSampleContext context) : base(context)
         {
         }
 
         [ClientSampleMethod]
         public IEnumerable<WebApiTeam> GetOrderedTeamsList(string projectName = "Fabrikam")
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
             
             IEnumerable<WebApiTeam> teams = teamClient.GetTeamsAsync(projectName).Result;
@@ -29,7 +29,7 @@ namespace VstsSamples.Client.Core
         [ClientSampleMethod]
         public WebApiTeam GetTeam(string projectName, string teamName)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
 
             WebApiTeam team = teamClient.GetTeamAsync(projectName, teamName).Result;
@@ -40,7 +40,7 @@ namespace VstsSamples.Client.Core
         [ClientSampleMethod(resource:CoreConstants.TeamMembersResource)]
         public IEnumerable<IdentityRef> GetTeamMembers(string projectName, string teamName)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
 
             IEnumerable<IdentityRef> results = teamClient.GetTeamMembersAsync(projectName, teamName).Result;
@@ -51,7 +51,7 @@ namespace VstsSamples.Client.Core
         [ClientSampleMethod]
         public WebApiTeam CreateTeam(string projectName = "Fabikam", string name = "Fabrikam Ops Team", string description = "Team focused on operations for Fabrikam")
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
 
             WebApiTeam newTeamCreateParameters = new WebApiTeam()
@@ -68,7 +68,7 @@ namespace VstsSamples.Client.Core
         [ClientSampleMethod]
         public WebApiTeam RenameTeam(string projectName = "Fabrikam", string currentTeamName = "Fabrikam Ops Team", string newTeamName = "Fabrikam Ops Team (renamed)")
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
 
             WebApiTeam teamUpdateParameters = new WebApiTeam()
@@ -84,7 +84,7 @@ namespace VstsSamples.Client.Core
         [ClientSampleMethod]
         public bool DeleteTeam(string projectName = "Fabrikam", string teamName = "Fabrikam Ops Team")
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
 
             try

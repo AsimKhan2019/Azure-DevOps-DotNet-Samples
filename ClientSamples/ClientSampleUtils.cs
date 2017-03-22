@@ -2,25 +2,15 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.Services.WebApi;
 using System.Net.Http;
-using Microsoft.VisualStudio.Services.Common;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
-using System.Reflection;
 
-namespace VstsSamples.Client
+namespace Vsts.ClientSamples
 {
 
     /// <summary>
@@ -60,10 +50,9 @@ namespace VstsSamples.Client
                         if (!string.IsNullOrEmpty(ma.Area) && !string.IsNullOrEmpty(ma.Resource) && !string.IsNullOrEmpty(ma.Operation))
                         {
                             RunnableClientSampleMethod r = new RunnableClientSampleMethod();
-                            r.Instance = cs.Value;
-                            r.Method = m;
+                            r.MethodBase = m;
                             r.Area = ma.Area;
-                            r.Resource = ma.Resorce;
+                            r.Resource = ma.Resource;
 
                             runnableMethods.Add(r);
                         }
@@ -86,7 +75,6 @@ namespace VstsSamples.Client
                     results.Add(cs.Value, runnableMethods);
                 }
             }
-
 
             return results;
         }
@@ -203,9 +191,7 @@ namespace VstsSamples.Client
         public Dictionary<String, String> ResponseHeaders;
 
         [DataMember(EmitDefaultValue = false)]
-        public Object ResponseBody;
-
-      
+        public Object ResponseBody;   
     } 
     
 }

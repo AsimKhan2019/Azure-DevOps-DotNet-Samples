@@ -6,19 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VstsSamples.Client.Build
+namespace Vsts.ClientSamples.Build
 {
     [ClientSample]
     public class BuildsSample : ClientSample
     {
-        public BuildsSample(ClientSampleConfiguration configuration) : base(configuration)
+        public BuildsSample(ClientSampleContext context) : base(context)
         {
         }
 
         [ClientSampleMethod]
         public IEnumerable<BuildDefinitionReference> ListBuildDefinitions(string projectName = null)
         {
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             BuildHttpClient buildClient = connection.GetClient<BuildHttpClient>();
 
             return buildClient.GetDefinitionsAsync2(project: projectName).Result;

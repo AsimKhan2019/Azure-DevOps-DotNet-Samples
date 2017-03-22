@@ -4,19 +4,19 @@ using Microsoft.TeamFoundation.Work.WebApi;
 using System;
 using System.Collections.Generic;
 
-namespace VstsSamples.Client.Work
+namespace Vsts.ClientSamples.Work
 {
     public class TeamSettingsSample : ClientSample
     {
   
-        public TeamSettingsSample(ClientSampleConfiguration configuration) : base(configuration)
+        public TeamSettingsSample(ClientSampleContext context) : base(context)
         {
         }
 
         [ClientSampleMethod]
         public TeamSetting GetTeamSettings(string project)
         {    
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkHttpClient workClient = connection.GetClient<WorkHttpClient>();   
                  
             var context = new TeamContext(project);
@@ -40,7 +40,7 @@ namespace VstsSamples.Client.Work
                 BacklogVisibilities = backlogVisibilities
             };
 
-            VssConnection connection = this.Connection;
+            VssConnection connection = Context.Connection;
             WorkHttpClient workClient = connection.GetClient<WorkHttpClient>();
 
             var context = new TeamContext(project);

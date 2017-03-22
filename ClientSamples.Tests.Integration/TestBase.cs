@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VstsSamples.Client.Tests.Integration
+namespace Vsts.ClientSamples.Tests.Integration
 {
     public class TestBase<T> where T : ClientSample, new()
     {
@@ -51,10 +51,10 @@ namespace VstsSamples.Client.Tests.Integration
             string userName = TestContext.Properties["password"] as string;
             string password = TestContext.Properties["password"] as string;
 
-            ClientSampleConfiguration configuration = new ClientSampleConfiguration(new Uri(connectionUrl), new VssBasicCredential(userName, password));
+            ClientSampleContext context = new ClientSampleContext(new Uri(connectionUrl), new VssBasicCredential(userName, password));
 
             ClientSample = new T();
-            ClientSample.Configuration = configuration;
+            ClientSample.Context = configuration;
         }
 
         protected Guid GetCurrentUserId()
