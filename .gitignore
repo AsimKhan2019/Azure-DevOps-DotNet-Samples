@@ -6,6 +6,8 @@
 *.suo
 packages/
 
+*.csproj.user
+
 *.tmp
 bin/
 obj/

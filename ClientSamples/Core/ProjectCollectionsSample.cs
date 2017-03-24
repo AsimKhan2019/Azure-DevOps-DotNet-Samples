@@ -19,6 +19,11 @@ namespace Vsts.ClientSamples.Core
 
             IEnumerable<TeamProjectCollectionReference> projectCollections = projectCollectionClient.GetProjectCollections().Result;
 
+            foreach(var collection in projectCollections)
+            {
+                Console.WriteLine(collection.Name);
+            }
+
             return projectCollections;
         }
 

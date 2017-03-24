@@ -120,7 +120,7 @@ namespace Vsts.ClientSamples.Core
         [ClientSampleMethod]
         public TeamProject CreateProject()
         {
-            string projectName = "Fabrikam " + Guid.NewGuid();                    // unique project name
+            string projectName = "Sample project " + Guid.NewGuid();
             string projectDescription = "Short description for my new project";
             string processName = "Agile";
 
