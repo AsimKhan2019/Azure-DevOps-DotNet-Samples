@@ -12,14 +12,35 @@ namespace Vsts.ClientSamples.Build
     public class BuildsSample : ClientSample
     { 
         [ClientSampleMethod]
+
         public IEnumerable<BuildDefinitionReference> ListBuildDefinitions()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
+            // Get a build client instance
             VssConnection connection = Context.Connection;
             BuildHttpClient buildClient = connection.GetClient<BuildHttpClient>();
 
-            IEnumerable<BuildDefinitionReference> buildDefinitions = buildClient.GetDefinitionsAsync2(project: projectName).Result;
+            List<BuildDefinitionReference> buildDefinitions = new List<BuildDefinitionReference>();
+
+            // Iterate (as needed) to get the full set of build definitions
+            string continuationToken = null;
+            do
+            {
+                IPagedList<BuildDefinitionReference> buildDefinitionsPage = buildClient.GetDefinitionsAsync2(
+                    project: projectName, 
+                    continuationToken: continuationToken).Result;
+
+                buildDefinitions.AddRange(buildDefinitionsPage);
+
+                continuationToken = buildDefinitionsPage.ContinuationToken;
+            } while (!String.IsNullOrEmpty(continuationToken));
+     
+            // Show the build definitions
+            foreach (BuildDefinitionReference definition in buildDefinitions)
+            {
+                Console.WriteLine("{0} {1}", definition.Id.ToString().PadLeft(6), definition.Name);
+            }
 
             return buildDefinitions;
         }
