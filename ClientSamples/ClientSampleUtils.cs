@@ -121,9 +121,11 @@ namespace Vsts.ClientSamples
                     {
                         try
                         {
-                            context.Log("Area    : {0}", runnableMethod.Area);
-                            context.Log("Resource: {0}", runnableMethod.Resource);
-                            context.Log("Method  : {0}", runnableMethod.MethodBase.Name);
+                            context.Log("+------------------------------------------------------------------------------+");
+                            context.Log("| {0} |", String.Format("{0}/{1}", runnableMethod.MethodBase.Name, runnableMethod.MethodBase.DeclaringType.FullName).PadRight(76));
+                            context.Log("|                                                                              |");
+                            context.Log("| API: {0} |", String.Format("{0}/{1}", runnableMethod.Area, runnableMethod.Resource).PadRight(71));
+                            context.Log("+------------------------------------------------------------------------------+");
                             context.Log("");
 
                             // Set these so the HTTP logger has access to them when it needs to write the output

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Vsts.ClientSamples.Core
 {
@@ -29,9 +30,7 @@ namespace Vsts.ClientSamples.Core
             IEnumerable<TeamProjectReference> projects = projectClient.GetProjects().Result;
 
             Dictionary<TeamProjectReference, IEnumerable<WebApiTeam>> results = new Dictionary<TeamProjectReference, IEnumerable<WebApiTeam>>();
-
-            Console.WriteLine("All projects and teams...");
-
+            
             // Iterate over the returned projects
             foreach (var project in projects)
             {
@@ -41,11 +40,17 @@ namespace Vsts.ClientSamples.Core
                 // Add the project/teams item to the results dictionary
                 results.Add(project, teams);
 
+                Console.WriteLine(" " + project.Name);
                 // Iterate over the teams and show the name
                 foreach (var team in teams)
                 {
                     Console.WriteLine("    " + team.Name);
                 }
+            }
+
+            if (projects.Count() == 0)
+            {
+                Console.WriteLine("No projects found.");
             }
 
             return results;
@@ -54,7 +59,6 @@ namespace Vsts.ClientSamples.Core
         /// <summary>
         /// Returns only the first page of projects
         /// </summary>
-        /// <param name="state"></param>
         /// <returns></returns>
         [ClientSampleMethod]
         public IEnumerable<TeamProjectReference> ListProjectsByPage()
@@ -70,14 +74,12 @@ namespace Vsts.ClientSamples.Core
             do
             {
                 // Get a single page of projects
-                List<TeamProjectReference> projects =  new List<TeamProjectReference>(
-                    projectClient.GetProjects(top: pageSize, skip: (currentPage * pageSize)).Result);
+                IEnumerable<TeamProjectReference> projects = projectClient.GetProjects(top: pageSize, skip: (currentPage * pageSize)).Result;
 
                 // Add the set to the full list
                 allProjects.AddRange(projects);
 
-                lastPageSize = projects.Count;
-
+                lastPageSize = projects.Count();
                 currentPage++;
                 Console.WriteLine(currentPage);
 
@@ -90,31 +92,6 @@ namespace Vsts.ClientSamples.Core
             while (lastPageSize == pageSize);
 
             return allProjects;
-        }
-
-        /// <summary>
-        /// Returns only team projects that have the specified state.
-        /// </summary>
-        /// <param name="state"></param>
-        /// <returns></returns>
-        [ClientSampleMethod]
-        public IEnumerable<TeamProjectReference> ListProjectsByState()
-        {
-            ProjectState state = ProjectState.Deleted;
-
-            VssConnection connection = Context.Connection;
-            ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
-
-            // Get a list of all "deleted" projects
-            IEnumerable<TeamProjectReference> deletedProjects = projectClient.GetProjects(state).Result;
-
-            Console.WriteLine("Deleted projects:");
-            foreach (var project in deletedProjects)
-            {
-                Console.WriteLine("  " + project.Name);
-            }
-
-            return deletedProjects;
         }
 
         [ClientSampleMethod]
@@ -132,9 +109,10 @@ namespace Vsts.ClientSamples.Core
             ReferenceLink webLink = project.Links.Links["web"] as ReferenceLink;
 
             Console.WriteLine("Details for project {0}:", projectName);
+            Console.WriteLine();
             Console.WriteLine("  ID          : {0}", project.Id);
             Console.WriteLine("  Description : {0}", project.Description);
-            Console.WriteLine("  Web URL     : {0}", (webLink != null ? webLink.Href : "not available"));
+            Console.WriteLine("  Web URL     : {0}", (webLink != null ? webLink.Href : "(not available)"));
 
             return project;                    
         }
@@ -184,9 +162,13 @@ namespace Vsts.ClientSamples.Core
             TeamProject project = null;
             try
             {
+                Console.WriteLine("Queuing project creation...");
+
                 // Queue the project creation operation 
                 // This returns an operation object that can be used to check the status of the creation
                 OperationReference operation = projectClient.QueueCreateProject(projectCreateParameters).Result;
+
+                ClientSampleHttpLogger.SetSuppressOutput(Context, true);
 
                 // Check the operation status every 5 seconds (for up to 30 seconds)
                 Operation completedOperation = WaitForLongRunningOperation(operation.Id, 5, 30).Result;
@@ -194,13 +176,14 @@ namespace Vsts.ClientSamples.Core
                 // Check if the operation succeeded (the project was created) or failed
                 if (completedOperation.Status == OperationStatus.Succeeded)
                 {
-                    Console.WriteLine("Project created!");
-
                     // Get the full details about the newly created project
                     project = projectClient.GetProject(
                         projectCreateParameters.Name,
                         includeCapabilities: true,
                         includeHistory: true).Result;
+
+                    Console.WriteLine();
+                    Console.WriteLine("Project created (ID: {0})", project.Id);
 
                     // Save the newly created project (other sample methods will use it)
                     Context.SetValue<TeamProject>("$newProject", project);
@@ -226,13 +209,13 @@ namespace Vsts.ClientSamples.Core
 
             while (true)
             {
-                Console.Write("Checking operation {0} status... " + (checkCount++));
+                Console.WriteLine(" Checking status ({0})... ", (checkCount++));
 
                 Operation operation = await operationsClient.GetOperation(operationId, cancellationToken);
 
                 if (!operation.Completed)
                 {
-                    Console.WriteLine(" Pausing for {0} seconds", interavalInSec);
+                    Console.WriteLine("   Pausing {0} seconds", interavalInSec);
 
                     await Task.Delay(interavalInSec * 1000);
 
@@ -268,8 +251,12 @@ namespace Vsts.ClientSamples.Core
             VssConnection connection = Context.Connection;
             ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
 
+            Console.WriteLine("Queuing project update...");
+
             // Queue the update operation
             Guid updateOperationId = projectClient.UpdateProject(project.Id, updatedProject).Result.Id;
+
+            ClientSampleHttpLogger.SetSuppressOutput(Context, true);
 
             // Check the operation status every 2 seconds (for up to 30 seconds)
             Operation detailedUpdateOperation = WaitForLongRunningOperation(updateOperationId, 2, 30).Result;
@@ -277,14 +264,14 @@ namespace Vsts.ClientSamples.Core
             // Check if the operation succeeded (the project was created) or failed
             if (detailedUpdateOperation.Status == OperationStatus.Succeeded)
             {
-                Console.WriteLine("Project description for '{0}' change from '{1}' to '{2}'", project.Name, project.Description, updatedProject.Description);
-
+                Console.WriteLine();
+                Console.WriteLine("Project description change from:\n {1}\nto\n {2}", project.Name, project.Description, updatedProject.Description);
                 return true;
             }
             else
             {
+                Console.WriteLine();
                 Console.WriteLine("Unable to change the description for project {0}", project.Name);
-
                 return false;
             } 
         }
@@ -310,16 +297,20 @@ namespace Vsts.ClientSamples.Core
                 Name = project.Name + " (renamed)"
             };
 
+            Console.WriteLine("Queuing project update...");
+
             // Queue the update operation
             Guid updateOperationId = projectClient.UpdateProject(project.Id, updatedProject).Result.Id;
+
+            ClientSampleHttpLogger.SetSuppressOutput(Context, true);
 
             // Check the operation status every 2 seconds (for up to 30 seconds)
             Operation detailedUpdateOperation = WaitForLongRunningOperation(updateOperationId, 2, 30).Result;
 
             if (detailedUpdateOperation.Status == OperationStatus.Succeeded)
             {
-                Console.WriteLine("Project renamed from {0} to {1}", project.Name, updatedProject.Name);
-
+                Console.WriteLine();
+                Console.WriteLine("Project renamed from:\n {0}\nto\n {1}", project.Name, updatedProject.Name);
                 return true;
             }
             else
@@ -328,7 +319,8 @@ namespace Vsts.ClientSamples.Core
             }
         }
 
-        public bool DeleteTeamProject()
+        [ClientSampleMethod]
+        public bool DeleteProject()
         {
             // Use the project created in the earlier "create project" sample method
             TeamProject project;
@@ -343,15 +335,49 @@ namespace Vsts.ClientSamples.Core
             VssConnection connection = Context.Connection;
             ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
 
+            Console.WriteLine("Queuing project de;ete...");
+
             // Queue the delete operation
             Guid operationId = projectClient.QueueDeleteProject(project.Id).Result.Id;
+
+            ClientSampleHttpLogger.SetSuppressOutput(Context, true);
 
             // Check the operation status every 2 seconds (for up to 30 seconds)
             Operation operationResult = WaitForLongRunningOperation(operationId, 2, 30).Result;
 
-            Console.WriteLine("Operation to delete the project completed: " + operationResult.Status);
+            Console.WriteLine();
+            Console.WriteLine("Delete project operation completed {0}", operationResult.Status);
 
             return operationResult.Status == OperationStatus.Succeeded;
         }
+
+        /// <summary>
+        /// List projects by their state. For example, only deleted projects.
+        /// </summary>
+        /// <returns></returns>
+        [ClientSampleMethod]
+        public IEnumerable<TeamProjectReference> ListProjectsByState()
+        {
+            ProjectState state = ProjectState.Deleting;
+
+            VssConnection connection = Context.Connection;
+            ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
+
+            // Get a list of all the projects with a state of "deleting"
+            IEnumerable<TeamProjectReference> deletedProjects = projectClient.GetProjects(state).Result;
+
+            foreach (var project in deletedProjects)
+            {
+                Console.WriteLine("  " + project.Name);
+            }
+
+            if (deletedProjects.Count() == 0)
+            {
+                Console.WriteLine("No projects with the state {0}", state);
+            }
+
+            return deletedProjects;
+        }
+
     }
 }

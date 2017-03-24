@@ -17,6 +17,11 @@ namespace Vsts.ClientSamples.Core
 
             List<Process> processes = processClient.GetProcessesAsync().Result;
 
+            foreach(var process in processes)
+            {
+                Console.WriteLine("{0} {1} {2}", (process.IsDefault ? "*" : " "), process.Name.PadRight(12), process.Id);
+            }
+
             return processes;
         }
 
@@ -29,6 +34,11 @@ namespace Vsts.ClientSamples.Core
             ProcessHttpClient processClient = connection.GetClient<ProcessHttpClient>();
 
             Process process = processClient.GetProcessByIdAsync(scrumProcessId).Result;
+
+            Console.WriteLine("Name:      {0}", process.Name);
+            Console.WriteLine("Default?:  {0}", process.IsDefault);
+            Console.WriteLine("Type:      {0}", process.Type);
+            Console.WriteLine("Description:\n{0}", process.Description);
 
             return process;
         }
