@@ -1,16 +1,15 @@
-using System.Collections.Generic;
-
-using Microsoft.VisualStudio.Services.Notifications.WebApi;
-using Microsoft.VisualStudio.Services.Notifications.WebApi.Clients;
+using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
+using Microsoft.TeamServices.Samples.Client.WorkItemTracking;
+using Microsoft.VisualStudio.Services.Notifications.WebApi;
+using Microsoft.VisualStudio.Services.Notifications.WebApi.Clients;
 using Microsoft.VisualStudio.Services.WebApi;
-using Microsoft.TeamFoundation.Core.WebApi;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Vsts.ClientSamples.WorkItemTracking;
 
-namespace Vsts.ClientSamples.Notification
+namespace Microsoft.TeamServices.Samples.Client.Notification
 {
     /// <summary>
     /// 

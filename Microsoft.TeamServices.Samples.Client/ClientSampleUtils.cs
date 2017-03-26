@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using Microsoft.VisualStudio.Services.Common;
 
-namespace Vsts.ClientSamples
+namespace Microsoft.TeamServices.Samples.Client
 {
 
     /// <summary>

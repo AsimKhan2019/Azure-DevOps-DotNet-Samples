@@ -3,9 +3,8 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
-using Vsts.ClientSamples;
 
-namespace Vsts.ClientSamples.Core
+namespace Microsoft.TeamServices.Samples.Client.Core
 {
     [ClientSample(CoreConstants.AreaName, CoreConstants.ProjectCollectionsResource)]
     public class ProjectCollectionsSample : ClientSample

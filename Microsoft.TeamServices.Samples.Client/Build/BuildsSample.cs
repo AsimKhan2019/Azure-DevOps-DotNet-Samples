@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vsts.ClientSamples.Build
+namespace Microsoft.TeamServices.Samples.Client.Build
 {
     [ClientSample(BuildResourceIds.AreaName, BuildResourceIds.BuildsResource)]
     public class BuildsSample : ClientSample

@@ -6,7 +6,7 @@ using Vsts.ClientSamples.Tests.Integration;
 using Vsts.ClientSamples.Notification;
 using Microsoft.VisualStudio.Services.Notifications.WebApi;
 
-namespace Vsts.ClientSamples.Tests.Integration.Notification
+namespace Microsoft.TeamServices.Samples.Client.Tests.Integration.Notification
 {
     [TestClass]
     public class SubscriptionTests : TestBase<SubscriptionsSample>

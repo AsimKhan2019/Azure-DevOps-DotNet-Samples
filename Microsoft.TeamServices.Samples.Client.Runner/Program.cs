@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Vsts.ClientSamples.Runner
+namespace Microsoft.TeamServices.Samples.Client.Runner
 {
     public class ClientSampleProgram
     {

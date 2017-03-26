@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vsts.ClientSamples.WorkItemTracking
+namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
 {
     public class BatchSample : ClientSample
     {

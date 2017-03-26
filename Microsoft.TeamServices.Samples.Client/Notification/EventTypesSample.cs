@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.Services.Notifications.WebApi;
 using Microsoft.VisualStudio.Services.Notifications.WebApi.Clients;
 using Microsoft.VisualStudio.Services.WebApi;
 
-namespace Vsts.ClientSamples.Notification
+namespace Microsoft.TeamServices.Samples.Client.Notification
 { 
     /// <summary>
     /// Samples for getting details about available notification event types.

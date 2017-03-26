@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
 
-namespace Vsts.ClientSamples.Core
+namespace Microsoft.TeamServices.Samples.Client.Core
 {
     [ClientSample(CoreConstants.AreaName, CoreConstants.ProcessesRouteName)]
     public class ProcessesSample : ClientSample

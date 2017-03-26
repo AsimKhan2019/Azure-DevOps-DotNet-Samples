@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Vsts.ClientSamples.WorkItemTracking
+namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
 {
     /// <summary>
     /// 

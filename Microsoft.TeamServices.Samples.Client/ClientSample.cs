@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.Services.WebApi;
 using System.Net.Http;
 using Microsoft.VisualStudio.Services.Common;
 
-namespace Vsts.ClientSamples
+namespace Microsoft.TeamServices.Samples.Client
 {
     /// <summary>
     /// Base class that all client samples extend from.

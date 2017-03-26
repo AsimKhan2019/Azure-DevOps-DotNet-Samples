@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using AadAuthenticationContext = Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext;
 
-namespace Vsts.ClientSamples.Auth
+namespace Microsoft.TeamServices.Samples.Client.Auth
 {
     public class InteractiveAuthSample
     {

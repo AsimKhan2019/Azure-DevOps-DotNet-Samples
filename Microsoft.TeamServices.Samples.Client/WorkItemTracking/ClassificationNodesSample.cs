@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
 
-namespace Vsts.ClientSamples.WorkItemTracking
+namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
 {
     /// <summary>
     /// 

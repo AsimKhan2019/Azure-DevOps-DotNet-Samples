@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vsts.ClientSamples.Tests.Integration
+namespace Microsoft.TeamServices.Samples.Client.Tests.Integration
 {
     public class TestBase<T> where T : ClientSample, new()
     {

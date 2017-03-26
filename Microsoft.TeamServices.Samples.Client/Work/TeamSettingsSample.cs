@@ -4,7 +4,7 @@ using Microsoft.TeamFoundation.Work.WebApi;
 using System;
 using System.Collections.Generic;
 
-namespace Vsts.ClientSamples.Work
+namespace Microsoft.TeamServices.Samples.Client.Work
 {
     [ClientSample(WorkWebConstants.RestArea, "teamsettings")]
     public class TeamSettingsSample : ClientSample

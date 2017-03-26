@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Services.WebApi;
 using System.Net.Http;
 using Microsoft.VisualStudio.Services.Client;
 
-namespace Vsts.ClientSamples
+namespace Microsoft.TeamServices.Samples.Client
 {
     /// <summary>
     /// Configuration data for client samples. Includes the target URL, credentials, and any other properties.

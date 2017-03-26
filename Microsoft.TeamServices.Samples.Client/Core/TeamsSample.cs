@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Vsts.ClientSamples.Core
+namespace Microsoft.TeamServices.Samples.Client.Core
 {
     [ClientSample(CoreConstants.AreaName, CoreConstants.TeamsResource)]
     public class TeamsSample : ClientSample

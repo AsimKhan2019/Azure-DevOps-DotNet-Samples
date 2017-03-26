@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vsts.ClientSamples
+namespace Microsoft.TeamServices.Samples.Client
 {
     public static class ClientSampleHelpers
     {

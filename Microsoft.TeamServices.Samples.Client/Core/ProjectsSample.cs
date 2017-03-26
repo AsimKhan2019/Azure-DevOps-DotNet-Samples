@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace Vsts.ClientSamples.Core
+namespace Microsoft.TeamServices.Samples.Client.Core
 {
     [ClientSample(CoreConstants.AreaName, CoreConstants.ProjectsRouteName)]
     public class ProjectsSample: ClientSample
