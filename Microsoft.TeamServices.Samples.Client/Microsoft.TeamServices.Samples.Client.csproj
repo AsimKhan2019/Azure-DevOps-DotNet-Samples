@@ -7,8 +7,8 @@
     <ProjectGuid>{545851E1-9BD9-4939-8AF4-9A8910CF5C34}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vsts.ClientSamples</RootNamespace>
-    <AssemblyName>Vsts.ClientSamples</AssemblyName>
+    <RootNamespace>Microsoft.TeamServices.Samples.Client</RootNamespace>
+    <AssemblyName>Microsoft.TeamServices.Samples.Client</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0CDA3AB5-3C7A-43D2-875C-66ED734CF864}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Vsts.ClientSamples.Runner</RootNamespace>
-    <AssemblyName>Vsts.ClientSamples.Runner</AssemblyName>
+    <RootNamespace>Microsoft.TeamServices.Samples.Client.Runner</RootNamespace>
+    <AssemblyName>Microsoft.TeamServices.Samples.Client.Runner</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -65,9 +65,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClientSamples\ClientSamples.csproj">
+    <ProjectReference Include="..\Microsoft.TeamServices.Samples.Client\Microsoft.TeamServices.Samples.Client.csproj">
       <Project>{545851e1-9bd9-4939-8af4-9a8910cf5c34}</Project>
-      <Name>ClientSamples</Name>
+      <Name>Microsoft.TeamServices.Samples.Client</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

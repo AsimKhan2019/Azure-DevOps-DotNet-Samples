@@ -7,8 +7,8 @@
     <ProjectGuid>{AAA30379-02BF-447C-829C-225E2D2B1069}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClientSamples.Tests.Integration</RootNamespace>
-    <AssemblyName>ClientSamples.Tests.Integration</AssemblyName>
+    <RootNamespace>Microsoft.TeamServices.Samples.Client.Test</RootNamespace>
+    <AssemblyName>Microsoft.TeamServices.Samples.Client.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -76,9 +76,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClientSamples\ClientSamples.csproj">
+    <ProjectReference Include="..\Microsoft.TeamServices.Samples.Client\Microsoft.TeamServices.Samples.Client.csproj">
       <Project>{545851e1-9bd9-4939-8af4-9a8910cf5c34}</Project>
-      <Name>ClientSamples</Name>
+      <Name>Microsoft.TeamServices.Samples.Client</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
