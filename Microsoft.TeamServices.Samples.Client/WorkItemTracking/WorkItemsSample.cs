@@ -80,7 +80,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            List<WorkItem> workItems = workItemTrackingClient.GetWorkItemsAsync(workitemIds, fieldNames, asOfDate).Result;
+            List<WorkItem> workitems = workItemTrackingClient.GetWorkItemsAsync(workitemIds, fieldNames, asOfDate).Result;
 
             foreach (var workitem in workitems)
             {
@@ -91,7 +91,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
                 }
             }
 
-            return workItems;
+            return workitems;
         }
 
         [ClientSampleMethod]
@@ -355,10 +355,10 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItem MoveToAnotherProject()
         {
-            int id;
-            string targetProject;
-            string targetAreaPath;
-            string targetIterationPath;
+            int id = -1;
+            string targetProject = null;
+            string targetAreaPath = null;
+            string targetIterationPath = null;
 
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
@@ -454,8 +454,8 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItem LinkToOtherWorkItem()
         {
-            int sourceWorkItemId;
-            int targetWorkItemId;
+            int sourceWorkItemId = 1;
+            int targetWorkItemId = 1;
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
@@ -547,8 +547,8 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItem AddAttachment()
         {
-            int id;
-            string filePath;
+            int id = -1;
+            string filePath = null;
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
@@ -598,8 +598,8 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItem RemoveAttachment()
         {
-            int id;
-            string rev;
+            int id = -1;
+            string rev = null;
 
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
@@ -631,7 +631,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItem UpdateWorkItemAddHyperLink()
         {
-            int id;
+            int id = -1;
             Uri url = null;
             string urlComment = null;
 
@@ -703,7 +703,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id).Result;
+            WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, workItemId).Result;
 
             return result;
         }

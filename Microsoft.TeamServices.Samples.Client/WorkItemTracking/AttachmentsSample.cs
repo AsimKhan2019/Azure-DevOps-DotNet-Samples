@@ -20,8 +20,8 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public void DownloadAttachment()
         {
-            Guid attachmentId;
-            string saveToFile;
+            Guid attachmentId = Guid.Empty;
+            string saveToFile = null;
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
@@ -37,8 +37,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public AttachmentReference UploadTextFile()
         {
-            string filePath = 
-
+            string filePath = null;
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();

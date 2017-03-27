@@ -2,6 +2,13 @@
 
 namespace Microsoft.TeamServices.Samples.Client.Runner
 {
+    /// <summary>
+    /// Simple program that uses reflection to discovery/run client samples.
+    /// 
+    /// Arguments:
+    /// 
+    /// 
+    /// </summary>
     public class Runner
     {
 
@@ -75,12 +82,12 @@ namespace Microsoft.TeamServices.Samples.Client.Runner
             Console.WriteLine("");
             Console.WriteLine("!!WARNING!! Some samples are destructive. Always run on a test account or collection.");
             Console.WriteLine("");
-            Console.WriteLine("Usage: Vsts.ClientSamples.Runner url [area [resource]]");
+            Console.WriteLine("Usage: Microsoft.TeamServices.Samples.Client.Runner.exe url area resource ");
             Console.WriteLine("");
             Console.WriteLine("  url        URL for the account or collection to run the samples on");
             Console.WriteLine("             Example: https://fabrikam.visualstudio.com");
-            Console.WriteLine("  area       Run only samples for this area, otherwise run the samples for all areas.");
-            Console.WriteLine("  resource   Run only samples for this resource, otherwise run the samples for all resources under this area (or all areas).");
+            Console.WriteLine("  area       API area (e.g. build, wit, git) to run the client samples for, or specify * for all areas.");
+            Console.WriteLine("  resource   API resource (e.g. definitions, workitems, repositories) to run the client samples for, or specify * for all resources.");
             Console.WriteLine("");
         }
 

@@ -2,9 +2,8 @@
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vsts.ClientSamples.Tests.Integration;
-using Vsts.ClientSamples.Notification;
 using Microsoft.VisualStudio.Services.Notifications.WebApi;
+using Microsoft.TeamServices.Samples.Client.Notification;
 
 namespace Microsoft.TeamServices.Samples.Client.Tests.Integration.Notification
 {

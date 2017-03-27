@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26223.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.TeamServices.Samples.Client", "Microsoft.TeamServices.Samples.Client\Microsoft.TeamServices.Samples.Client.csproj", "{545851E1-9BD9-4939-8AF4-9A8910CF5C34}"
 EndProject
@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.TeamServices.Samp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6FEB3108-E18A-4189-8399-4CECDA84A1F9}"
 	ProjectSection(SolutionItems) = preProject
+		contribute.md = contribute.md
+		license.md = license.md
 		README.md = README.md
 	EndProjectSection
 EndProject
