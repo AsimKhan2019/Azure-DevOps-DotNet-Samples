@@ -11,6 +11,7 @@ using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using Microsoft.VisualStudio.Services.Common;
+using Microsoft.VisualStudio.Services.WebApi;
 
 namespace Microsoft.TeamServices.Samples.Client
 {
@@ -97,20 +98,36 @@ namespace Microsoft.TeamServices.Samples.Client
             return results;
         }
 
-        public static void RunClientSampleMethods(Uri connectionUrl, VssCredentials credentials, string baseOutputPath = null, string area = null, string resource = null)
+        public static void RunClientSampleMethods(Uri connectionUrl, VssCredentials credentials, string area = null, string resource = null, DirectoryInfo outputPath = null)
         {
+            if (area == "*")
+            {
+                area = null;
+            }
+
+            if (resource == "*")
+            {
+                resource = null;
+            }
+
             Dictionary<ClientSample, IEnumerable<RunnableClientSampleMethod>> runnableMethodsBySample = GetRunnableClientSampleMethods(area, resource);
 
             if (runnableMethodsBySample.Any())
             {
                 ClientSampleContext context = new ClientSampleContext(connectionUrl, credentials);
 
-                if (String.IsNullOrEmpty(baseOutputPath))
-                {
-                    baseOutputPath = Path.Combine(Directory.GetCurrentDirectory(), "SampleRequests");
-                }
+                Console.WriteLine("");
+                Console.WriteLine("Start running client samples...");
+                Console.WriteLine("");
+                Console.WriteLine("  URL     : {0}", connectionUrl);
+                Console.WriteLine("  Area    : {0}", (area  == null ? "(all)" : area));
+                Console.WriteLine("  Resource: {0}", (resource == null ? "(all)" : resource));
+                Console.WriteLine("  Output  : {0}", (outputPath == null ? "(disabled)" : outputPath.FullName));
 
-                context.SetValue<string>(ClientSampleHttpLogger.PropertyOutputFilePath, baseOutputPath);
+                // Make sure we can connect before running the samples
+                context.Connection.ConnectAsync().SyncResult();
+
+                context.SetValue<DirectoryInfo>(ClientSampleHttpLogger.PropertyOutputFilePath, outputPath);
 
                 foreach (var item in runnableMethodsBySample)
                 {
@@ -122,7 +139,7 @@ namespace Microsoft.TeamServices.Samples.Client
                         try
                         {
                             context.Log("+------------------------------------------------------------------------------+");
-                            context.Log("| {0} |", String.Format("{0}/{1}", runnableMethod.MethodBase.Name, runnableMethod.MethodBase.DeclaringType.FullName).PadRight(76));
+                            context.Log("| {0} |", String.Format("{0}/{1}", runnableMethod.MethodBase.Name, runnableMethod.MethodBase.DeclaringType.Name).PadRight(76));
                             context.Log("|                                                                              |");
                             context.Log("| API: {0} |", String.Format("{0}/{1}", runnableMethod.Area, runnableMethod.Resource).PadRight(71));
                             context.Log("+------------------------------------------------------------------------------+");
@@ -139,7 +156,7 @@ namespace Microsoft.TeamServices.Samples.Client
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine(ex);
+                            Console.WriteLine("FAILED! With exception: " + ex.Message);
                         }
                         finally
                         {

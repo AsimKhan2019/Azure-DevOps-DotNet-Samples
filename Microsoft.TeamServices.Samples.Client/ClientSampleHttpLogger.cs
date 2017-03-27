@@ -61,8 +61,8 @@ namespace Microsoft.TeamServices.Samples.Client
 
                 if (!suppressOutput)
                 {
-                    string baseOutputPath;
-                    if (ClientSampleContext.CurrentContext.TryGetValue<string>(PropertyOutputFilePath, out baseOutputPath))
+                    DirectoryInfo baseOutputPath;
+                    if (ClientSampleContext.CurrentContext.TryGetValue<DirectoryInfo>(PropertyOutputFilePath, out baseOutputPath))
                     {
                         Dictionary<string, string> requestHeaders = new Dictionary<string, string>();
                         foreach (var h in request.Headers.Where(kvp => { return !s_excludedHeaders.Contains(kvp.Key); }))
@@ -112,7 +112,7 @@ namespace Microsoft.TeamServices.Samples.Client
                             ResponseBody = responseBody
                         };
 
-                        string outputPath = Path.Combine(baseOutputPath, data.Area, data.Resource);
+                        string outputPath = Path.Combine(baseOutputPath.FullName, data.Area, data.Resource);
                         DirectoryInfo outputDirectory = Directory.CreateDirectory(outputPath);
 
                         string outputFile = Path.Combine(outputDirectory.FullName, ClientSampleContext.CurrentRunnableMethod.MethodBase.Name + ".json");
