@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Microsoft.TeamServices.Samples.Client.Runner
 {
@@ -29,6 +30,9 @@ namespace Microsoft.TeamServices.Samples.Client.Runner
             catch (ArgumentException ex)
             {
                 Console.WriteLine(ex.Message);
+
+                ShowUsage();
+
                 return -1;
             }
 
@@ -108,6 +112,20 @@ namespace Microsoft.TeamServices.Samples.Client.Runner
             Console.WriteLine("  Runner.exe /url:https://fabrikam.visualstudio.com /area:wit /resource:*");            
             Console.WriteLine("  Runner.exe /url:https://fabrikam.visualstudio.com /area:git /resource:pullrequests /outputPath:.\\output");
             Console.WriteLine("");
+
+            Dictionary<ClientSample, IEnumerable<RunnableClientSampleMethod>> runnableMethodsBySample = ClientSampleUtils.GetRunnableClientSampleMethods();
+
+            HashSet<string> areas = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+            foreach(var kvp in runnableMethodsBySample)
+            {
+                foreach (var rcsm in kvp.Value)
+                {
+                    areas.Add(rcsm.Area.ToLower());
+                }
+            }
+
+            Console.WriteLine("Available areas: " + String.Join(",", areas.ToArray<string>()));
         }
 
     }
