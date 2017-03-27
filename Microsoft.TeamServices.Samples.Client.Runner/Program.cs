@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace Microsoft.TeamServices.Samples.Client.Runner
 {
-    public class ClientSampleProgram
+    public class Runner
     {
 
         public static int Main(string[] args)

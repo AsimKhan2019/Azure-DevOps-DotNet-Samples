@@ -36,7 +36,7 @@ namespace Microsoft.TeamServices.Samples.Client.Tests.Integration
         {
             get
             {
-                return ClientSample.Connection;
+                return ClientSample.Context.Connection;
             }
             private set
             {
@@ -54,7 +54,7 @@ namespace Microsoft.TeamServices.Samples.Client.Tests.Integration
             ClientSampleContext context = new ClientSampleContext(new Uri(connectionUrl), new VssBasicCredential(userName, password));
 
             ClientSample = new T();
-            ClientSample.Context = configuration;
+            ClientSample.Context = context;
         }
 
         protected Guid GetCurrentUserId()

@@ -15,7 +15,7 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
     /// 
     /// Samples showing how to use the Notification client to manage notification subscriptions in Team Services.
     /// 
-    /// For more information: https://www.visualstudio.com/docs/integrate/api/notification/overview
+    /// For more details, see https://www.visualstudio.com/docs/integrate/api/notification/subscriptions
     /// 
     /// </summary>
     [ClientSample(NotificationApiConstants.AreaName, NotificationApiConstants.SubscriptionsResource.Name)]

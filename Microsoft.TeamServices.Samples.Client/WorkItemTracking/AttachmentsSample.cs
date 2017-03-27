@@ -17,10 +17,12 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
     [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.Attachments)]
     public class AttachmentsSample : ClientSample
     {
-
         [ClientSampleMethod]
-        public void DownloadAttachment(Guid attachmentId, string saveToFile)
+        public void DownloadAttachment()
         {
+            Guid attachmentId;
+            string saveToFile;
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
             
@@ -33,8 +35,11 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         }
 
         [ClientSampleMethod]
-        public AttachmentReference UploadTextFile(string filePath)
+        public AttachmentReference UploadTextFile()
         {
+            string filePath = 
+
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
