@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
 {
@@ -17,45 +18,81 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
     [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.Attachments)]
     public class AttachmentsSample : ClientSample
     {
-        [ClientSampleMethod]
-        public void DownloadAttachment()
-        {
-            Guid attachmentId = Guid.Empty;
-            string saveToFile = null;
-
-            VssConnection connection = Context.Connection;
-            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
-            
-            Stream attachmentStream = workItemTrackingClient.GetAttachmentContentAsync(attachmentId).Result;
-
-            using (FileStream writeStream = new FileStream(@saveToFile, FileMode.Create, FileAccess.ReadWrite))
-            {
-                attachmentStream.CopyTo(writeStream);
-            }
-        }
 
         [ClientSampleMethod]
         public AttachmentReference UploadTextFile()
         {
-            string filePath = null;
+            // Full path to the text file to upload as an attachment
+            string filePath = ClientSampleHelpers.GetSampleTextFile();
 
+            // Get a client
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            AttachmentReference attachmentReference = workItemTrackingClient.CreateAttachmentAsync(@filePath).Result;
+            Console.WriteLine("Attempting upload of: {0}", filePath);
 
-            return attachmentReference;
+            // Upload the attachment
+            AttachmentReference attachment = workItemTrackingClient.CreateAttachmentAsync(@filePath).Result;
+
+            Console.WriteLine("Attachment created");            
+            Console.WriteLine(" ID    : {0}", attachment.Id);
+            Console.WriteLine(" URL   : {0}", attachment.Url);
+
+            // Save the attachment ID for the "download" sample call later
+            Context.SetValue<Guid>("$attachmentId", attachment.Id);
+            Context.SetValue<string>("$attachmentFileName", Path.GetFileName(filePath));
+
+            return attachment;
         }
 
         [ClientSampleMethod]
-        public AttachmentReference UploadBinaryFile(string filePath)
+        public AttachmentReference UploadBinaryFile()
         {
+            // Full path to the binary file to upload as an attachment
+            string filePath = ClientSampleHelpers.GetSampleBinaryFile();
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            AttachmentReference attachmentReference = workItemTrackingClient.CreateAttachmentAsync(@filePath).Result;
+            Console.WriteLine("Attempting upload of: {0}", filePath);
 
-            return attachmentReference;
+            AttachmentReference attachment = workItemTrackingClient.CreateAttachmentAsync(@filePath).Result;
+
+            Console.WriteLine("Attachment created");
+            Console.WriteLine(" ID    : {0}", attachment.Id);
+            Console.WriteLine(" URL   : {0}", attachment.Url);
+
+            return attachment;
+        }
+
+        [ClientSampleMethod]
+        public bool DownloadAttachment()
+        {
+            Guid attachmentId;
+            if (!Context.TryGetValue<Guid>("$attachmentId", out attachmentId))
+            {
+                throw new Exception("Run the upload attachent sample prior to running this sample.");
+            }
+
+            string fileFullPath = Path.GetTempFileName();
+
+            // Get the client
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            // Get a stream for the attachment
+            Stream attachmentStream = workItemTrackingClient.GetAttachmentContentAsync(attachmentId).Result;
+
+            // Write the file to disk
+            using (FileStream writeStream = new FileStream(fileFullPath, FileMode.Create, FileAccess.ReadWrite))
+            {
+                attachmentStream.CopyTo(writeStream);
+            }
+
+            Console.WriteLine("Attachment downloaded");
+            Console.WriteLine(" Full path: {0}", fileFullPath);
+
+            return true;
         }
     }
 }

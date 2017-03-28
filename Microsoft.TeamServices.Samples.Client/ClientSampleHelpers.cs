@@ -2,7 +2,9 @@
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -109,6 +111,36 @@ namespace Microsoft.TeamServices.Samples.Client
         {
             return context.Connection.AuthorizedIdentity.Id;
         }
+
+        public static String GetSampleTextFile()
+        {
+            return GetSampleFilePath("Microsoft.TeamServices.Samples.Client.WorkItemTracking.SampleFile.txt");
+        }
+
+        public static String GetSampleBinaryFile()
+        {
+            return GetSampleFilePath("Microsoft.TeamServices.Samples.Client.WorkItemTracking.SampleFile.png");
+        }
+
+        /// <summary>
+        /// Creates a temp file from an embedded resource and returns the full path to it
+        /// </summary>
+        /// <param name="fullResourceName"></param>
+        /// <returns></returns>
+        private static string GetSampleFilePath(String fullResourceName)
+        {
+            Stream inputStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(fullResourceName);
+            FileInfo tempOutputFile = new FileInfo(Path.Combine(Path.GetTempPath(), fullResourceName));
+            FileStream tempFileOutputStream = tempOutputFile.OpenWrite();
+            inputStream.CopyTo(tempFileOutputStream);
+
+            tempFileOutputStream.Close();
+            inputStream.Close();
+
+            return tempOutputFile.FullName;
+        }
+
+
     }
 }
 
