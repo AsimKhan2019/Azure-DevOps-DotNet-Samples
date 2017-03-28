@@ -27,22 +27,28 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            List<WorkItemField> result = workItemTrackingClient.GetFieldsAsync().Result;
+            WorkItemField workitemField = workItemTrackingClient.GetFieldAsync(fieldName).Result;
 
-            WorkItemField field = result.Find(x => x.Name == fieldName);
-            
-            return field;
+            Console.WriteLine("Name: " + workitemField.Name);
+            Console.WriteLine("Ref name: " + workitemField.ReferenceName);
+            Console.WriteLine("Read only? " + workitemField.ReadOnly);
+
+            return workitemField;
         }
 
         [ClientSampleMethod]
-        public IEnumerable<WorkItemField> GetReadOnlyWorkItemFields()
+        public void GetReadOnlyWorkItemFields()
         {
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             List<WorkItemField> result = workItemTrackingClient.GetFieldsAsync().Result;
 
-            return result.Where(field => field.ReadOnly);
+            Console.WriteLine("Read only fields:");
+            foreach (var workitemField in result.Where(field => field.ReadOnly))
+            {
+                Console.WriteLine(" * {0} ({1})", workitemField.Name, workitemField.ReferenceName);
+            }
         }
     }
 }
