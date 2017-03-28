@@ -40,7 +40,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         public WorkItemClassificationNode ListIterations()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
-            int depth = -1;
+            int depth = 4;
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
@@ -60,38 +60,14 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         {        
             path = path + "/" + node.Name;
             Console.WriteLine(path);
-            foreach (var child in node.Children)
+
+            if (node.Children != null)
             {
-                ShowNodeTree(child, path);
+                foreach (var child in node.Children)
+                {
+                    ShowNodeTree(child, path);
+                }
             }
-        }
-
-        [ClientSampleMethod]
-        public WorkItemClassificationNode GetArea()
-        {
-            string project = null;
-            string path = null;
-
-            VssConnection connection = Context.Connection;
-            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
-
-            WorkItemClassificationNode result = workItemTrackingClient.GetClassificationNodeAsync(project, TreeStructureGroup.Areas, path, 0).Result;
-
-            return result;
-        }
-
-        [ClientSampleMethod]
-        public WorkItemClassificationNode GetIteration()
-        {
-            string project = null;
-            string path = null;
-
-            VssConnection connection = Context.Connection;
-            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
-
-            WorkItemClassificationNode result = workItemTrackingClient.GetClassificationNodeAsync(project, TreeStructureGroup.Iterations, path, 0).Result;
-
-            return result;
         }
 
         [ClientSampleMethod]
@@ -99,11 +75,11 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         {
             Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
 
-            String areaName = "My new area";
+            String newAreaName = "My new area " + Guid.NewGuid();
 
             WorkItemClassificationNode node = new WorkItemClassificationNode()
             {
-                Name = areaName,
+                Name = newAreaName,
                 StructureType = TreeNodeStructureType.Area,
                 Children = new List<WorkItemClassificationNode>()
                 {
@@ -118,15 +94,22 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
                 }
             };
 
+            // Get a client
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
+            // Create the new area
             WorkItemClassificationNode result = workItemTrackingClient.CreateOrUpdateClassificationNodeAsync(
                 node,
                 projectId.ToString(),
                 TreeStructureGroup.Areas).Result;
 
+            // Show the new node
             ShowNodeTree(result);
+
+            // Save the new area for use in a later sample
+            Context.SetValue<string>("$newAreaName", node.Name);
+            Context.SetValue<Guid>("$newAreaProjectId", projectId);
 
             return result;
         }
@@ -134,24 +117,35 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItemClassificationNode CreateIteration()
         {
-            //IDictionary<string, Object> dict = new Dictionary<string, Object>();
-
-            //dict.Add("startDate", startDate);
-            //dict.Add("finishDate", finishDate);
-
-            string project = null;
-            string name = null;
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
+            string newIterationName = "New iteration " + Guid.NewGuid();
 
             WorkItemClassificationNode node = new WorkItemClassificationNode() {
-                Name = name,
-                StructureType = TreeNodeStructureType.Iteration
-                //Attributes = dict
+                Name = newIterationName,
+                StructureType = TreeNodeStructureType.Iteration,
+                Attributes = new Dictionary<string, Object>()
+                {
+                    { "startDate", DateTime.Today },
+                    { "finishDate", DateTime.Today.AddDays(7) },
+                }
             };
 
+            // Get a client
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            WorkItemClassificationNode result = workItemTrackingClient.CreateOrUpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, "").Result;
+            // Create the new iteration
+            WorkItemClassificationNode result = workItemTrackingClient.CreateOrUpdateClassificationNodeAsync(
+                node, 
+                projectId.ToString(),
+                TreeStructureGroup.Iterations).Result;
+
+            // Show the new node
+            ShowNodeTree(result);
+
+            // Save the new iteration for use in a later sample
+            Context.SetValue<string>("$newIterationName", node.Name);
+            Context.SetValue<Guid>("$newIterationProjectId", projectId);
 
             return result;
         }
@@ -159,23 +153,36 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItemClassificationNode RenameArea()
         {
-            string project = null;
-            string path = null;
-            string name = null;
+            Guid projectId;
+            string currentName;
+
+            // Get values from previous sample method that created a sample area
+            Context.TryGetValue<Guid>("$newAreaProjectId", out projectId);
+            Context.TryGetValue<string>("$newAreaName", out currentName);
+
+            string newName = currentName + " (renamed)";
 
             WorkItemClassificationNode node = new WorkItemClassificationNode() {
-                Name = name,
+                Name = newName,
                 StructureType = TreeNodeStructureType.Area
             };
 
+            // Get a client
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
+            // Update the path of the selected node
             WorkItemClassificationNode result = workItemTrackingClient.UpdateClassificationNodeAsync(
-                node, 
-                project, 
-                TreeStructureGroup.Areas, 
-                path).Result;
+                node,
+                projectId.ToString(), 
+                TreeStructureGroup.Areas,
+                currentName).Result;
+
+            // Save the new name for a later sample
+            Context.SetValue<string>("$newAreaName", newName);
+
+            // Show the new node
+            ShowNodeTree(result);
 
             return result;
         }
@@ -183,55 +190,137 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItemClassificationNode RenameIteration()
         {
-            string project = null;
-            string path = null;
-            string name = null;
+            Guid projectId;
+            string currentName;
+
+            // Get values from previous sample method that created a sample iteration
+            Context.TryGetValue<Guid>("$newIterationProjectId", out projectId);
+            Context.TryGetValue<string>("$newIterationName", out currentName);
+
+            string newName = currentName + " (renamed)";
 
             WorkItemClassificationNode node = new WorkItemClassificationNode()
             {
-                Name = name,
+                Name = newName,
                 StructureType = TreeNodeStructureType.Iteration
             };
 
+            // Get a client
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            WorkItemClassificationNode result = workItemTrackingClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, path).Result;
+            WorkItemClassificationNode result = workItemTrackingClient.UpdateClassificationNodeAsync(
+                node,
+                projectId.ToString(), 
+                TreeStructureGroup.Iterations,
+                currentName).Result;
+
+            // Save the new name for a later sample
+            Context.SetValue<string>("$newIterationName", newName);
+
+            // Show the new node
+            ShowNodeTree(result);
 
             return result;
         }
 
         public WorkItemClassificationNode UpdateIterationDates()
         {
-            string project = null;
-            string name = null;
-            DateTime startDate;
-            DateTime finishDate;
+            Guid projectId;
+            string iterationName;
 
-            IDictionary<string, Object> dict = new Dictionary<string, Object>();
+            // Get values from previous sample method that created a sample iteration
+            Context.TryGetValue<Guid>("$newIterationProjectId", out projectId);
+            Context.TryGetValue<string>("$newIterationName", out iterationName);
 
-            //dict.Add("startDate", startDate);
-            //dict.Add("finishDate", finishDate);
+            DateTime newStartDate = DateTime.Today.AddDays(7);
+            DateTime newFinishDate = DateTime.Today.AddDays(21);
 
             WorkItemClassificationNode node = new WorkItemClassificationNode()
             {
                 StructureType = TreeNodeStructureType.Iteration,
-                Attributes = dict
+                Attributes = new Dictionary<string, Object>()
+                {
+                    { "startDate", newStartDate },
+                    { "finishDate", newFinishDate }
+                }
             };
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            WorkItemClassificationNode result = workItemTrackingClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, name).Result;
+            WorkItemClassificationNode result = workItemTrackingClient.UpdateClassificationNodeAsync(
+                node,
+                projectId.ToString(),
+                TreeStructureGroup.Iterations,
+                iterationName).Result;
+
+            // Show the new node
+            ShowNodeTree(result);
 
             return result;
         }
 
-        public WorkItemClassificationNode MoveArea(string project, string targetArea, int id)
+
+        [ClientSampleMethod]
+        public WorkItemClassificationNode GetArea()
         {
+            Guid projectId;
+            string areaPath;
+
+            // Get values from previous sample method that created a sample iteration
+            Context.TryGetValue<Guid>("$newAreaProjectId", out projectId);
+            Context.TryGetValue<string>("$newAreaName", out areaPath);
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            WorkItemClassificationNode result = workItemTrackingClient.GetClassificationNodeAsync(
+                projectId.ToString(),
+                TreeStructureGroup.Areas,
+                areaPath,
+                5).Result;
+
+            // Show the new node
+            ShowNodeTree(result);
+
+            return result;
+        }
+
+        [ClientSampleMethod]
+        public WorkItemClassificationNode GetIteration()
+        {
+            Guid projectId;
+            string iterationPath;
+
+            // Get values from previous sample method that created a sample iteration
+            Context.TryGetValue<Guid>("$newIterationProjectId", out projectId);
+            Context.TryGetValue<string>("$newIterationName", out iterationPath);
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            WorkItemClassificationNode result = workItemTrackingClient.GetClassificationNodeAsync(
+                projectId.ToString(), 
+                TreeStructureGroup.Iterations,
+                iterationPath,
+                4).Result;
+
+            // Show the new node
+            ShowNodeTree(result);
+
+            return result;
+        }
+
+        public WorkItemClassificationNode MoveArea()
+        {
+            string project = "TBD";
+            string targetArea = "TBD";
+            int areaId = -1;
+
             WorkItemClassificationNode node = new WorkItemClassificationNode()
             {
-                Id = id,
+                Id = areaId,
                 StructureType = TreeNodeStructureType.Area
             };
 
@@ -247,31 +336,22 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             return result;
         }
 
-        public WorkItemClassificationNode MoveIteration(string project, string targetIteration, int id)
+        public bool DeleteArea()
         {
-            WorkItemClassificationNode node = new WorkItemClassificationNode()
-            {
-                Id = id,
-                StructureType = TreeNodeStructureType.Iteration
-            };
+            string project = "TBD";
+            string areaPath = "TBD";
+            int? reclassifyId = null;
 
-            VssConnection connection = Context.Connection;
-            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
-
-            WorkItemClassificationNode result = workItemTrackingClient.UpdateClassificationNodeAsync(node, project, TreeStructureGroup.Iterations, targetIteration).Result;
-
-            return result;
-        }
-
-        [ClientSampleMethod]
-        public bool DeleteArea(string project, string areaPath, int reclassifyId)
-        {
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             try
             {
-                workItemTrackingClient.DeleteClassificationNodeAsync(project, TreeStructureGroup.Areas, areaPath, reclassifyId).SyncResult();
+                workItemTrackingClient.DeleteClassificationNodeAsync(
+                    project, 
+                    TreeStructureGroup.Areas,
+                    areaPath, 
+                    reclassifyId).SyncResult();
 
                 return true;
             }
@@ -282,15 +362,22 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
     
         }
 
-        [ClientSampleMethod]
-        public bool DeleteIteration(string project, string iterationPath, int reclassifyId)
+        public bool DeleteIteration()
         {
+            string project = "TBD";
+            string iterationPath = "TBD";
+            int? reclassifyId = null;
+
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             try
             {
-                workItemTrackingClient.DeleteClassificationNodeAsync(project, TreeStructureGroup.Iterations, iterationPath, reclassifyId).SyncResult();
+                workItemTrackingClient.DeleteClassificationNodeAsync(
+                    project, 
+                    TreeStructureGroup.Iterations, 
+                    iterationPath, 
+                    reclassifyId).SyncResult();
 
                 return true;
             }
