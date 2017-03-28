@@ -3,6 +3,7 @@ using Microsoft.TeamFoundation.Core.WebApi.Types;
 using Microsoft.TeamFoundation.Work.WebApi;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.TeamServices.Samples.Client.Work
 {
@@ -17,9 +18,14 @@ namespace Microsoft.TeamServices.Samples.Client.Work
             WorkHttpClient workClient = connection.GetClient<WorkHttpClient>();
 
             Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
-                 
-            var context = new TeamContext(projectId);
+            Guid teamId = ClientSampleHelpers.FindAnyTeam(this.Context, projectId).Id;
+
+            var context = new TeamContext(projectId, teamId);
             TeamSetting result = workClient.GetTeamSettingsAsync(context).Result;
+
+            Console.WriteLine("Backlog iteration: {0}", result.BacklogIteration.Name);
+            Console.WriteLine("Bugs behavior: {0}", result.BugsBehavior);
+            Console.WriteLine("Default iteration : {0}", result.DefaultIterationMacro);
 
             return result;
         }
@@ -34,8 +40,8 @@ namespace Microsoft.TeamServices.Samples.Client.Work
             };
 
             TeamSettingsPatch updatedTeamSettings = new TeamSettingsPatch() {
-                BugsBehavior = BugsBehavior.AsRequirements,
-                WorkingDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday },
+                BugsBehavior = BugsBehavior.AsTasks,
+                WorkingDays = new DayOfWeek[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday },
                 BacklogVisibilities = backlogVisibilities
             };
 
@@ -46,6 +52,11 @@ namespace Microsoft.TeamServices.Samples.Client.Work
             var context = new TeamContext(projectId);
 
             TeamSetting result = workClient.UpdateTeamSettingsAsync(updatedTeamSettings, context).Result;
+
+            Console.WriteLine("Backlog iteration: {0}", result.BacklogIteration.Name);
+            Console.WriteLine("Bugs behavior: {0}", result.BugsBehavior);
+            Console.WriteLine("Default iteration : {0}", result.DefaultIterationMacro);
+            Console.WriteLine("Working days: {0}", String.Join(",", result.WorkingDays.Select<DayOfWeek,string>(dow => { return dow.ToString(); })));
 
             return result;
         }

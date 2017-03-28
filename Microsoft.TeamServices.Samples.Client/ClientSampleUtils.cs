@@ -116,13 +116,13 @@ namespace Microsoft.TeamServices.Samples.Client
             {
                 ClientSampleContext context = new ClientSampleContext(connectionUrl, credentials);
 
-                Console.WriteLine("");
                 Console.WriteLine("Start running client samples...");
                 Console.WriteLine("");
                 Console.WriteLine("  URL     : {0}", connectionUrl);
                 Console.WriteLine("  Area    : {0}", (area  == null ? "(all)" : area));
                 Console.WriteLine("  Resource: {0}", (resource == null ? "(all)" : resource));
                 Console.WriteLine("  Output  : {0}", (outputPath == null ? "(disabled)" : outputPath.FullName));
+                Console.WriteLine("");
 
                 // Make sure we can connect before running the samples
                 context.Connection.ConnectAsync().SyncResult();

@@ -41,6 +41,7 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
 
             List<NotificationEventType> eventTypes = notificationClient.ListEventTypesAsync().Result;
 
+            // Find only the event types that support being used in a custom subscriptions
             List<NotificationEventType> filteredEventTypes = eventTypes.FindAll(e => {
                 return e.CustomSubscriptionsAllowed;
             });
