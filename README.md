@@ -24,25 +24,29 @@ Samples are organized by "area" (service) and "resource" within the `Microsoft.T
 #### Run all samples
 
 ```
-Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://fabrikam.visualstudio.com /area:* /resource:*
+Microsoft.TeamServices.Samples.Client.Runner.exe
+    /url:https://fabrikam.visualstudio.com /area:* /resource:*
 ```
 
 #### Run all work item tracking samples
 
 ```
-Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://fabrikam.visualstudio.com /area:wit /resource:*
+Microsoft.TeamServices.Samples.Client.Runner.exe
+    /url:https://fabrikam.visualstudio.com /area:wit /resource:*
 ```
 
 #### Run all Git pull request samples
 
 ```
-Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://fabrikam.visualstudio.com /area:git /resource:pullrequests
+Microsoft.TeamServices.Samples.Client.Runner.exe
+    /url:https://fabrikam.visualstudio.com /area:git /resource:pullrequests
 ```
 
 #### Run all samples against a TFS on-premises collection
 
 ```
-Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://mytfs:8080/tfs/testcollection /area:git /resource:*
+Microsoft.TeamServices.Samples.Client.Runner.exe
+    /url:https://mytfs:8080/tfs/testcollection /area:git /resource:*
 ```
 
 ### Save request and response data to a JSON file
@@ -50,7 +54,8 @@ Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://mytfs:8080/tfs/tes
 To persist the HTTP request/response as JSON for each client sample method that is run, set the `/outputPath:{value}` argument. For example:
 
 ```
-Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://fabrikam.visualstudio.com /area:* /resource:* /outputPath:c:\temp\http-output
+Microsoft.TeamServices.Samples.Client.Runner.exe
+    /url:https://fabrikam.visualstudio.com /area:* /resource:* /outputPath:c:\temp\http-output
 ```
 
 This creates a folder for each area, a folder for each resource under the area folder, and a file for each client sample method that was run. The name of the JSON file is determined by the name of the client sample method. For example:
