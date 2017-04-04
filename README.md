@@ -1,31 +1,69 @@
-# Team Services .NET Samples
+# Team Services Samples for .NET
 
-## Getting started
+This repository contains C# samples that show how to integrate with Team Services and Team Foundation Server using our [public client libraries](https://www.nuget.org/profiles/nugetvss).
 
+## Explore
 
+Samples are organized by "area" (service) and "resource" within the `Microsoft.TeamServices.Samples.Client` project. Each sample class shows various ways for interacting with Team Services and Team Foundation Server.  
 
-## Using the client libraries
+## Run the samples
 
+1. Clone this repository and open in Visual Studio (2015 or later)
 
+2. Build the solution (you may need to restore the required NuGet packages first)
+
+3. Run the `Microsoft.TeamServices.Samples.Client.Runner` project with the required arguments:
+   * `/url:{value}`: URL of the account/collection to run the samples against.
+   * `/area:{value}`: API area (work, wit, notification, git, core, build) to run the client samples for. Use * to include all areas.
+   * `/resource:{value}`: API resource to run the client samples for. Use * to include all resources.
+
+> **IMPORTANT**: some samples are destructive. It is recommended that you first run the samples against a test account.
+
+### Examples
+
+Run all samples:
+
+```
+Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://fabrikam.visualstudio.com /area:* /resource:*
+```
+
+Run all work item tracking samples:
+
+```
+Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://fabrikam.visualstudio.com /area:wit /resource:*
+```
+
+Run all Git pull request samples:
+
+```
+Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://fabrikam.visualstudio.com /area:git /resource:pullrequests
+```
+
+### Save request and response data to a file
+
+To persist the HTTP request/response as JSON for each client sample method that is run, set the `/outputPath:{value}` argument. For example:
+
+Run all samples and saves output under `c:\temp`
+
+```
+Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://fabrikam.visualstudio.com /area:* /resource:* /outputPath:c:\temp
+```
+
+This creates a folder for each area, a folder for each resource under the area folder, and a file for each client sample method that was run. Note: certain HTTP headers like `Authorization` are removed for security/privacy purposes.
 
 ## About the client libraries
 
 For .NET developers building Windows apps and services that integrate with Visual Studio Team Services, client libraries are available for integrating with work item tracking, version control, build, and other services are now available. These packages replace the traditional TFS Client OM installer and make it easy to acquire and redistribute the libraries needed by your app or service.
 
-| Package | Description | When to use |
-|---------|-------------|---------------|
-| [Microsoft.TeamFoundationServer.ExtendedClient](https://www.nuget.org/packages/Microsoft.TeamFoundationServer.ExtendedClient/) | Integrate with Microsoft Team Foundation Server (2012, 2013, 2015) and Visual Studio Team Services from desktop-based Windows applications. Work with and manage version control, work items, and build, and other resources from your client application. | Existing Windows apps leveraging an older version of the TFS Client OM. 
-| [Microsoft.TeamFoundationServer.Client](https://www.nuget.org/packages/Microsoft.TeamFoundationServer.Client/) | Integrate with Team Foundation Server 2015 and Visual Studio Team Services from desktop-based, ASP.NET, and other Windows applications. Provides access to version control, work item tracking, build, and more via public REST APIs. | Window desktop apps and services that need to integrate with TFS 2015 and later and Visual Studio Team Services.
-| [Microsoft.VisualStudio.Services.Client](https://www.nuget.org/packages/Microsoft.VisualStudio.Services.Client/) | Integrate with Team Foundation Server 2015 and Visual Studio Team Services from desktop-based, ASP.NET, and other Windows applications. Provides access to shared platform services such as account, profile, identity, security, and more via public REST APIs. | Windows desktop apps and services that need to interact with "shared platform" services (account, profile, identity, security, etc).
-| [Microsoft.VisualStudio.Services.InteractiveClient](https://www.nuget.org/packages/Microsoft.VisualStudio.Services.InteractiveClient/) | Integrate with Team Foundation Server 2015 and Visual Studio Team Services from desktop-based Windows applications that require interactive sign-in by a user. | Windows desktop applications not utilizing basic authentication or OAuth for authentication.
-| [Microsoft.VisualStudio.Services.DistributedTask.Client](https://www.nuget.org/packages/Microsoft.VisualStudio.Services.DistributedTask.Client/) | Integrate with Team Foundation Server 2015 and Visual Studio Team Services from desktop-based, ASP.NET, and other Windows applications. Provides access to the Distributed Task Service via public REST APIs. | Window desktop apps and services that need to integrate with TFS 2015 and later and Visual Studio Team Services.
-| [Microsoft.VisualStudio.Services.Release.Client](https://www.nuget.org/packages/Microsoft.VisualStudio.Services.Release.Client/) | Integrate with Team Foundation Server 2015 and Visual Studio Team Services from desktop-based, ASP.NET, and other Windows applications. Provides access to the Release Service via public REST APIs. | Window desktop apps and services that need to integrate with TFS 2015 and later and Visual Studio Team Services.
+See [.NET client libraries for Team Services documentation](https://www.visualstudio.com/docs/integrate/get-started/client-libraries/dotnet) for more getting started details.
 
-## Useful references
+### Other useful resources
 
-* [.NET Client library intro](https:// www.visualstudio.com/docs/integrate/get-started/client-libraries/dotnet)
-* [WIQL reference](https:// msdn.microsoft.com/en-us/library/bb130198(v=vs.90).aspx)
+* [Official NuGet packages](https://www.nuget.org/profiles/nugetvss)
+* [.NET Client library intro](https://www.visualstudio.com/docs/integrate/get-started/client-libraries/dotnet)
+* [WIQL reference](https://msdn.microsoft.com/en-us/library/bb130198(v=vs.90).aspx)
 
-## Contributing to the samples
+## Contribute
 
+For developers that want to contribute, learn how to [contribute a sample](./contribute.md).
 
