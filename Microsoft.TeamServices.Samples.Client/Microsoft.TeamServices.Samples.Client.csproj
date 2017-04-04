@@ -123,6 +123,7 @@
     <Compile Include="ClientSampleHttpLogger.cs" />
     <Compile Include="ClientSampleUtils.cs" />
     <Compile Include="Core\*.cs" />
+    <Compile Include="Git\RepositoriesSample.cs" />
     <Compile Include="Notification\*.cs" />
     <Compile Include="WorkItemTracking\AttachmentsSample.cs" />
     <Compile Include="WorkItemTracking\BatchSample.cs" />

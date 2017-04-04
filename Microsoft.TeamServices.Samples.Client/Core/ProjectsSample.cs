@@ -335,7 +335,7 @@ namespace Microsoft.TeamServices.Samples.Client.Core
             VssConnection connection = Context.Connection;
             ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
 
-            Console.WriteLine("Queuing project de;ete...");
+            Console.WriteLine("Queuing project delete...");
 
             // Queue the delete operation
             Guid operationId = projectClient.QueueDeleteProject(project.Id).Result.Id;
