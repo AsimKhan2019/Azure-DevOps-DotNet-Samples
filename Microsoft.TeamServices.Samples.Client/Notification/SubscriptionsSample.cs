@@ -33,7 +33,7 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             //
-            // Part 1: ceate a subscription to get notified about certain pull request events
+            // Part 1: create a subscription to get notified about certain pull request events
             // 
 
             // Create parameters for the new subscription
