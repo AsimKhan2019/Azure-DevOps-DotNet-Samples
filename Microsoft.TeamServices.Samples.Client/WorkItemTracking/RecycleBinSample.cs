@@ -12,14 +12,14 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
     {
 
         [ClientSampleMethod]
-        public List<WorkItemDeleteShallowReference> GetDeletedWorkItems()
+        public List<WorkItemDeleteReference> GetDeletedWorkItems()
         {
             string project = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            List<WorkItemDeleteShallowReference> results = workItemTrackingClient.GetDeletedWorkItemsAsync(project).Result;
+            List<WorkItemDeleteReference> results = workItemTrackingClient.GetDeletedWorkItemsAsync(project, null).Result;
 
             return results;
         }
