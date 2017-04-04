@@ -21,35 +21,53 @@ Samples are organized by "area" (service) and "resource" within the `Microsoft.T
 
 ### Examples
 
-Run all samples:
+#### Run all samples
 
 ```
 Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://fabrikam.visualstudio.com /area:* /resource:*
 ```
 
-Run all work item tracking samples:
+#### Run all work item tracking samples
 
 ```
 Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://fabrikam.visualstudio.com /area:wit /resource:*
 ```
 
-Run all Git pull request samples:
+#### Run all Git pull request samples
 
 ```
 Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://fabrikam.visualstudio.com /area:git /resource:pullrequests
 ```
 
-### Save request and response data to a file
+#### Run all samples against a TFS on-premises collection
+
+```
+Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://mytfs:8080/tfs/testcollection /area:git /resource:*
+```
+
+### Save request and response data to a JSON file
 
 To persist the HTTP request/response as JSON for each client sample method that is run, set the `/outputPath:{value}` argument. For example:
 
-Run all samples and saves output under `c:\temp`
-
 ```
-Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://fabrikam.visualstudio.com /area:* /resource:* /outputPath:c:\temp
+Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://fabrikam.visualstudio.com /area:* /resource:* /outputPath:c:\temp\http-output
 ```
 
-This creates a folder for each area, a folder for each resource under the area folder, and a file for each client sample method that was run. Note: certain HTTP headers like `Authorization` are removed for security/privacy purposes.
+This creates a folder for each area, a folder for each resource under the area folder, and a file for each client sample method that was run. The name of the JSON file is determined by the name of the client sample method. For example:
+
+```
+|-- temp
+    |-- http-output
+        |-- Notification
+            |-- EventTypes
+                |-- ...
+            |-- Subscriptions
+                |-- CreateSubscriptionForUser.json
+                |-- QuerySubscriptionsByEventType.json
+                |-- ...
+```
+
+Note: certain HTTP headers like `Authorization` are removed for security/privacy purposes.
 
 ## About the client libraries
 
