@@ -37,6 +37,13 @@ Microsoft.TeamServices.Samples.Client.Runner.exe
     /url:https://fabrikam.visualstudio.com /area:wit /resource:*
 ```
 
+#### Run all graph samples against vsts
+
+```
+Microsoft.TeamServices.Samples.Client.Runner.exe
+    /url:https://fabrikam.vssps.visualstudio.com /area:graph /resource:*
+```
+
 #### Run all Git pull request samples
 
 ```
