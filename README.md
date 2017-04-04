@@ -1,5 +1,7 @@
 # Team Services Samples for .NET
 
+![buildstatus](https://mseng.visualstudio.com/_apis/public/build/definitions/b924d696-3eae-4116-8443-9a18392d8544/5045/badge)
+
 This repository contains C# samples that show how to integrate with Team Services and Team Foundation Server using our [public client libraries](https://www.nuget.org/profiles/nugetvss).
 
 ## Explore
