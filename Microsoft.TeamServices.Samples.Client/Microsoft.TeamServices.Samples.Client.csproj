@@ -141,6 +141,7 @@
     <Compile Include="Core\*.cs" />
     <Compile Include="Git\*.cs" />
     <Compile Include="Graph\GroupsSample.cs" />
+    <Compile Include="Graph\UsersSample.cs" />
     <Compile Include="Notification\*.cs" />
     <Compile Include="WorkItemTracking\AttachmentsSample.cs" />
     <Compile Include="WorkItemTracking\BatchSample.cs" />
