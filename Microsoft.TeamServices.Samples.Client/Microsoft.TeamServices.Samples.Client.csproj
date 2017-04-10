@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Compile Include="Graph\MembershipSample.cs" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
