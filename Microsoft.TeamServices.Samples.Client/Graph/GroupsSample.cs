@@ -127,7 +127,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
         }
 
         /// <summary>
-        /// Add an existing Azure Active Directory group to the VSTS account, with a specific, and then remove it
+        /// Add an existing Azure Active Directory group to the VSTS account, with a specific VSID, and then remove it
         /// </summary>
         [ClientSampleMethod]
         public void AddRemoveAADGroupByOIDWithVSID()
