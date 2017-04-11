@@ -22,7 +22,11 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             foreach (var user in users)
             {
-                LogUser(user);
+                Context.Log("{0} {1} {2}",
+                    user.Descriptor.ToString().PadRight(8),
+                    user.DisplayName.PadRight(20),
+                    user.PrincipalName.PadRight(20)
+                    );
             }
 
             return users;
@@ -42,12 +46,12 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             // Part 1: add the MSA user
             // 
 
-            GraphUserCreationContext addAADUserContext = new GraphUserPrincipalNameCreationContext
+            GraphUserCreationContext addMSAUserContext = new GraphUserPrincipalNameCreationContext
             { 
-                PrincipalName = "fabrikamfiber8@hotmail.com"
+                PrincipalName = "fabrikamfiber1@hotmail.com"
             };
 
-            GraphUser newUser = graphClient.CreateUserAsync(addAADUserContext).Result;
+            GraphUser newUser = graphClient.CreateUserAsync(addMSAUserContext).Result; //Bug 967656: REST API: Adding MSA guest user to AAD backed account fails via REST API and Client library
             string userDescriptor = newUser.Descriptor;
 
             Context.Log("New user added! ID: {0}", userDescriptor);
@@ -63,14 +67,15 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             graphClient.DeleteUserAsync(userDescriptor).SyncResult();
 
-            // Try to get the deleted user (should result in an exception)
+            // Try to get the deleted user
             try
             {
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
+                if (newUser.Disabled != false) throw new Exception();
             }
             catch (Exception e)
             {
-                Context.Log("Unable to get the removed user:" + e.Message);
+                Context.Log("The deleted user is not disabled!");
             }
         }
 
@@ -90,7 +95,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphUserCreationContext addAADUserContext = new GraphUserPrincipalNameCreationContext
             {
-                PrincipalName = "vscsia@microsoft.com" //TODO: Can we get a different user account?
+                PrincipalName = "jmcleod@vscsi.us"
             };
 
             GraphUser newUser = graphClient.CreateUserAsync(addAADUserContext).Result;
@@ -109,14 +114,15 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             graphClient.DeleteUserAsync(userDescriptor).SyncResult();
 
-            // Try to get the deleted user (should result in an exception)
+            // Try to get the deleted user
             try
             {
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
+                if (!newUser.Disabled) throw new Exception();
             }
             catch (Exception e)
             {
-                Context.Log("Unable to get the removed user:" + e.Message);
+                Context.Log("The deleted user is not disabled!");
             }
         }
 
@@ -152,7 +158,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphUserCreationContext addAADUserContext = new GraphUserPrincipalNameCreationContext
             {
-                PrincipalName = "vscsia@microsoft.com" //TODO: Can we get a different user account?
+                PrincipalName = "jtseng@vscsi.us"
             };
 
             GraphUser newUser = graphClient.CreateUserAsync(addAADUserContext, parentGroup).Result;
@@ -171,14 +177,15 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             graphClient.DeleteUserAsync(userDescriptor).SyncResult();
 
-            // Try to get the deleted user (should result in an exception)
+            // Try to get the deleted user
             try
             {
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
+                if (newUser.Disabled != false) throw new Exception();
             }
             catch (Exception e)
             {
-                Context.Log("Unable to get the removed user:" + e.Message);
+                Context.Log("The deleted user is not disabled!");
             }
 
             // Part 5: remove the group
@@ -201,7 +208,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphUserCreationContext addAADUserContext = new GraphUserOriginIdCreationContext
             {
-                OriginId = "ce4fd5fc-0b94-4562-8c7c-c23fdd3b5aa2"
+                OriginId = "ddddb7d1-2de3-4bab-98b6-ddcc994e964d"
             };
 
             GraphUser newUser = graphClient.CreateUserAsync(addAADUserContext).Result;
@@ -220,14 +227,15 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             graphClient.DeleteUserAsync(userDescriptor).SyncResult();
 
-            // Try to get the deleted user (should result in an exception)
+            // Try to get the deleted user
             try
             {
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
+                if (newUser.Disabled != false) throw new Exception();
             }
             catch (Exception e)
             {
-                Context.Log("Unable to get the removed user:" + e.Message);
+                Context.Log("The deleted user is not disabled!");
             }
         }
 
@@ -247,7 +255,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphUserCreationContext addAADUserContext = new GraphUserOriginIdCreationContext
             {
-                OriginId = "ce4fd5fc-0b94-4562-8c7c-c23fdd3b5aa2",
+                OriginId = "ddddb7d1-2de3-4bab-98b6-ddcc994e964d",
                 Id = Guid.NewGuid()
             };
 
@@ -267,24 +275,16 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             graphClient.DeleteUserAsync(userDescriptor).SyncResult();
 
-            // Try to get the deleted user (should result in an exception)
+            // Try to get the deleted user
             try
             {
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
+                if (newUser.Disabled != false) throw new Exception();
             }
             catch (Exception e)
             {
-                Context.Log("Unable to get the removed user:" + e.Message);
+                Context.Log("The deleted user is not disabled!");
             }
-        }
-
-        protected void LogUser(GraphUser user)
-        {
-            Context.Log(" {0} {1} {2}",
-                user.Descriptor.ToString().PadRight(8),
-                user.DisplayName.PadRight(20),
-                user.PrincipalName.PadRight(20)
-                );
         }
     }
 }

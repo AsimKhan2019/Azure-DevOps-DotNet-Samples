@@ -40,7 +40,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphUserCreationContext addUserContext = new GraphUserPrincipalNameCreationContext
             {
-                PrincipalName = "fabrikamfiber8@hotmail.com"
+                PrincipalName = "jtseng@vscsi.us"
             };
 
             GraphUser newUser = graphClient.CreateUserAsync(addUserContext).Result;
@@ -97,6 +97,22 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 			// 
 
 			graphClient.DeleteGroupAsync(groupDescriptor).SyncResult();
+
+            //
+            // Part 10: remove the user
+
+            graphClient.DeleteUserAsync(userDescriptor).SyncResult();
+            //
+            // Try to get the deleted user
+            try
+            {
+                newUser = graphClient.GetUserAsync(userDescriptor).Result;
+                if (newUser.Disabled != false) throw new Exception();
+            }
+            catch (Exception e)
+            {
+                Context.Log("The deleted user is not disabled!");
+            }
         }
 
         /// <summary>
@@ -217,7 +233,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphGroupCreationContext addAADGroupContext = new GraphGroupOriginIdCreationContext
             {
-                OriginId = "1c045bc6-0266-4fad-bba3-2335c8bbf3df"
+                OriginId = "a42aad15-d654-4b16-9309-9ee34d5aacfb"
             };
             GraphGroup aadGroup = graphClient.CreateGroupAsync(addAADGroupContext).Result; //Bug 963789: Graph REST: Creation of a new VSTS group fails when descriptor not provided
             string aadGroupDescriptor = aadGroup.Descriptor;

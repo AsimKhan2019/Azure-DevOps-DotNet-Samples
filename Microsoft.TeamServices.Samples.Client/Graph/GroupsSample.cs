@@ -96,7 +96,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphGroupCreationContext addAADGroupContext = new GraphGroupOriginIdCreationContext
             {
-                OriginId = "1c045bc6-0266-4fad-bba3-2335c8bbf3df"
+                OriginId = "77ed2186-aaf6-4299-ac9e-37ba282c2b95"
             };
 
             GraphGroup newGroup = graphClient.CreateGroupAsync(addAADGroupContext).Result; //Bug 963789: Graph REST: Creation of a new VSTS group fails when descriptor not provided
@@ -142,7 +142,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphGroupCreationContext addAADGroupContext = new GraphGroupOriginIdCreationContext
             {
-                OriginId = "1c045bc6-0266-4fad-bba3-2335c8bbf3df",
+                OriginId = "f0d20172-7b96-42f6-9436-941433654b48",
                 Id = Guid.NewGuid()
             };
 
@@ -203,7 +203,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphGroupCreationContext addAADGroupContext = new GraphGroupOriginIdCreationContext
             {
-                OriginId = "1c045bc6-0266-4fad-bba3-2335c8bbf3df"
+                OriginId = "7dee3381-2ec2-41c2-869a-7afe9b574095"
             };
 
             GraphGroup addedAADGroup = graphClient.CreateGroupAsync(addAADGroupContext, null, parentGroup).Result; //Bug 963789: Graph REST: Creation of a new VSTS group fails when descriptor not provided
