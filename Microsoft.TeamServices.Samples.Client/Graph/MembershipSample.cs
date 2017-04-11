@@ -107,7 +107,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             try
             {
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
-                if (newUser.Disabled != false) throw new Exception();
+                if (!newUser.Disabled) throw new Exception();
             }
             catch (Exception e)
             {
