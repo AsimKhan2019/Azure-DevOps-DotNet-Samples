@@ -14,13 +14,13 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
         /// </summary>
         /// <returns></returns>
         [ClientSampleMethod]
-        public List<GraphUser> GetAllUsers()
+        public PagedGraphUsers GetAllUsers()
         {
             VssConnection connection = Context.Connection;
             GraphHttpClient graphClient = connection.GetClient<GraphHttpClient>();
-            List<GraphUser> users = graphClient.GetUsersAsync().Result;
+            PagedGraphUsers users = graphClient.GetUsersAsync().Result;
 
-            foreach (var user in users)
+            foreach (var user in users.GraphUsers)
             {
                 Context.Log("{0} {1} {2}",
                     user.Descriptor.ToString().PadRight(8),

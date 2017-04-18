@@ -14,13 +14,13 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
         /// </summary>
         /// <returns></returns>
         [ClientSampleMethod]
-        public List<GraphGroup> GetAllGroups()
+        public PagedGraphGroups GetAllGroups()
         {
             VssConnection connection = Context.Connection;
             GraphHttpClient graphClient = connection.GetClient<GraphHttpClient>();
-            List<GraphGroup> groups = graphClient.GetGroupsAsync().Result;
+            PagedGraphGroups groups = graphClient.GetGroupsAsync().Result;
 
-            foreach (var group in groups)
+            foreach (var group in groups.GraphGroups)
             {
                 LogGroup(group);
             }
