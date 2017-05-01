@@ -201,7 +201,7 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
                 {
                     new SubscriptionQueryCondition()
                     {
-                        SubscriptionType = SubscriptionType.Shared,
+                        Flags = SubscriptionFlags.TeamSubscription,
                         Filter = new ExpressionFilter(eventType)
                     }
                 }
@@ -295,7 +295,7 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
             VssConnection connection = Context.Connection;
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
-            IEnumerable<NotificationSubscription> subscriptions = notificationClient.ListSubscriptionsAsync(subscriber: team.Id).Result;
+            IEnumerable<NotificationSubscription> subscriptions = notificationClient.ListSubscriptionsAsync(targetId: team.Id).Result;
 
             foreach (var subscription in subscriptions)
             {
@@ -313,7 +313,7 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
 
             // Return all subscriptions, includuing minimal details for subscriptions the caller doesn't have access to
-            return notificationClient.ListSubscriptionsAsync(subscriber: groupId,
+            return notificationClient.ListSubscriptionsAsync(targetId: groupId,
                 queryFlags: SubscriptionQueryFlags.AlwaysReturnBasicInformation).Result;
         }
 
@@ -340,7 +340,7 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
             IEnumerable<SubscriptionQueryCondition> conditions = 
                 teams.Select<WebApiTeam, SubscriptionQueryCondition>(team =>
                 {
-                    return new SubscriptionQueryCondition() { Subscriber = team.Id };
+                    return new SubscriptionQueryCondition() { SubscriberId = team.Id };
                 }
             );
 
@@ -436,7 +436,7 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
             SubscriptionUserSettings userSettings = new SubscriptionUserSettings() { OptedOut = true };
             NotificationHttpClient notificationClient = this.Context.Connection.GetClient<NotificationHttpClient>();
 
-            userSettings = notificationClient.UpdateSubscriptionUserSettingsAsync(userSettings, teamSubscription.Id, teamMemberId.ToString()).Result;
+            userSettings = notificationClient.UpdateSubscriptionUserSettingsAsync(userSettings, teamSubscription.Id, teamMemberId).Result;
 
             using (new ClientSampleHttpLoggerOutputSuppression())
             {
