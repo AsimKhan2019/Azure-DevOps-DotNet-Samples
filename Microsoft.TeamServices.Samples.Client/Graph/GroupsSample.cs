@@ -44,11 +44,11 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             ClientSampleHttpLogger.SetOperationName(this.Context, "CreateGroup");
             GraphGroupCreationContext createGroupContext = new GraphGroupVstsCreationContext
             {
-                DisplayName = "Developers3",
+                DisplayName = "Developers-" + Guid.NewGuid(),
                 Description = "Group created via client library"
             };
 
-            GraphGroup newGroup = graphClient.CreateGroupAsync(createGroupContext).Result; //Bug 963554: Graph REST API client is failing to parse base64 encoded GroupDescriptor
+            GraphGroup newGroup = graphClient.CreateGroupAsync(createGroupContext).Result;
             string groupDescriptor = newGroup.Descriptor;
 
             Context.Log("New group created! ID: {0}", groupDescriptor);
@@ -109,12 +109,13 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 2: get the group
             //
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetGroup");
             newGroup = graphClient.GetGroupAsync(groupDescriptor).Result;
 
             //
             // Part 3: remove the group
             // 
-            graphClient.DeleteGroupAsync(groupDescriptor).SyncResult();
+            graphClient.DeleteGroupAsync(groupDescriptor).SyncResult(); //BUG: Fails to delete group!!!!!
 
             // Try to get the deleted group (should result in an exception)
             try
@@ -147,7 +148,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
                 Id = Guid.NewGuid()
             };
 
-            GraphGroup newGroup = graphClient.CreateGroupAsync(addAADGroupContext).Result; //Bug 963789: Graph REST: Creation of a new VSTS group fails when descriptor not provided
+            GraphGroup newGroup = graphClient.CreateGroupAsync(addAADGroupContext).Result;
             string groupDescriptor = newGroup.Descriptor;
 
             Context.Log("New group created! ID: {0}", groupDescriptor);
@@ -190,7 +191,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             ClientSampleHttpLogger.SetOperationName(this.Context, "MaterializeAADGroupByOIDAsMember");
             GraphGroupCreationContext createVSTSGroupContext = new GraphGroupVstsCreationContext
             {
-                DisplayName = "Developers",
+                DisplayName = "Developers-" + Guid.NewGuid(),
                 Description = "Group created via client library"
             };
 
