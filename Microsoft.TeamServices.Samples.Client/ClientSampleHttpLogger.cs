@@ -18,6 +18,7 @@ namespace Microsoft.TeamServices.Samples.Client
         public static readonly string PropertyOutputFilePath = "$outputFilePath";   // value is a string indicating the folder to output files to
         public static readonly string PropertySuppressOutput = "$suppressOutput";   // value is a boolan indicating whether to suppress output
         //public static readonly string PropertyOutputToConsole = "$outputToConsole"; // value is a boolan indicating whether to output JSON to the console
+        public static readonly string PropertyOperationName = "$operationName";   // value is a string indicating the logical name of the operation. If output is enabled, this value is used to produce the output file name.
 
         private JsonSerializerSettings serializerSettings;
 
@@ -57,6 +58,16 @@ namespace Microsoft.TeamServices.Samples.Client
                 if (!ClientSampleContext.CurrentContext.TryGetValue<bool>(PropertySuppressOutput, out suppressOutput))
                 {
                     suppressOutput = false;
+                }
+
+                string operationName;
+                if (!ClientSampleContext.CurrentContext.TryGetValue<string>(PropertyOperationName, out operationName))
+                {
+                    operationName = ClientSampleContext.CurrentRunnableMethod.MethodBase.Name;
+                }
+                else
+                {
+                    // TODO: add validation around the operation name
                 }
 
                 if (!suppressOutput)
@@ -113,9 +124,11 @@ namespace Microsoft.TeamServices.Samples.Client
                         };
 
                         string outputPath = Path.Combine(baseOutputPath.FullName, data.Area, data.Resource);
+                        string outputFileName = operationName + ".json";
+
                         DirectoryInfo outputDirectory = Directory.CreateDirectory(outputPath);
 
-                        string outputFile = Path.Combine(outputDirectory.FullName, ClientSampleContext.CurrentRunnableMethod.MethodBase.Name + ".json");
+                        string outputFile = Path.Combine(outputDirectory.FullName, outputFileName);
 
                         string output = JsonConvert.SerializeObject(data, this.serializerSettings);
 
@@ -157,6 +170,16 @@ namespace Microsoft.TeamServices.Samples.Client
         public static void SetSuppressOutput(ClientSampleContext context, bool suppress)
         {
             context.SetValue<bool>(PropertySuppressOutput, suppress);
+        }
+
+        public static void SetOperationName(ClientSampleContext context, string name)
+        {
+            context.SetValue<string>(PropertyOperationName, name);
+        }
+
+        public static void ResetOperationName(ClientSampleContext context)
+        {
+            context.RemoveValue(PropertyOperationName);
         }
     }
 

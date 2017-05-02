@@ -79,6 +79,11 @@ namespace Microsoft.TeamServices.Samples.Client
             Properties[name] = value;
         }
 
+        public void RemoveValue(string name)
+        {
+            Properties.Remove(name);
+        }
+
         public void Log(String message)
         {
             this.Log(message, null);
