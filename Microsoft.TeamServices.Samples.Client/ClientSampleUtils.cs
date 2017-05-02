@@ -149,8 +149,9 @@ namespace Microsoft.TeamServices.Samples.Client
                             ClientSampleContext.CurrentRunnableMethod = runnableMethod;
                             ClientSampleContext.CurrentContext = context;
 
-                            // Reset suppression (in case the last runnable method forget to re-enable it)
+                            // Reset suppression and operation name (don't want these values carrying over to the next sample method call)
                             ClientSampleHttpLogger.SetSuppressOutput(context, false);
+                            ClientSampleHttpLogger.ResetOperationName(context);
 
                             runnableMethod.MethodBase.Invoke(clientSample, null);
                         }
