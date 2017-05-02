@@ -41,10 +41,10 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 1: create a group at the account level
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateGroup");
             GraphGroupCreationContext createGroupContext = new GraphGroupVstsCreationContext
             {
-                DisplayName = "Developers",
+                DisplayName = "Developers3",
                 Description = "Group created via client library"
             };
 
@@ -56,7 +56,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 2: update the description attribute for the group
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "UpdateGroup");
             Microsoft.VisualStudio.Services.WebApi.Patch.Json.JsonPatchDocument patchDocument = VssJsonPatchDocumentFactory.ConstructJsonPatchDocument(VisualStudio.Services.WebApi.Patch.Operation.Replace, Constants.GroupUpdateFields.Description, "Updated description");
             GraphGroup updatedGroup = graphClient.UpdateGroupAsync(groupDescriptor, patchDocument).Result;
             string groupDescription = updatedGroup.Description;
@@ -67,11 +67,13 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             // Part 3: delete the group
             // 
 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteGroup");
             graphClient.DeleteGroupAsync(groupDescriptor).SyncResult();
 
             // Try to get the deleted group (should result in an exception)
             try
             {
+                ClientSampleHttpLogger.SetOperationName(this.Context, "GetDisabledGroup");
                 newGroup = graphClient.GetGroupAsync(groupDescriptor).Result;
             }
             catch (Exception e)
@@ -93,13 +95,13 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 1: add the AAD group
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "MaterializeAADGroupByOID");
             GraphGroupCreationContext addAADGroupContext = new GraphGroupOriginIdCreationContext
             {
                 OriginId = "77ed2186-aaf6-4299-ac9e-37ba282c2b95"
             };
 
-            GraphGroup newGroup = graphClient.CreateGroupAsync(addAADGroupContext).Result; //Bug 963789: Graph REST: Creation of a new VSTS group fails when descriptor not provided
+            GraphGroup newGroup = graphClient.CreateGroupAsync(addAADGroupContext).Result;
             string groupDescriptor = newGroup.Descriptor;
 
             Context.Log("New group created! ID: {0}", groupDescriptor);
@@ -112,7 +114,6 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 3: remove the group
             // 
-
             graphClient.DeleteGroupAsync(groupDescriptor).SyncResult();
 
             // Try to get the deleted group (should result in an exception)
@@ -139,7 +140,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 1: add the AAD group
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "MaterializeAADGroupByOIDWithVSID");
             GraphGroupCreationContext addAADGroupContext = new GraphGroupOriginIdCreationContext
             {
                 OriginId = "f0d20172-7b96-42f6-9436-941433654b48",
@@ -186,7 +187,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 1: create the VSTS group
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "MaterializeAADGroupByOIDAsMember");
             GraphGroupCreationContext createVSTSGroupContext = new GraphGroupVstsCreationContext
             {
                 DisplayName = "Developers",
@@ -214,18 +215,19 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 3: get the AAD group
             //
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetGroup");
             GraphGroup newGroup = graphClient.GetGroupAsync(aadGroupDescriptor).Result;
 
             //
             // Part 4: remove the AAD group
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteAADGroup");
             graphClient.DeleteGroupAsync(aadGroupDescriptor).SyncResult();
 
             //
             // Part 5: delete the VSTS group
             //
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteVSTSGroup");
             graphClient.DeleteGroupAsync(vstsGroupDescriptor).SyncResult();
         }
 

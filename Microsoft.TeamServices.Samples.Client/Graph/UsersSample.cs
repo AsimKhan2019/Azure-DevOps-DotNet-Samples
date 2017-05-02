@@ -48,10 +48,10 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphUserCreationContext addMSAUserContext = new GraphUserPrincipalNameCreationContext
             { 
-                PrincipalName = "fabrikamfiber1@hotmail.com"
+                PrincipalName = "fabrikamfiber4@hotmail.com"
             };
 
-            GraphUser newUser = graphClient.CreateUserAsync(addMSAUserContext).Result; //Bug 967656: REST API: Adding MSA guest user to AAD backed account fails via REST API and Client library
+            GraphUser newUser = graphClient.CreateUserAsync(addMSAUserContext).Result;
             string userDescriptor = newUser.Descriptor;
 
             Context.Log("New user added! ID: {0}", userDescriptor);
@@ -95,7 +95,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphUserCreationContext addAADUserContext = new GraphUserPrincipalNameCreationContext
             {
-                PrincipalName = "jmcleod@vscsi.us"
+                PrincipalName = "jtseng@vscsi.us"
             };
 
             GraphUser newUser = graphClient.CreateUserAsync(addAADUserContext).Result;
@@ -208,7 +208,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphUserCreationContext addAADUserContext = new GraphUserOriginIdCreationContext
             {
-                OriginId = "ddddb7d1-2de3-4bab-98b6-ddcc994e964d"
+                OriginId = "e97b0e7f-0a61-41ad-860c-748ec5fcb20b"
             };
 
             GraphUser newUser = graphClient.CreateUserAsync(addAADUserContext).Result;
@@ -255,7 +255,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphUserCreationContext addAADUserContext = new GraphUserOriginIdCreationContext
             {
-                OriginId = "ddddb7d1-2de3-4bab-98b6-ddcc994e964d",
+                OriginId = "e97b0e7f-0a61-41ad-860c-748ec5fcb20b",
                 Id = Guid.NewGuid()
             };
 
