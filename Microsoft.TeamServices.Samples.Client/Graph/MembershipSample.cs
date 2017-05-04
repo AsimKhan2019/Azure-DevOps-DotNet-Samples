@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Microsoft.TeamServices.Samples.Client.Graph
 {
-    [ClientSample(GraphResourceIds.AreaName, GraphResourceIds.Groups.GroupsResourceName)]
+    [ClientSample(GraphResourceIds.AreaName, GraphResourceIds.Memberships.MembershipsResourceName)]
     public class MembershipSample : ClientSample
     {
         /// <summary>
@@ -25,11 +25,11 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphGroupCreationContext createGroupContext = new GraphGroupVstsCreationContext
             {
-                DisplayName = "Developers",
+                DisplayName = "Developers-" + Guid.NewGuid(),
                 Description = "Group created via client library"
             };
 
-            GraphGroup newGroup = graphClient.CreateGroupAsync(createGroupContext).Result; //Bug 963554: Graph REST API client is failing to parse base64 encoded GroupDescriptor
+            GraphGroup newGroup = graphClient.CreateGroupAsync(createGroupContext).Result;
             string groupDescriptor = newGroup.Descriptor;
 
             Context.Log("New group created! ID: {0}", groupDescriptor);
@@ -51,39 +51,37 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 3: Make the user a member of the group
             // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateMembershipUser");
             GraphMembership graphMembership = graphClient.AddMembershipAsync(userDescriptor, groupDescriptor).Result;
 
             //
             // Part 4: get the membership
             //
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipUser");
             graphMembership = graphClient.GetMembershipAsync(userDescriptor, groupDescriptor).Result;
 
             //
             // Part 5: Check to see if the user is a member of the group
             // 
-            try
-            {
-                graphClient.CheckMembershipAsync(userDescriptor, groupDescriptor).SyncResult();
-            }
-            catch (Exception e)
-            {
-                Context.Log("User was not a member of the group:" + e.Message);
-            }
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CheckMembershipUser");
+            graphClient.CheckMembershipAsync(userDescriptor, groupDescriptor).SyncResult();
 
             //
             // Part 6: Get every group the subject(user) is a member of
             // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipSubjectUserUp");
             List<GraphMembership> membershipsForUser = graphClient.GetMembershipsAsync(userDescriptor).Result;
 
             //
             // Part 7: Get every member of the group
             // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipSubjectGroupDown");
             List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(groupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down.ToString()).Result; //Bug 967647: REST: GetMembershipsAsync shouldn't take direction as string, it should be the GraphTraversalDirection enum
 
             //
             // Part 8: Remove member from the group
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteMembershipUser");
             graphClient.RemoveMembershipAsync(userDescriptor, groupDescriptor).SyncResult();
             try {
                 graphClient.CheckMembershipAsync(userDescriptor, groupDescriptor).SyncResult();
@@ -131,10 +129,10 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphGroupCreationContext createGroupContext = new GraphGroupVstsCreationContext
             {
-                DisplayName = "Developers",
+                DisplayName = "Developers-" + Guid.NewGuid(),
                 Description = "Group created via client library"
             };
-            GraphGroup parentGroup = graphClient.CreateGroupAsync(createGroupContext).Result; //Bug 963554: Graph REST API client is failing to parse base64 encoded GroupDescriptor
+            GraphGroup parentGroup = graphClient.CreateGroupAsync(createGroupContext).Result;
             string parentGroupDescriptor = parentGroup.Descriptor;
             Context.Log("New group created! ID: {0}", parentGroupDescriptor);
 
@@ -147,46 +145,44 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
                 DisplayName = "Contractors",
                 Description = "Child group created via client library"
             };
-            GraphGroup childGroup = graphClient.CreateGroupAsync(createGroupContext).Result; //Bug 963554: Graph REST API client is failing to parse base64 encoded GroupDescriptor
+            GraphGroup childGroup = graphClient.CreateGroupAsync(createGroupContext).Result;
             string childGroupDescriptor = childGroup.Descriptor;
             Context.Log("New group created! ID: {0}", childGroupDescriptor);
 
             //
             // Part 3: Make the 'Contractors' group a member of the 'Developers' group
             // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateMembershipVSTSGroup");
             GraphMembership graphMembership = graphClient.AddMembershipAsync(childGroupDescriptor, parentGroupDescriptor).Result;
 
             //
             // Part 4: get the membership
             //
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipVSTSGroup");
             graphMembership = graphClient.GetMembershipAsync(childGroupDescriptor, parentGroupDescriptor).Result;
 
             //
             // Part 5: Check to see if the 'Contractors' group is a member of the 'Developers' group
             // 
-            try
-            {
-                graphClient.CheckMembershipAsync(childGroupDescriptor, parentGroupDescriptor).SyncResult();
-            }
-            catch (Exception e)
-            {
-                Context.Log("'Contractor's was not a member of the group:" + e.Message);
-            }
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CheckMembershipVSTSGroup");
+            graphClient.CheckMembershipAsync(childGroupDescriptor, parentGroupDescriptor).SyncResult();
 
             //
             // Part 6: Get every group the subject('Contractors') is a member of
             // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipSubjectVSTSGroupUp");
             List<GraphMembership> membershipsForUser = graphClient.GetMembershipsAsync(childGroupDescriptor).Result;
 
             //
             // Part 7: Get every member of the 'Developers' group
             // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipSubjectVSTSGroupDown");
             List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(parentGroupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down.ToString()).Result; //Bug 967647: REST: GetMembershipsAsync shouldn't take direction as string, it should be the GraphTraversalDirection enum
 
             //
             // Part 8: Remove member from the group
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteMembershipVSTSGroup");
             graphClient.RemoveMembershipAsync(childGroupDescriptor, parentGroupDescriptor).SyncResult();
             try
             {
@@ -220,10 +216,10 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             GraphGroupCreationContext createGroupContext = new GraphGroupVstsCreationContext
             {
-                DisplayName = "Developers",
+                DisplayName = "Developers-" + Guid.NewGuid(),
                 Description = "Group created via client library"
             };
-            GraphGroup parentGroup = graphClient.CreateGroupAsync(createGroupContext).Result; //Bug 963554: Graph REST API client is failing to parse base64 encoded GroupDescriptor
+            GraphGroup parentGroup = graphClient.CreateGroupAsync(createGroupContext).Result;
             string parentGroupDescriptor = parentGroup.Descriptor;
             Context.Log("New group created! ID: {0}", parentGroupDescriptor);
 
@@ -235,7 +231,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             {
                 OriginId = "a42aad15-d654-4b16-9309-9ee34d5aacfb"
             };
-            GraphGroup aadGroup = graphClient.CreateGroupAsync(addAADGroupContext).Result; //Bug 963789: Graph REST: Creation of a new VSTS group fails when descriptor not provided
+            GraphGroup aadGroup = graphClient.CreateGroupAsync(addAADGroupContext).Result;
             string aadGroupDescriptor = aadGroup.Descriptor;
 
             Context.Log("AAD group added! ID: {0}", aadGroupDescriptor);
@@ -243,39 +239,37 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 3: Make the AAD group a member of the VSTS 'Developers' group
             // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateMembershipAADGroup");
             GraphMembership graphMembership = graphClient.AddMembershipAsync(aadGroupDescriptor, parentGroupDescriptor).Result;
 
             //
             // Part 4: get the membership
             //
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipAADGroup");
             graphMembership = graphClient.GetMembershipAsync(aadGroupDescriptor, parentGroupDescriptor).Result;
 
             //
             // Part 5: Check to see if the AAD group is a member of the VSTS 'Developers' group
             // 
-            try
-            {
-                graphClient.CheckMembershipAsync(aadGroupDescriptor, parentGroupDescriptor).SyncResult();
-            }
-            catch (Exception e)
-            {
-                Context.Log("AAD group was not a member of the VSTS group:" + e.Message);
-            }
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CheckMembershipAADGroup");
+            graphClient.CheckMembershipAsync(aadGroupDescriptor, parentGroupDescriptor).SyncResult();
 
             //
             // Part 6: Get every group the subject(AAD group) is a member of
             // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipAADGroupDown");
             List<GraphMembership> membershipsForUser = graphClient.GetMembershipsAsync(aadGroupDescriptor).Result;
 
             //
             // Part 7: Get every member of the VSTS 'Developers' group
             // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipAADGroupUp");
             List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(parentGroupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down.ToString()).Result; //Bug 967647: REST: GetMembershipsAsync shouldn't take direction as string, it should be the GraphTraversalDirection enum
 
             //
             // Part 8: Remove member from the group
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteMembershipAADGroup");
             graphClient.RemoveMembershipAsync(aadGroupDescriptor, parentGroupDescriptor).SyncResult();
             try
             {
