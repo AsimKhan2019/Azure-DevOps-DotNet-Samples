@@ -101,7 +101,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
                 OriginId = "77ed2186-aaf6-4299-ac9e-37ba282c2b95"
             };
 
-            GraphGroup newGroup = graphClient.CreateGroupAsync(addAADGroupContext).Result;  //BUG ???: AAD group is showing as Disabled=true && with DisplayName [TEAM FOUNDATION]\\Full Time Engineers
+            GraphGroup newGroup = graphClient.CreateGroupAsync(addAADGroupContext).Result;
             string groupDescriptor = newGroup.Descriptor;
             Context.Log("New group created! ID: {0}", groupDescriptor);
 

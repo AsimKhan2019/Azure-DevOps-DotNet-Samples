@@ -45,7 +45,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 1: add the MSA user
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateUserMSA");
             GraphUserCreationContext addMSAUserContext = new GraphUserPrincipalNameCreationContext
             { 
                 PrincipalName = "fabrikamfiber4@hotmail.com"
@@ -59,17 +59,19 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 2: get the user
             //
-            newUser = graphClient.GetUserAsync(userDescriptor).Result;
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetUserMSA");
+            newUser = graphClient.GetUserAsync(userDescriptor).Result; //BUG ???: {"TF14045: The identity with type 'Microsoft.IdentityModel.Claims.ClaimsIdentity' and identifier '45aa3d2d-7442-473d-b4d3-3c670da9dd96\\fabrikamfiber4@hotmail.com' could not be found."}
 
             //
             // Part 3: remove the user
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteUserMSA");
             graphClient.DeleteUserAsync(userDescriptor).SyncResult();
 
             // Try to get the deleted user
             try
             {
+                ClientSampleHttpLogger.SetOperationName(this.Context, "GetDisabledUserMSA");
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
                 if (!newUser.Disabled) throw new Exception();
             }
@@ -92,7 +94,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 1: add the AAD user
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateUserAAD");
             GraphUserCreationContext addAADUserContext = new GraphUserPrincipalNameCreationContext
             {
                 PrincipalName = "jtseng@vscsi.us"
@@ -106,17 +108,19 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 2: get the user
             //
-            newUser = graphClient.GetUserAsync(userDescriptor).Result;
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetUserAAD");
+            newUser = graphClient.GetUserAsync(userDescriptor).Result;  //BUG ???: {"TF14045: The identity with type 'Microsoft.IdentityModel.Claims.ClaimsIdentity' and identifier '45aa3d2d-7442-473d-b4d3-3c670da9dd96\\jtseng@vscsi.us' could not be found."}
 
             //
             // Part 3: remove the user
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteUserAAD");
             graphClient.DeleteUserAsync(userDescriptor).SyncResult();
 
             // Try to get the deleted user
             try
             {
+                ClientSampleHttpLogger.SetOperationName(this.Context, "GetDisabledUserAAD");
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
                 if (!newUser.Disabled) throw new Exception();
             }
@@ -139,14 +143,13 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 1: create a group at the account level
             // 
-
             GraphGroupCreationContext createGroupContext = new GraphGroupVstsCreationContext
             {
-                DisplayName = "Developers",
+                DisplayName = "Developers-" + Guid.NewGuid(),
                 Description = "Group created via client library"
             };
 
-            GraphGroup newVSTSGroup = graphClient.CreateGroupAsync(createGroupContext).Result; //Bug 963554: Graph REST API client is failing to parse base64 encoded GroupDescriptor
+            GraphGroup newVSTSGroup = graphClient.CreateGroupAsync(createGroupContext).Result;
             IEnumerable<VisualStudio.Services.Common.SubjectDescriptor> parentGroup = new List<VisualStudio.Services.Common.SubjectDescriptor>() { newVSTSGroup.Descriptor };
             string groupDescriptor = newVSTSGroup.Descriptor;
 
@@ -155,7 +158,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 2: add the AAD user
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "MaterializeAADUserByOIDAsMember");
             GraphUserCreationContext addAADUserContext = new GraphUserPrincipalNameCreationContext
             {
                 PrincipalName = "jtseng@vscsi.us"
@@ -169,7 +172,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 3: get the user
             //
-            newUser = graphClient.GetUserAsync(userDescriptor).Result;
+            newUser = graphClient.GetUserAsync(userDescriptor).Result;  //BUG ???: {"TF14045: The identity with type 'Microsoft.IdentityModel.Claims.ClaimsIdentity' and identifier '45aa3d2d-7442-473d-b4d3-3c670da9dd96\\jtseng@vscsi.us' could not be found."}
 
             //
             // Part 4: remove the user
@@ -205,7 +208,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 1: add the AAD user
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "MaterializeAADUserByOID");
             GraphUserCreationContext addAADUserContext = new GraphUserOriginIdCreationContext
             {
                 OriginId = "e97b0e7f-0a61-41ad-860c-748ec5fcb20b"
@@ -219,7 +222,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 2: get the user
             //
-            newUser = graphClient.GetUserAsync(userDescriptor).Result;
+            newUser = graphClient.GetUserAsync(userDescriptor).Result; //BUG ???: TF14045: The identity with type 'Microsoft.IdentityModel.Claims.ClaimsIdentity' and identifier '45aa3d2d-7442-473d-b4d3-3c670da9dd96\jtseng@vscsi.us' could not be found.
 
             //
             // Part 3: remove the user
@@ -252,7 +255,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 1: add the AAD user
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "MaterializeAADUserByOIDWithVSID");
             GraphUserCreationContext addAADUserContext = new GraphUserOriginIdCreationContext
             {
                 OriginId = "e97b0e7f-0a61-41ad-860c-748ec5fcb20b",
