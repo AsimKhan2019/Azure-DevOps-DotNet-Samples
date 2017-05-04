@@ -101,9 +101,8 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
                 OriginId = "77ed2186-aaf6-4299-ac9e-37ba282c2b95"
             };
 
-            GraphGroup newGroup = graphClient.CreateGroupAsync(addAADGroupContext).Result;
+            GraphGroup newGroup = graphClient.CreateGroupAsync(addAADGroupContext).Result;  //BUG ???: AAD group is showing as Disabled=true && with DisplayName [TEAM FOUNDATION]\\Full Time Engineers
             string groupDescriptor = newGroup.Descriptor;
-
             Context.Log("New group created! ID: {0}", groupDescriptor);
 
             //
@@ -115,7 +114,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 3: remove the group
             // 
-            graphClient.DeleteGroupAsync(groupDescriptor).SyncResult(); //BUG: Fails to delete group!!!!!
+            graphClient.DeleteGroupAsync(groupDescriptor).SyncResult();
 
             // Try to get the deleted group (should result in an exception)
             try
@@ -195,7 +194,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
                 Description = "Group created via client library"
             };
 
-            GraphGroup newVSTSGroup = graphClient.CreateGroupAsync(createVSTSGroupContext).Result; //Bug 963554: Graph REST API client is failing to parse base64 encoded GroupDescriptor
+            GraphGroup newVSTSGroup = graphClient.CreateGroupAsync(createVSTSGroupContext).Result; 
             IEnumerable<VisualStudio.Services.Common.SubjectDescriptor> parentGroup = new List<VisualStudio.Services.Common.SubjectDescriptor>() { newVSTSGroup.Descriptor };
             string vstsGroupDescriptor = newVSTSGroup.Descriptor;
 
@@ -208,7 +207,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
                 OriginId = "7dee3381-2ec2-41c2-869a-7afe9b574095"
             };
 
-            GraphGroup addedAADGroup = graphClient.CreateGroupAsync(addAADGroupContext, null, parentGroup).Result; //Bug 963789: Graph REST: Creation of a new VSTS group fails when descriptor not provided
+            GraphGroup addedAADGroup = graphClient.CreateGroupAsync(addAADGroupContext, null, parentGroup).Result;
             string aadGroupDescriptor = addedAADGroup.Descriptor;
 
             Context.Log("New group created! ID: {0}", aadGroupDescriptor);
