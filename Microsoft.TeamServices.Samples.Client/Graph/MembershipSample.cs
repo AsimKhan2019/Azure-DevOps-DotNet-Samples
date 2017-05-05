@@ -69,13 +69,13 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 6: Get every group the subject(user) is a member of
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipSubjectUserUp");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipsUserUp");
             List<GraphMembership> membershipsForUser = graphClient.GetMembershipsAsync(userDescriptor).Result;
 
             //
             // Part 7: Get every member of the group
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipSubjectGroupDown");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipsGroupDown");
             List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(groupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down.ToString()).Result; //Bug 967647: REST: GetMembershipsAsync shouldn't take direction as string, it should be the GraphTraversalDirection enum
 
             //
@@ -170,13 +170,13 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 6: Get every group the subject('Contractors') is a member of
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipSubjectVSTSGroupUp");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipsVSTSGroupUp");
             List<GraphMembership> membershipsForUser = graphClient.GetMembershipsAsync(childGroupDescriptor).Result;
 
             //
             // Part 7: Get every member of the 'Developers' group
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipSubjectVSTSGroupDown");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipsVSTSGroupDown");
             List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(parentGroupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down.ToString()).Result; //Bug 967647: REST: GetMembershipsAsync shouldn't take direction as string, it should be the GraphTraversalDirection enum
 
             //
@@ -257,13 +257,13 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 6: Get every group the subject(AAD group) is a member of
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipAADGroupDown");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipsAADGroupDown");
             List<GraphMembership> membershipsForUser = graphClient.GetMembershipsAsync(aadGroupDescriptor).Result;
 
             //
             // Part 7: Get every member of the VSTS 'Developers' group
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipAADGroupUp");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipsAADGroupUp");
             List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(parentGroupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down.ToString()).Result; //Bug 967647: REST: GetMembershipsAsync shouldn't take direction as string, it should be the GraphTraversalDirection enum
 
             //
