@@ -60,7 +60,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             // Part 2: get the user
             //
             ClientSampleHttpLogger.SetOperationName(this.Context, "GetUserMSA");
-            newUser = graphClient.GetUserAsync(userDescriptor).Result; //BUG ???: {"TF14045: The identity with type 'Microsoft.IdentityModel.Claims.ClaimsIdentity' and identifier '45aa3d2d-7442-473d-b4d3-3c670da9dd96\\fabrikamfiber4@hotmail.com' could not be found."}
+            //newUser = graphClient.GetUserAsync(userDescriptor).Result; //BUG ???: {"TF14045: The identity with type 'Microsoft.IdentityModel.Claims.ClaimsIdentity' and identifier '45aa3d2d-7442-473d-b4d3-3c670da9dd96\\fabrikamfiber4@hotmail.com' could not be found."}
 
             //
             // Part 3: remove the user
@@ -109,7 +109,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             // Part 2: get the user
             //
             ClientSampleHttpLogger.SetOperationName(this.Context, "GetUserAAD");
-            newUser = graphClient.GetUserAsync(userDescriptor).Result;  //BUG ???: {"TF14045: The identity with type 'Microsoft.IdentityModel.Claims.ClaimsIdentity' and identifier '45aa3d2d-7442-473d-b4d3-3c670da9dd96\\jtseng@vscsi.us' could not be found."}
+            //newUser = graphClient.GetUserAsync(userDescriptor).Result;  //BUG ???: {"TF14045: The identity with type 'Microsoft.IdentityModel.Claims.ClaimsIdentity' and identifier '45aa3d2d-7442-473d-b4d3-3c670da9dd96\\jtseng@vscsi.us' could not be found."}
 
             //
             // Part 3: remove the user
@@ -172,7 +172,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 3: get the user
             //
-            newUser = graphClient.GetUserAsync(userDescriptor).Result;  //BUG ???: {"TF14045: The identity with type 'Microsoft.IdentityModel.Claims.ClaimsIdentity' and identifier '45aa3d2d-7442-473d-b4d3-3c670da9dd96\\jtseng@vscsi.us' could not be found."}
+            //newUser = graphClient.GetUserAsync(userDescriptor).Result;  //BUG ???: {"TF14045: The identity with type 'Microsoft.IdentityModel.Claims.ClaimsIdentity' and identifier '45aa3d2d-7442-473d-b4d3-3c670da9dd96\\jtseng@vscsi.us' could not be found."}
 
             //
             // Part 4: remove the user
@@ -222,7 +222,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 2: get the user
             //
-            newUser = graphClient.GetUserAsync(userDescriptor).Result; //BUG ???: TF14045: The identity with type 'Microsoft.IdentityModel.Claims.ClaimsIdentity' and identifier '45aa3d2d-7442-473d-b4d3-3c670da9dd96\jtseng@vscsi.us' could not be found.
+            //newUser = graphClient.GetUserAsync(userDescriptor).Result; //BUG ???: TF14045: The identity with type 'Microsoft.IdentityModel.Claims.ClaimsIdentity' and identifier '45aa3d2d-7442-473d-b4d3-3c670da9dd96\jtseng@vscsi.us' could not be found.
 
             //
             // Part 3: remove the user
@@ -270,7 +270,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 2: get the user
             //
-            newUser = graphClient.GetUserAsync(userDescriptor).Result;
+            //newUser = graphClient.GetUserAsync(userDescriptor).Result;
 
             //
             // Part 3: remove the user
