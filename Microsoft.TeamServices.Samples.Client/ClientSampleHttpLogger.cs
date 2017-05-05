@@ -88,16 +88,16 @@ namespace Microsoft.TeamServices.Samples.Client
                             responseHeaders[h.Key] = h.Value.First();
                         }
 
-                        JObject requestBody = null;
+                        dynamic requestBody = null;
                         try
                         {
                             string requestBodyString = await request.Content.ReadAsStringAsync();
                             if (!String.IsNullOrEmpty(requestBodyString))
                             {
-                                requestBody = JObject.Parse(requestBodyString);
+                                requestBody = JValue.Parse(requestBodyString);
                             }
                         }
-                        catch (Exception) { }
+                        catch (Exception e) { }
 
                         JObject responseBody = null;
                         try
