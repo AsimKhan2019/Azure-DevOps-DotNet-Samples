@@ -33,7 +33,7 @@ namespace Microsoft.TeamServices.Samples.Client.Git
         }
 
         [ClientSampleMethod]
-        public string CreateBranch()
+        public GitRefUpdateResult CreateBranch()
         {
             VssConnection connection = this.Context.Connection;
             GitHttpClient gitClient = connection.GetClient<GitHttpClient>();
@@ -45,7 +45,7 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             GitRef sourceRef = gitClient.GetRefsAsync(repo.Id, filter: defaultBranch).Result.First();
 
             // create a new branch from the source
-            GitRefUpdateResult refUpdateResult = gitClient.UpdateRefsAsync(
+            GitRefUpdateResult refCreateResult = gitClient.UpdateRefsAsync(
                 new GitRefUpdate[] { new GitRefUpdate() {
                     OldObjectId = new string('0', 40),
                     NewObjectId = sourceRef.ObjectId,
@@ -54,9 +54,29 @@ namespace Microsoft.TeamServices.Samples.Client.Git
                 repositoryId: repo.Id).Result.First();
 
             Console.WriteLine("project {0}, repo {1}, source branch {2}", project.Name, repo.Name, sourceRef.Name);
-            Console.WriteLine("new branch {0} (success={1} status={2})", refUpdateResult.Name, refUpdateResult.Success, refUpdateResult.UpdateStatus);
+            Console.WriteLine("new branch {0} (success={1} status={2})", refCreateResult.Name, refCreateResult.Success, refCreateResult.UpdateStatus);
 
-            return refUpdateResult.Name;
+            return refCreateResult;
+        }
+
+        [ClientSampleMethod]
+        public void DeleteBranch()
+        {
+            VssConnection connection = this.Context.Connection;
+            GitHttpClient gitClient = connection.GetClient<GitHttpClient>();
+
+            GitRefUpdateResult refCreateResult = this.CreateBranch();
+
+            // delete the branch we just created
+            GitRefUpdateResult refDeleteResult = gitClient.UpdateRefsAsync(
+                new GitRefUpdate[] { new GitRefUpdate() {
+                    OldObjectId = refCreateResult.NewObjectId,
+                    NewObjectId = new string('0', 40),
+                    Name = refCreateResult.Name,
+                } },
+                repositoryId: refCreateResult.RepositoryId).Result.First();
+
+            Console.WriteLine("deleted branch {0} (success={1} status={2})", refDeleteResult.Name, refDeleteResult.Success, refDeleteResult.UpdateStatus);
         }
 
         private static string GetDefaultBranchName(GitRepository repo)
