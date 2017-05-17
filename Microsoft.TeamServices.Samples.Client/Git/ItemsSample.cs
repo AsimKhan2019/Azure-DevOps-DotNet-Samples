@@ -13,7 +13,7 @@ namespace Microsoft.TeamServices.Samples.Client.Git
     public class ItemsSample : ClientSample
     {
         [ClientSampleMethod]
-        public IEnumerable<object> ListItems()
+        public IEnumerable<GitItem> ListItems()
         {
             VssConnection connection = this.Context.Connection;
             GitHttpClient gitClient = connection.GetClient<GitHttpClient>();
