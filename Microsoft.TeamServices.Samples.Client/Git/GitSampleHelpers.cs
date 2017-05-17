@@ -1,7 +1,10 @@
 ﻿using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace Microsoft.TeamServices.Samples.Client.Git
 {
@@ -55,5 +58,44 @@ namespace Microsoft.TeamServices.Samples.Client.Git
 
             return repo != null;
         }
+
+        public static string ChooseRefsafeName()
+        {
+            return $"{ChooseNamePart()}-{ChooseNamePart()}-{ChooseNamePart()}";
+        }
+
+        private static string ChooseNamePart()
+        {
+            if (WordList == null)
+            {
+                LoadWordList();
+            }
+            return WordList[Rng.Next(WordList.Count)];
+        }
+
+        private static void LoadWordList()
+        {
+            List<string> words = new List<string>();
+
+            string wordListName = "Microsoft.TeamServices.Samples.Client.Git.WordList.txt";
+            using (Stream inputStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(wordListName))
+            using (StreamReader reader = new StreamReader(inputStream))
+            {
+                while (!reader.EndOfStream)
+                {
+                    string line = reader.ReadLine().Trim();
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        words.Add(line);
+                    }
+                }
+                
+            }
+
+            WordList = words;
+        }
+
+        private static List<string> WordList;
+        private static Random Rng = new Random();
     }
 }
