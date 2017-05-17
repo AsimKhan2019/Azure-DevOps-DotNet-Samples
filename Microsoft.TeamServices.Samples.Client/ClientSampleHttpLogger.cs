@@ -97,7 +97,7 @@ namespace Microsoft.TeamServices.Samples.Client
                                 requestBody = JValue.Parse(requestBodyString);
                             }
                         }
-                        catch (Exception e) { }
+                        catch (Exception) { }
 
                         JObject responseBody = null;
                         try
