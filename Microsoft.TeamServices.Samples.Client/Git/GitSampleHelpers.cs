@@ -64,6 +64,11 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             return $"{ChooseNamePart()}-{ChooseNamePart()}-{ChooseNamePart()}";
         }
 
+        public static string ChooseItemsafeName()
+        {
+            return $"{ChooseNamePart()}.{ChooseNamePart()}.{ChooseNamePart()}";
+        }
+
         private static string ChooseNamePart()
         {
             if (WordList == null)
@@ -93,6 +98,16 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             }
 
             WordList = words;
+        }
+
+        public static string DefaultBranchNameWithoutPrefix(GitRepository repo)
+        {
+            if (!repo.DefaultBranch.StartsWith("refs/"))
+            {
+                throw new Exception("The branch name should have started with 'refs/' but it didn't.");
+            }
+            string defaultBranch = repo.DefaultBranch.Remove(0, "refs/".Length);
+            return defaultBranch;
         }
 
         private static List<string> WordList;

@@ -41,7 +41,7 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             // find a project, repo, and source ref to branch from
             TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
             GitRepository repo = GitSampleHelpers.FindAnyRepository(this.Context, project.Id);
-            string defaultBranch = GetDefaultBranchName(repo);
+            string defaultBranch = GitSampleHelpers.DefaultBranchNameWithoutPrefix(repo);
             GitRef sourceRef = gitClient.GetRefsAsync(repo.Id, filter: defaultBranch).Result.First();
 
             // create a new branch from the source
@@ -79,14 +79,5 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             Console.WriteLine("deleted branch {0} (success={1} status={2})", refDeleteResult.Name, refDeleteResult.Success, refDeleteResult.UpdateStatus);
         }
 
-        private static string GetDefaultBranchName(GitRepository repo)
-        {
-            if (!repo.DefaultBranch.StartsWith("refs/"))
-            {
-                throw new Exception("The branch name should have started with 'refs/' but it didn't.");
-            }
-            string defaultBranch = repo.DefaultBranch.Remove(0, "refs/".Length);
-            return defaultBranch;
-        }
     }
 }
