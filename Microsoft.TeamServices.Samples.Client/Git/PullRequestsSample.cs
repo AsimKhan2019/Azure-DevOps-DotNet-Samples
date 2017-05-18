@@ -144,11 +144,6 @@ namespace Microsoft.TeamServices.Samples.Client.Git
                 };
                 pr = gitClient.UpdatePullRequestAsync(updatedPr, repo.Id, pr.PullRequestId).Result;
 
-                Console.WriteLine("{0} (#{1}) {2}",
-                    pr.Title.Substring(0, Math.Min(40, pr.Title.Length)),
-                    pr.PullRequestId,
-                    pr.Status);
-
                 // delete the branch
                 GitRefUpdateResult refDeleteResult = gitClient.UpdateRefsAsync(
                     new GitRefUpdate[]
