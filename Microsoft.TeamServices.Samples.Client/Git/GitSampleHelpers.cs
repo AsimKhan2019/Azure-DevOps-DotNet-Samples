@@ -64,6 +64,11 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             return $"{ChooseNamePart()}-{ChooseNamePart()}-{ChooseNamePart()}";
         }
 
+        public static string ChooseItemsafeName()
+        {
+            return $"{ChooseNamePart()}.{ChooseNamePart()}.{ChooseNamePart()}";
+        }
+
         private static string ChooseNamePart()
         {
             if (WordList == null)
@@ -93,6 +98,15 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             }
 
             WordList = words;
+        }
+
+        public static string WithoutRefsPrefix(string refName)
+        {
+            if (!refName.StartsWith("refs/"))
+            {
+                throw new Exception("The ref name should have started with 'refs/' but it didn't.");
+            }
+            return refName.Remove(0, "refs/".Length);
         }
 
         private static List<string> WordList;

@@ -35,13 +35,19 @@ namespace Microsoft.TeamServices.Samples.Client.Git
         [ClientSampleMethod]
         public GitRefUpdateResult CreateBranch()
         {
+            return CreateBranchInner(cleanUp: true);
+        }
+
+        public GitRefUpdateResult CreateBranchInner(bool cleanUp)
+        {
+
             VssConnection connection = this.Context.Connection;
             GitHttpClient gitClient = connection.GetClient<GitHttpClient>();
 
             // find a project, repo, and source ref to branch from
             TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
             GitRepository repo = GitSampleHelpers.FindAnyRepository(this.Context, project.Id);
-            string defaultBranch = GetDefaultBranchName(repo);
+            string defaultBranch = GitSampleHelpers.WithoutRefsPrefix(repo.DefaultBranch);
             GitRef sourceRef = gitClient.GetRefsAsync(repo.Id, filter: defaultBranch).Result.First();
 
             // create a new branch from the source
@@ -56,6 +62,26 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             Console.WriteLine("project {0}, repo {1}, source branch {2}", project.Name, repo.Name, sourceRef.Name);
             Console.WriteLine("new branch {0} (success={1} status={2})", refCreateResult.Name, refCreateResult.Success, refCreateResult.UpdateStatus);
 
+            if (cleanUp)
+            {
+                // silently (no logging) delete up the branch we just created
+                ClientSampleHttpLogger.SetSuppressOutput(this.Context, true);
+                GitRefUpdateResult refDeleteResult = gitClient.UpdateRefsAsync(
+                    new GitRefUpdate[]
+                    {
+                        new GitRefUpdate()
+                        {
+                            OldObjectId = refCreateResult.NewObjectId,
+                            NewObjectId = new string('0', 40),
+                            Name = refCreateResult.Name,
+
+                        }
+                    },
+                    repositoryId: refCreateResult.RepositoryId).Result.First();
+
+                return null;
+            }
+
             return refCreateResult;
         }
 
@@ -65,7 +91,7 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             VssConnection connection = this.Context.Connection;
             GitHttpClient gitClient = connection.GetClient<GitHttpClient>();
 
-            GitRefUpdateResult refCreateResult = this.CreateBranch();
+            GitRefUpdateResult refCreateResult = this.CreateBranchInner(cleanUp: false);
 
             // delete the branch we just created
             GitRefUpdateResult refDeleteResult = gitClient.UpdateRefsAsync(
@@ -79,14 +105,5 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             Console.WriteLine("deleted branch {0} (success={1} status={2})", refDeleteResult.Name, refDeleteResult.Success, refDeleteResult.UpdateStatus);
         }
 
-        private static string GetDefaultBranchName(GitRepository repo)
-        {
-            if (!repo.DefaultBranch.StartsWith("refs/"))
-            {
-                throw new Exception("The branch name should have started with 'refs/' but it didn't.");
-            }
-            string defaultBranch = repo.DefaultBranch.Remove(0, "refs/".Length);
-            return defaultBranch;
-        }
     }
 }
