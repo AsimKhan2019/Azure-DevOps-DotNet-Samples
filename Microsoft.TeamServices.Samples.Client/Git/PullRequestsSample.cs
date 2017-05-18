@@ -80,7 +80,7 @@ namespace Microsoft.TeamServices.Samples.Client.Git
 
             // we need a new branch with changes in order to create a PR
             // first, find the default branch
-            string defaultBranchName = GitSampleHelpers.DefaultBranchNameWithoutPrefix(repo);
+            string defaultBranchName = GitSampleHelpers.WithoutRefsPrefix(repo.DefaultBranch);
             GitRef defaultBranch = gitClient.GetRefsAsync(repo.Id, filter: defaultBranchName).Result.First();
 
             // next, craft the branch and commit that we'll push
@@ -165,5 +165,47 @@ namespace Microsoft.TeamServices.Samples.Client.Git
 
             return pr;
         }
+
+        [ClientSampleMethod]
+        public GitPullRequest AbandonPullRequest()
+        {
+            VssConnection connection = this.Context.Connection;
+            GitHttpClient gitClient = connection.GetClient<GitHttpClient>();
+
+            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
+            GitRepository repo = GitSampleHelpers.FindAnyRepository(this.Context, project.Id);
+
+            // first we need to create a pull request
+            GitPullRequest pr = CreatePullRequestInner(cleanUp: false);
+
+            // now abandon the PR
+            GitPullRequest updatedPr = new GitPullRequest()
+            {
+                Status = PullRequestStatus.Abandoned,
+            };
+            GitPullRequest abandonedPr = gitClient.UpdatePullRequestAsync(updatedPr, repo.Id, pr.PullRequestId).Result;
+
+            Console.WriteLine("{0} (#{1}) {2}",
+                abandonedPr.Title.Substring(0, Math.Min(40, pr.Title.Length)),
+                abandonedPr.PullRequestId,
+                abandonedPr.Status);
+
+            // delete the branch that was associated with the PR (and do not log)
+            ClientSampleHttpLogger.SetSuppressOutput(this.Context, true);
+            GitRefUpdateResult refDeleteResult = gitClient.UpdateRefsAsync(
+                new GitRefUpdate[]
+                {
+                    new GitRefUpdate()
+                    {
+                        OldObjectId = gitClient.GetRefsAsync(repo.Id, filter: GitSampleHelpers.WithoutRefsPrefix(pr.SourceRefName)).Result.First().ObjectId,
+                        NewObjectId = new string('0', 40),
+                        Name = pr.SourceRefName,
+                    }
+                },
+                repositoryId: repo.Id).Result.First();
+
+            return abandonedPr;
+        }
+
     }
 }

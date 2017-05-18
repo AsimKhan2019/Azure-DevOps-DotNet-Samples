@@ -100,14 +100,13 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             WordList = words;
         }
 
-        public static string DefaultBranchNameWithoutPrefix(GitRepository repo)
+        public static string WithoutRefsPrefix(string refName)
         {
-            if (!repo.DefaultBranch.StartsWith("refs/"))
+            if (!refName.StartsWith("refs/"))
             {
-                throw new Exception("The branch name should have started with 'refs/' but it didn't.");
+                throw new Exception("The ref name should have started with 'refs/' but it didn't.");
             }
-            string defaultBranch = repo.DefaultBranch.Remove(0, "refs/".Length);
-            return defaultBranch;
+            return refName.Remove(0, "refs/".Length);
         }
 
         private static List<string> WordList;

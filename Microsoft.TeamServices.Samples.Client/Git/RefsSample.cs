@@ -41,7 +41,7 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             // find a project, repo, and source ref to branch from
             TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
             GitRepository repo = GitSampleHelpers.FindAnyRepository(this.Context, project.Id);
-            string defaultBranch = GitSampleHelpers.DefaultBranchNameWithoutPrefix(repo);
+            string defaultBranch = GitSampleHelpers.WithoutRefsPrefix(repo.DefaultBranch);
             GitRef sourceRef = gitClient.GetRefsAsync(repo.Id, filter: defaultBranch).Result.First();
 
             // create a new branch from the source
