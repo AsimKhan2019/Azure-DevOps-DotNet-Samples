@@ -13,7 +13,7 @@ namespace Microsoft.TeamServices.Samples.Client.Git
     public class PullRequestsSample : ClientSample
     {
         [ClientSampleMethod]
-        public IEnumerable<GitPullRequest> ListPullRequests()
+        public IEnumerable<GitPullRequest> ListPullRequestsIntoMaster()
         {
             VssConnection connection = this.Context.Connection;
             GitHttpClient gitClient = connection.GetClient<GitHttpClient>();
@@ -21,7 +21,12 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
             GitRepository repo = GitSampleHelpers.FindAnyRepository(this.Context, project.Id);
 
-            List<GitPullRequest> prs = gitClient.GetPullRequestsAsync(repo.Id, new GitPullRequestSearchCriteria() { }).Result;
+            List<GitPullRequest> prs = gitClient.GetPullRequestsAsync(
+                repo.Id,
+                new GitPullRequestSearchCriteria()
+                {
+                    TargetRefName = "refs/heads/master",
+                }).Result;
 
             Console.WriteLine("project {0}, repo {1}", project.Name, repo.Name);
             foreach (GitPullRequest pr in prs)
@@ -34,6 +39,29 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             }
 
             return prs;            
+        }
+
+        [ClientSampleMethod]
+        public IEnumerable<GitPullRequest> ListPullRequestsForProject()
+        {
+            VssConnection connection = this.Context.Connection;
+            GitHttpClient gitClient = connection.GetClient<GitHttpClient>();
+
+            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
+
+            List<GitPullRequest> prs = gitClient.GetPullRequestsByProjectAsync(project.Id, null).Result;
+
+            Console.WriteLine("project {0}", project.Name);
+            foreach (GitPullRequest pr in prs)
+            {
+                Console.WriteLine("{0} #{1} {2} -> {3}",
+                    pr.Title.Substring(0, Math.Min(40, pr.Title.Length)),
+                    pr.PullRequestId,
+                    pr.SourceRefName,
+                    pr.TargetRefName);
+            }
+
+            return prs;
         }
     }
 }
