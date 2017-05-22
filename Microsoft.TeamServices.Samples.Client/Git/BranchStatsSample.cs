@@ -32,13 +32,20 @@ namespace Microsoft.TeamServices.Samples.Client.Git
                 throw new Exception($"Repo {repo.Name} doesn't have any branches in it.");
             }
 
+            if (string.IsNullOrEmpty(repo.DefaultBranch))
+            {
+                throw new Exception($"Repo {repo.Name} doesn't have a default branch");
+            }
+
+            string defaultBranchName = repo.DefaultBranch.Substring("refs/heads/".Length);
+
             // list up to 10 branches we're interested in comparing
             GitQueryBranchStatsCriteria criteria = new GitQueryBranchStatsCriteria()
             {
                 baseVersionDescriptor = new GitVersionDescriptor
                 {
                     VersionType = GitVersionType.Branch,
-                    Version = "master"
+                    Version = defaultBranchName,
                 },
                 targetVersionDescriptors = (from branchName in branchNames
                                             select new GitVersionDescriptor
@@ -54,7 +61,8 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             Console.WriteLine("project {0}, repo {1}", project.Name, repo.Name);
             foreach(GitBranchStats stat in stats)
             {
-                Console.WriteLine(" branch `{0}` is {1} ahead, {2} behind `master`", stat.Name, stat.AheadCount, stat.BehindCount);
+                Console.WriteLine(" branch `{0}` is {1} ahead, {2} behind `{3}`",
+                    stat.Name, stat.AheadCount, stat.BehindCount, defaultBranchName);
             }
 
             return stats;            
