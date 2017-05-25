@@ -47,13 +47,14 @@ namespace Microsoft.TeamServices.Samples.Client.Git
                     VersionType = GitVersionType.Branch,
                     Version = defaultBranchName,
                 },
-                targetVersionDescriptors = (from branchName in branchNames
-                                            select new GitVersionDescriptor
-                                            {
-                                                VersionType = GitVersionType.Branch,
-                                                Version = branchName
-                                            }).Take(10).ToArray()
-                                           
+                targetVersionDescriptors = branchNames
+                    .Take(10)
+                    .Select(branchName => new GitVersionDescriptor()
+                    {
+                        Version = branchName,
+                        VersionType = GitVersionType.Branch,
+                    })
+                    .ToArray()
             };
 
             List<GitBranchStats> stats = gitClient.GetBranchStatsBatchAsync(criteria, repo.Id).Result;
