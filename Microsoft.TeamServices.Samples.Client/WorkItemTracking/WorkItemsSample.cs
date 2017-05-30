@@ -398,7 +398,6 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         public WorkItem ChangeType()
         {
             int id = 12;
-            string newType = "User Story";
 
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 

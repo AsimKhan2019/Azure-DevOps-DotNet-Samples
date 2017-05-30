@@ -107,7 +107,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
                 if (!newUser.Disabled) throw new Exception();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Context.Log("The deleted user is not disabled!");
             }
