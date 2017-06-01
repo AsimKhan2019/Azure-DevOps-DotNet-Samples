@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace Microsoft.TeamServices.Samples.Client.Core
+namespace Microsoft.TeamServices.Samples.Client.ProjectsAndTeams
 {
     [ClientSample(CoreConstants.AreaName, CoreConstants.ProjectsRouteName)]
     public class ProjectsSample: ClientSample

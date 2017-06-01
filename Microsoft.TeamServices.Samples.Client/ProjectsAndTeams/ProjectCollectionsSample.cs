@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
 
-namespace Microsoft.TeamServices.Samples.Client.Core
+namespace Microsoft.TeamServices.Samples.Client.ProjectsAndTeams
 {
     [ClientSample(CoreConstants.AreaName, CoreConstants.ProjectCollectionsResource)]
     public class ProjectCollectionsSample : ClientSample
