@@ -157,6 +157,8 @@ namespace Microsoft.TeamServices.Samples.Client
                         }
                         catch (Exception ex)
                         {
+                            //the innermost exception is the interesting one
+                            while (ex.InnerException != null) ex = ex.InnerException;
                             Console.WriteLine("FAILED! With exception: " + ex.Message);
                         }
                         finally

@@ -186,7 +186,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             // Create the new work item
             WorkItem newWorkItem = workItemTrackingClient.CreateWorkItemAsync(patchDocument, project.Id, "Task").Result;
 
-            Console.WriteLine("Created work item ID {0} (1}", newWorkItem.Id, newWorkItem.Fields["System.Title"]);
+            Console.WriteLine("Created work item ID {0} {1}", newWorkItem.Id, newWorkItem.Fields["System.Title"]);
 
             // Save this newly created for later samples
             Context.SetValue<WorkItem>("$newWorkItem", newWorkItem);
