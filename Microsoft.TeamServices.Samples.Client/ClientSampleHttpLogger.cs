@@ -75,17 +75,17 @@ namespace Microsoft.TeamServices.Samples.Client
                     DirectoryInfo baseOutputPath;
                     if (ClientSampleContext.CurrentContext.TryGetValue<DirectoryInfo>(PropertyOutputFilePath, out baseOutputPath))
                     {
-                        Dictionary<string, string> requestHeaders = new Dictionary<string, string>();
+                        Dictionary<string, IEnumerable<string>> requestHeaders = new Dictionary<string, IEnumerable<string>>();
                         foreach (var h in request.Headers.Where(kvp => { return !s_excludedHeaders.Contains(kvp.Key); }))
                         {
-                            requestHeaders[h.Key] = h.Value.First();
+                            requestHeaders[h.Key] = h.Value;
                         }
 
-                        Dictionary<string, string> responseHeaders = new Dictionary<string, string>();
+                        Dictionary<string, IEnumerable<string>> responseHeaders = new Dictionary<string, IEnumerable<string>>();
 
                         foreach (var h in response.Headers.Where(kvp => { return !s_excludedHeaders.Contains(kvp.Key); }))
                         {
-                            responseHeaders[h.Key] = h.Value.First();
+                            responseHeaders[h.Key] = h.Value;
                         }
 
                         dynamic requestBody = null;
@@ -206,7 +206,7 @@ namespace Microsoft.TeamServices.Samples.Client
         public String RequestUrl;
 
         [DataMember]
-        public Dictionary<String, String> RequestHeaders;
+        public Dictionary<String, IEnumerable<String>> RequestHeaders;
 
         [DataMember(EmitDefaultValue = false)]
         public Object RequestBody;
@@ -215,7 +215,7 @@ namespace Microsoft.TeamServices.Samples.Client
         public int StatusCode;
 
         [DataMember]
-        public Dictionary<String, String> ResponseHeaders;
+        public Dictionary<String, IEnumerable<String>> ResponseHeaders;
 
         [DataMember(EmitDefaultValue = false)]
         public Object ResponseBody;

@@ -15,7 +15,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         public QueryHierarchyItem GetQueryByName()
         {
             string project = ClientSampleHelpers.FindAnyProject(this.Context).Name;
-            string queryName = "Shared Queries/Current Sprint";
+            string queryName = "Shared Queries/Feedback";
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();

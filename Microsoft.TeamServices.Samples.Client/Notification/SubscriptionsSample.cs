@@ -358,13 +358,13 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
             NotificationHttpClient notificationClient = connection.GetClient<NotificationHttpClient>();
             IEnumerable<NotificationSubscription> subscriptions = notificationClient.QuerySubscriptionsAsync(query).Result;
 
-            var subscriptionsByTeam = subscriptions.GroupBy<NotificationSubscription, Guid>(sub => { return Guid.Parse(sub.Subscriber.Id); });
+            var subscriptionsBySubscriber = subscriptions.GroupBy<NotificationSubscription, Guid>(sub => { return Guid.Parse(sub.Subscriber.Id); });
 
-            foreach (var group in subscriptionsByTeam)
+            foreach (var team in teams)
             {
                 // Find the corresponding team for this group
-                WebApiTeam team = teams.First(t => { return t.Id.Equals(group.Key); });
-
+                var group = subscriptionsBySubscriber.First(t => t.Key == team.Id);
+                
                 // Show the details for each subscription owned by this team 
                 foreach (NotificationSubscription subscription in group)
                 {
