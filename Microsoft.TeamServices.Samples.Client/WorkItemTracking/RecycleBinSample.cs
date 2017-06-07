@@ -38,6 +38,18 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         }
 
         [ClientSampleMethod]
+        public List<WorkItemDeleteReference> GetMultipledDeletedWorkItems()
+        {
+            int[] ids = { 72, 73, 81 }; //TODO
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            List<WorkItemDeleteReference> result = workItemTrackingClient.GetDeletedWorkItemsAsync(ids).Result;
+            return result;
+        }
+
+        [ClientSampleMethod]
         public WorkItemDelete RestoreWorkItem()
         {
             int workItemId = -1; // TODO
@@ -55,6 +67,26 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         }
 
         [ClientSampleMethod]
+        public void RestoreMultipleWorkItems()
+        {
+            int[] ids = { 72, 73, 81 }; //TODO
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            List<WorkItemDeleteReference> result = workItemTrackingClient.GetDeletedWorkItemsAsync(ids).Result;
+
+            WorkItemDeleteUpdate updateParameters = new WorkItemDeleteUpdate() {
+                IsDeleted = false
+            };
+
+            foreach (var item in result)
+            {
+                var restore = workItemTrackingClient.RestoreWorkItemAsync(updateParameters, Convert.ToInt32(item.Id)).Result;               
+            }
+        }
+
+        [ClientSampleMethod]
         public void PermenentlyDeleteWorkItem()
         {
             int workItemId = -1; // TODO
@@ -63,6 +95,22 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             workItemTrackingClient.DestroyWorkItemAsync(workItemId);
-        }       
+        }
+
+        [ClientSampleMethod]
+        public void PermenentlyDeleteMultipleWorkItems()
+        {
+            int[] ids = { 72, 73, 81 }; //TODO
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            List<WorkItemDeleteReference> result = workItemTrackingClient.GetDeletedWorkItemsAsync(ids).Result;      
+
+            foreach(var item in result)
+            {
+                workItemTrackingClient.DestroyWorkItemAsync(Convert.ToInt32(item.Id));
+            }            
+        }
     }
 }
