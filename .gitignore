@@ -16,3 +16,5 @@ app.Debug.config
 app.Release.config
 
 TestResults/
+/.vs/VSWorkspaceState.json
+*.sqlite

@@ -155,6 +155,7 @@
     <Compile Include="WorkItemTracking\AttachmentsSample.cs" />
     <Compile Include="WorkItemTracking\BatchSample.cs" />
     <Compile Include="WorkItemTracking\ClassificationNodesSample.cs" />
+    <Compile Include="WorkItemTracking\WorkItemTypeCategoriesSample.cs" />
     <Compile Include="WorkItemTracking\FieldsSample.cs" />
     <Compile Include="WorkItemTracking\QueriesSample.cs" />
     <Compile Include="WorkItemTracking\RecycleBinSample.cs" />
