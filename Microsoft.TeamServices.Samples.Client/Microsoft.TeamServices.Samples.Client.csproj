@@ -156,6 +156,7 @@
     <Compile Include="WorkItemTracking\BatchSample.cs" />
     <Compile Include="WorkItemTracking\ClassificationNodesSample.cs" />
     <Compile Include="WorkItemTracking\CommentsSample.cs" />
+    <Compile Include="WorkItemTracking\TagsSample.cs" />
     <Compile Include="WorkItemTracking\WorkItemTypeCategoriesSample.cs" />
     <Compile Include="WorkItemTracking\FieldsSample.cs" />
     <Compile Include="WorkItemTracking\QueriesSample.cs" />
