@@ -61,6 +61,28 @@ namespace Microsoft.TeamServices.Samples.Client
             return project != null;
         }
 
+        public static void SetQueryId(ClientSampleContext context, Guid queryId)
+        {
+            context.SetValue<Guid>("$sampleQueryId", queryId);
+        }
+
+        public static Guid GetQueryId(ClientSampleContext context)
+        {
+            using (new ClientSampleHttpLoggerOutputSuppression())
+            {
+                // Check if an ID was already set (this could have been provided by the caller)
+                Guid queryId;
+
+                if (!context.TryGetValue<Guid>("$sampleQueryId", out queryId))
+                {                    
+                    // Get the details for this project
+                    throw new Exception("No sample query available.");
+                }
+
+                return queryId;
+            }
+        }
+
         public static WebApiTeamRef FindAnyTeam(ClientSampleContext context, Guid? projectId)
         {
             WebApiTeamRef team;
