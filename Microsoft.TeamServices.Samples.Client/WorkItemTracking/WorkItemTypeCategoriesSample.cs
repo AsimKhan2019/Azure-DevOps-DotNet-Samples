@@ -22,7 +22,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public List<WorkItemTypeCategory> GetListOfWorkItemTypeCategories()
         {
-            System.Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
@@ -42,7 +42,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItemTypeCategory GetWorkItemCategory()
         {
-            System.Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
             string category = "Microsoft.RequirementCategory";
 
             VssConnection connection = Context.Connection;
