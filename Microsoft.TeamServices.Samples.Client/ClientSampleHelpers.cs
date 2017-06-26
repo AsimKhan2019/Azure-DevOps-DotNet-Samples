@@ -134,7 +134,7 @@ namespace Microsoft.TeamServices.Samples.Client
             return context.Connection.AuthorizedIdentity.Id;
         }
 
-        public static string GetCurrentUserName(ClientSampleContext context)
+        public static string GetCurrentUserDisplayName(ClientSampleContext context)
         {
             return context.Connection.AuthorizedIdentity.ProviderDisplayName;
         }

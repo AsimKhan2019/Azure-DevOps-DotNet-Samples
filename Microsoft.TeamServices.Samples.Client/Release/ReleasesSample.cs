@@ -9,15 +9,17 @@ using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Contracts;
 using Newtonsoft.Json;
 
+using WebApiRelease = Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release;
+
 namespace Microsoft.TeamServices.Samples.Client.Release
 {
     [ClientSample(ReleaseManagementApiConstants.ReleaseAreaName, ReleaseManagementApiConstants.ReleasesResource)]
     public class ReleasesSample : ClientSample
     {
         private const string releaseDefinitionName = "Fabrikam-web";
+        private int newlyCreatedReleaseDefinitionId = 0;
 
         [ClientSampleMethod]
-
         public List<ReleaseDefinition> ListAllReleaseDefinitions()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
@@ -26,7 +28,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
-            // Show the releaes definitions
+            // Show the release definitions
             List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName).Result;
 
             foreach (ReleaseDefinition releaseDefinition in releaseDefinitions)
@@ -38,7 +40,6 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
-
         public List<ReleaseDefinition> ListAllReleaseDefinitionsWithEnvironmentsExpanded()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
@@ -47,7 +48,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
-            // Show the releaes definitions
+            // Show the release definitions
             List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName, expand: ReleaseDefinitionExpands.Environments).Result;
 
             foreach (ReleaseDefinition releaseDefinition in releaseDefinitions)
@@ -59,7 +60,6 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
-
         public List<ReleaseDefinition> ListAllReleaseDefinitionsWithArtifactsExpanded()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
@@ -68,7 +68,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
-            // Show the releaes definitions
+            // Show the release definitions
             List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName, expand: ReleaseDefinitionExpands.Artifacts).Result;
 
             foreach (ReleaseDefinition releaseDefinition in releaseDefinitions)
@@ -80,8 +80,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
-
-        public ReleaseDefinition GetAReleaseDefinition()
+        public ReleaseDefinition CreateReleaseDefinition()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
@@ -89,44 +88,40 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
-            List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName).Result;
+            ReleaseDefinition definition = new ReleaseDefinition()
+            {
+                Name = releaseDefinitionName,
+                Revision = 1,
+                Environments = new List<ReleaseDefinitionEnvironment>()
+                       { new ReleaseDefinitionEnvironment()
+                            { Name = "PROD",
+                              DeployPhases = new List<DeployPhase>() {
+                                                                       new AgentBasedDeployPhase()
+                                                                           { Name = "Run on agent",
+                                                                             Rank = 1,
+                                                                             DeploymentInput =  new AgentDeploymentInput() {QueueId = 2}
+                                                                            }
+                                                                      },
+                              PreDeployApprovals = new ReleaseDefinitionApprovals() { Approvals = new List<ReleaseDefinitionApprovalStep>() { new ReleaseDefinitionApprovalStep() {IsAutomated = true, Rank = 1 } } },
+                              PostDeployApprovals = new ReleaseDefinitionApprovals() { Approvals = new List<ReleaseDefinitionApprovalStep>() {new ReleaseDefinitionApprovalStep() {IsAutomated = true, Rank = 1 } } },
+                              RetentionPolicy = new EnvironmentRetentionPolicy() { DaysToKeep = 30, ReleasesToKeep = 3, RetainBuild = true}
+                             }
+                         }
 
-            int releaseDefinitionId = releaseDefinitions.FirstOrDefault().Id;
-
-            // Show a releaes definitions
-            ReleaseDefinition releaseDefinition = releaseClient.GetReleaseDefinitionAsync(project: projectName, definitionId: releaseDefinitionId).Result;
-
-            Console.WriteLine("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
-
-            return releaseDefinition;
-        }
-
-        [ClientSampleMethod]
-
-        public ReleaseDefinition CreateAReleaseDefinition()
-        {
-            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
-
-            // Get a release client instance
-            VssConnection connection = Context.Connection;
-            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
-
-            // JSON to create release definition
-            string releaseDefinitionJson = "{\"name\":\"Fabrikam-web\",\"revision\" : 1,\"environments\":[{\"name\":\"PROD\",\"deployPhases\":[{\"name\":\"Run on agent\",\"phaseType\":1,\"rank\":1, \"deploymentInput\":{\"queueId\":2}}],\"preDeployApprovals\":{\"approvals\":[{\"rank\":1,\"isAutomated\":true}]},\"postDeployApprovals\":{\"approvals\":[{\"rank\":1,\"isAutomated\":true}]},\"retentionPolicy\":{\"daysToKeep\":30,\"releasesToKeep\":3,\"retainBuild\":true}}]}";
-
-            ReleaseDefinition definition = JsonConvert.DeserializeObject<ReleaseDefinition>(releaseDefinitionJson);
+            };
 
             // create a release definition
             ReleaseDefinition releaseDefinition = releaseClient.CreateReleaseDefinitionAsync(project: projectName, releaseDefinition: definition).Result;
 
+            newlyCreatedReleaseDefinitionId = releaseDefinition.Id;
+
             Console.WriteLine("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
 
             return releaseDefinition;
         }
 
         [ClientSampleMethod]
-
-        public ReleaseDefinition UpdateAReleaseDefinition()
+        public ReleaseDefinition GetReleaseDefinition()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
@@ -134,9 +129,24 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
-            List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName, searchText: releaseDefinitionName).Result;
-            int releaseDefinitionId = releaseDefinitions.FirstOrDefault().Id;
-            ReleaseDefinition releaseDefinition = releaseClient.GetReleaseDefinitionAsync(project: projectName, definitionId: releaseDefinitionId).Result;
+            // Show a release definitions
+            ReleaseDefinition releaseDefinition = releaseClient.GetReleaseDefinitionAsync(project: projectName, definitionId: newlyCreatedReleaseDefinitionId).Result;
+
+            Console.WriteLine("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
+
+            return releaseDefinition;
+        }
+
+        [ClientSampleMethod]
+        public ReleaseDefinition UpdateReleaseDefinition()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a release client instance
+            VssConnection connection = Context.Connection;
+            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
+
+            ReleaseDefinition releaseDefinition = releaseClient.GetReleaseDefinitionAsync(project: projectName, definitionId: newlyCreatedReleaseDefinitionId).Result;
 
             // add a non secret variable to definition
             ConfigurationVariableValue variable = new ConfigurationVariableValue();
@@ -147,13 +157,12 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             // update release definition
             ReleaseDefinition updatedReleaseDefinition = releaseClient.UpdateReleaseDefinitionAsync(project: projectName, releaseDefinition: releaseDefinition).Result;
 
-            Console.WriteLine("{0} {1}", updatedReleaseDefinition.Id.ToString().PadLeft(6), updatedReleaseDefinition.Name);
+            Console.WriteLine("{0} {1} {2}", updatedReleaseDefinition.Id.ToString().PadLeft(6), updatedReleaseDefinition.Revision, updatedReleaseDefinition.ModifiedOn);
 
             return releaseDefinition;
         }
 
         [ClientSampleMethod]
-
         public IEnumerable<ReleaseDefinitionRevision> GetReleaseDefinitionRevisions()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
@@ -162,60 +171,19 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
-            List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName, searchText: releaseDefinitionName).Result;
-            int releaseDefinitionId = releaseDefinitions.FirstOrDefault().Id;
-
             // Get revision
-            List<ReleaseDefinitionRevision> revisions = releaseClient.GetReleaseDefinitionHistoryAsync(projectName, releaseDefinitionId).Result;
+            List<ReleaseDefinitionRevision> revisions = releaseClient.GetReleaseDefinitionHistoryAsync(projectName, newlyCreatedReleaseDefinitionId).Result;
 
             foreach (ReleaseDefinitionRevision revision in revisions)
             {
-                Console.WriteLine("{0} {1}", revision.DefinitionId.ToString().PadLeft(6), revision.Revision);
+                Console.WriteLine("{0} {1} {2} {3}", revision.DefinitionId.ToString().PadLeft(6), revision.Revision, revision.ChangedDate, revision.ChangedBy.DisplayName);
             }
 
             return revisions;
         }
 
         [ClientSampleMethod]
-
-        public System.IO.Stream GetReleaseDefinitionForARevision()
-        {
-            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
-
-            // Get a release client instance
-            VssConnection connection = Context.Connection;
-            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
-
-            List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName, searchText: releaseDefinitionName).Result;
-            int releaseDefinitionId = releaseDefinitions.FirstOrDefault().Id;
-
-            // Get revision
-            System.IO.Stream revision = releaseClient.GetReleaseDefinitionRevisionAsync(projectName, releaseDefinitionId, revision: 1).Result;
-
-            return revision;
-        }
-
-        [ClientSampleMethod]
-
-        public void DeleteAReleaseDefinition()
-        {
-            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
-
-            // Get a release client instance
-            VssConnection connection = Context.Connection;
-            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
-
-            List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName, searchText: releaseDefinitionName).Result;
-            int releaseDefinitionId = releaseDefinitions.FirstOrDefault().Id;
-
-            // delete release definition
-            releaseClient.DeleteReleaseDefinitionAsync(project: projectName, definitionId: releaseDefinitionId).SyncResult();
-
-        }
-
-        [ClientSampleMethod]
-
-        public IEnumerable<Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release> ListAllReleases()
+        public IEnumerable<WebApiRelease> ListAllReleases()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
@@ -223,10 +191,10 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient2 releaseClient = connection.GetClient<ReleaseHttpClient2>();
 
-            List<Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release> releases = releaseClient.GetReleasesAsync(project: projectName).Result;
+            List<WebApiRelease> releases = releaseClient.GetReleasesAsync(project: projectName).Result;
 
             // Show the releases
-            foreach (Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release release in releases)
+            foreach (WebApiRelease release in releases)
             {
                 Console.WriteLine("{0} {1}", release.Id.ToString().PadLeft(6), release.Status);
             }
@@ -235,30 +203,26 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
-
-        public IEnumerable<Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release> ListAllReleasesForAReleaseDefinition()
+        public IEnumerable<WebApiRelease> ListAllReleasesForReleaseDefinition()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
             // Get a release client instance
             VssConnection connection = Context.Connection;
             ReleaseHttpClient2 releaseClient = connection.GetClient<ReleaseHttpClient2>();
-            List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName).Result;
-            int releaseDefinitionId = releaseDefinitions.FirstOrDefault().Id;
-            List<Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release> releases = releaseClient.GetReleasesAsync(project: projectName, definitionId: releaseDefinitionId).Result;
+            List<WebApiRelease> releases = releaseClient.GetReleasesAsync(project: projectName, definitionId: newlyCreatedReleaseDefinitionId).Result;
 
-            // Show the approvals
-            foreach (Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release release in releases)
+            // Show releases
+            foreach (WebApiRelease release in releases)
             {
-                Console.WriteLine("{0} {1}", release.Id.ToString().PadLeft(6), release.Status);
+                Console.WriteLine("{0} {1} {2}", release.Id.ToString().PadLeft(6), release.Status, release.ReleaseDefinitionReference.Name);
             }
 
             return releases;
         }
 
         [ClientSampleMethod]
-
-        public Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release GetARelease()
+        public WebApiRelease GetRelease()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
@@ -266,12 +230,12 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
-            List<Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release> releases = releaseClient.GetReleasesAsync(project: projectName).Result;
+            List<WebApiRelease> releases = releaseClient.GetReleasesAsync(project: projectName).Result;
 
             int releaseId = releases.FirstOrDefault().Id;
 
-            // Show a releaes
-            Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release release = releaseClient.GetReleaseAsync(project: projectName, releaseId: releaseId).Result;
+            // Show a release
+            WebApiRelease release = releaseClient.GetReleaseAsync(project: projectName, releaseId: releaseId).Result;
 
             Console.WriteLine("{0} {1}", release.Id.ToString().PadLeft(6), release.Name);
 
@@ -279,8 +243,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
-
-        public Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release CreateARelease()
+        public WebApiRelease CreateRelease()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
@@ -288,10 +251,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
-            List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName).Result;
-            int releaseDefinitionId = releaseDefinitions.FirstOrDefault().Id;
-
-            Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release release = CreateRelease(releaseClient, releaseDefinitionId, projectName);
+            WebApiRelease release = CreateRelease(releaseClient, newlyCreatedReleaseDefinitionId, projectName);
 
             Console.WriteLine("{0} {1}", release.Id.ToString().PadLeft(6), release.Name);
 
@@ -299,8 +259,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
-
-        public Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release UpdateReleaseEnvironment()
+        public WebApiRelease StartDeployment()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
@@ -308,9 +267,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
-            List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName).Result;
-            int releaseDefinitionId = releaseDefinitions.FirstOrDefault().Id;
-            Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release release = CreateRelease(releaseClient, releaseDefinitionId, projectName);
+            WebApiRelease release = CreateRelease(releaseClient, newlyCreatedReleaseDefinitionId, projectName);
 
             ReleaseEnvironmentUpdateMetadata releaseEnvironmentUpdateMetadata = new ReleaseEnvironmentUpdateMetadata()
             {
@@ -319,7 +276,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             int releaseEnvironmentId = release.Environments.FirstOrDefault().Id;
 
-            // Abandon a release
+            // Start deployment to an environment
             ReleaseEnvironment releaseEnvironment = releaseClient.UpdateReleaseEnvironmentAsync(releaseEnvironmentUpdateMetadata, projectName, release.Id, releaseEnvironmentId).Result;
             Console.WriteLine("{0} {1}", releaseEnvironment.Id.ToString().PadLeft(6), releaseEnvironment.Name);
 
@@ -327,8 +284,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
-
-        public Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release AbandonAnActiveRelease()
+        public WebApiRelease AbandonAnActiveRelease()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
@@ -336,9 +292,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
-            List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName).Result;
-            int releaseDefinitionId = releaseDefinitions.FirstOrDefault().Id;
-            Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release release = CreateRelease(releaseClient, releaseDefinitionId, projectName);
+            WebApiRelease release = CreateRelease(releaseClient, newlyCreatedReleaseDefinitionId, projectName);
 
             ReleaseUpdateMetadata releaseUpdateMetadata = new ReleaseUpdateMetadata()
             {
@@ -347,14 +301,13 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             };
 
             // Abandon a release
-            Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release updatedRelease = releaseClient.UpdateReleaseResourceAsync(releaseUpdateMetadata, projectName, release.Id).Result;
+            WebApiRelease updatedRelease = releaseClient.UpdateReleaseResourceAsync(releaseUpdateMetadata, projectName, release.Id).Result;
             Console.WriteLine("{0} {1}", updatedRelease.Id.ToString().PadLeft(6), updatedRelease.Name);
 
             return release;
         }
 
         [ClientSampleMethod]
-
         public IEnumerable<ReleaseApproval> ListAllPendingApprovals()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
@@ -392,11 +345,10 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
-
         public IEnumerable<ReleaseApproval> ListPendingApprovalsForASpecificUser()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
-            string assignedToFilter = ClientSampleHelpers.GetCurrentUserName(this.Context);
+            string assignedToFilter = ClientSampleHelpers.GetCurrentUserDisplayName(this.Context);
             // Get a release client instance
             VssConnection connection = Context.Connection;
             ReleaseHttpClient2 releaseClient = connection.GetClient<ReleaseHttpClient2>();
@@ -430,7 +382,6 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
-
         public IEnumerable<ReleaseApproval> ListPendingApprovalsForASpecificARelease()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
@@ -472,11 +423,10 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
-
-        public void UpdateStatusOfAnApprovalFromPendingToApproved()
+        public void ApprovePendingRelease()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
-            string assignedToFilter = ClientSampleHelpers.GetCurrentUserName(this.Context);
+            string assignedToFilter = ClientSampleHelpers.GetCurrentUserDisplayName(this.Context);
 
             // Get a release client instance
             VssConnection connection = Context.Connection;
@@ -495,7 +445,21 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             }
         }
 
-        private static VisualStudio.Services.ReleaseManagement.WebApi.Release CreateRelease(ReleaseHttpClient releaseClient, int releaseDefinitionId, string projectName)
+        [ClientSampleMethod]
+        public void DeleteAReleaseDefinition()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a release client instance
+            VssConnection connection = Context.Connection;
+            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
+
+            // delete release definition
+            releaseClient.DeleteReleaseDefinitionAsync(project: projectName, definitionId: newlyCreatedReleaseDefinitionId).SyncResult();
+
+        }
+
+        private static WebApiRelease CreateRelease(ReleaseHttpClient releaseClient, int releaseDefinitionId, string projectName)
         {
             BuildVersion instanceReference = new BuildVersion { Id = "2" };
             ArtifactMetadata artifact = new ArtifactMetadata { Alias = "Fabrikam.CI", InstanceReference = instanceReference };
@@ -503,8 +467,8 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             releaseStartMetaData.DefinitionId = releaseDefinitionId;
             releaseStartMetaData.Description = "Creating Sample release";
             releaseStartMetaData.Artifacts = new[] { artifact };
-            // Create  a releaes
-            Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release release =
+            // Create  a release
+            WebApiRelease release =
                 releaseClient.CreateReleaseAsync(project: projectName, releaseStartMetadata: releaseStartMetaData).Result;
             return release;
         }
