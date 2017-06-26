@@ -112,6 +112,11 @@ namespace Microsoft.TeamServices.Samples.Client
             return context.Connection.AuthorizedIdentity.Id;
         }
 
+        public static string GetCurrentUserName(ClientSampleContext context)
+        {
+            return context.Connection.AuthorizedIdentity.ProviderDisplayName;
+        }
+
         public static String GetSampleTextFile()
         {
             return GetSampleFilePath("Microsoft.TeamServices.Samples.Client.WorkItemTracking.SampleFile.txt");
