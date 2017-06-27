@@ -20,7 +20,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WebApiTagDefinitionList GetListOfTags()
         {
-            System.Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
 
             VssConnection connection = Context.Connection;
             TaggingHttpClient taggingClient = connection.GetClient<TaggingHttpClient>();
@@ -40,7 +40,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public List<WebApiTagDefinition> GetListOfTagsIncludeInactive()
         {
-            System.Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
 
             VssConnection connection = Context.Connection;
             TaggingHttpClient taggingClient = connection.GetClient<TaggingHttpClient>();
@@ -61,7 +61,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WebApiTagDefinition GetTagByName()
         {
-            System.Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
             string tagName = "test"; //TODO
 
             VssConnection connection = Context.Connection;
@@ -86,8 +86,8 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WebApiTagDefinition GetTagById()
         {
-            System.Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
-            System.Guid tagId = new System.Guid("C807AEE9-D3FA-468D-BFD5-66C2B3D42AD3"); //TODO
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
+            Guid tagId = new Guid("C807AEE9-D3FA-468D-BFD5-66C2B3D42AD3"); //TODO
 
             VssConnection connection = Context.Connection;
             TaggingHttpClient taggingClient = connection.GetClient<TaggingHttpClient>();
@@ -111,7 +111,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WebApiTagDefinition CreateTag()
         {
-            System.Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
             string tagName = "Hello World";
 
             VssConnection connection = Context.Connection;
@@ -127,8 +127,8 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WebApiTagDefinition UpdateTag()
         {
-            System.Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
-            System.Guid tagId = new System.Guid("C807AEE9-D3FA-468D-BFD5-66C2B3D42AD3"); //TODO
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
+            Guid tagId = new Guid("C807AEE9-D3FA-468D-BFD5-66C2B3D42AD3"); //TODO
 
             VssConnection connection = Context.Connection;
             TaggingHttpClient taggingClient = connection.GetClient<TaggingHttpClient>();
@@ -153,8 +153,8 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public void DeleteTag()
         {
-            System.Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
-            System.Guid tagId = new System.Guid("C807AEE9-D3FA-468D-BFD5-66C2B3D42AD3"); //TODO
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
+            Guid tagId = new Guid("C807AEE9-D3FA-468D-BFD5-66C2B3D42AD3"); //TODO
 
             VssConnection connection = Context.Connection;
             TaggingHttpClient taggingClient = connection.GetClient<TaggingHttpClient>();
@@ -167,7 +167,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public void DeleteAllInactiveTags()
         {
-            System.Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
 
             VssConnection connection = Context.Connection;
             TaggingHttpClient taggingClient = connection.GetClient<TaggingHttpClient>();
