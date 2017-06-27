@@ -143,8 +143,8 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             ClientSampleHttpLogger.SetOperationName(this.Context, "MaterializeAADGroupByOIDWithVSID");
             GraphGroupCreationContext addAADGroupContext = new GraphGroupOriginIdCreationContext
             {
-                OriginId = "f0d20172-7b96-42f6-9436-941433654b48",
-                Id = Guid.NewGuid()
+                OriginId = "f0d20172-7b96-42f6-9436-941433654b48"
+                /* TODO: Id = Guid.NewGuid() */
             };
 
             GraphGroup newGroup = graphClient.CreateGroupAsync(addAADGroupContext).Result;
