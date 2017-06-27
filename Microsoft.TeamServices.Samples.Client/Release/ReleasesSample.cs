@@ -98,8 +98,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
                               DeployPhases = new List<DeployPhase>() {
                                                                        new AgentBasedDeployPhase()
                                                                            { Name = "Run on agent",
-                                                                             Rank = 1,
-                                                                             DeploymentInput =  new AgentDeploymentInput() {QueueId = 2}
+                                                                             Rank = 1
                                                                             }
                                                                       },
                               PreDeployApprovals = new ReleaseDefinitionApprovals() { Approvals = new List<ReleaseDefinitionApprovalStep>() { new ReleaseDefinitionApprovalStep() {IsAutomated = true, Rank = 1 } } },
