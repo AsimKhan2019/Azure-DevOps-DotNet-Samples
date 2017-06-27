@@ -69,6 +69,11 @@ namespace Microsoft.TeamServices.Samples.Client
             this.Connection = connection;
         }
 
+        public T GetValue<T>(string name)
+        {
+            return (T)Properties[name];
+        }
+
         public bool TryGetValue<T>(string name, out T result)
         {
             return Properties.TryGetValue<T>(name, out result);

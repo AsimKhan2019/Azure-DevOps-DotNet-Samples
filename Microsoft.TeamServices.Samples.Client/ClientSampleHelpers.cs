@@ -10,6 +10,13 @@ using System.Threading.Tasks;
 
 namespace Microsoft.TeamServices.Samples.Client
 {
+    /// <summary>
+    /// Common methods used across multiple areas to provide common functions like 
+    /// getting a sample project to run samples against.
+    /// 
+    /// Note: area or resource specific helpers should go into an area-specific helper class or into the client sample class itself.
+    ///
+    /// </summary>
     public static class ClientSampleHelpers
     {
         public static TeamProjectReference FindAnyProject(ClientSampleContext context)
@@ -60,29 +67,7 @@ namespace Microsoft.TeamServices.Samples.Client
 
             return project != null;
         }
-
-        public static void SetQueryId(ClientSampleContext context, Guid queryId)
-        {
-            context.SetValue<Guid>("$sampleQueryId", queryId);
-        }
-
-        public static Guid GetQueryId(ClientSampleContext context)
-        {
-            using (new ClientSampleHttpLoggerOutputSuppression())
-            {
-                // Check if an ID was already set (this could have been provided by the caller)
-                Guid queryId;
-
-                if (!context.TryGetValue<Guid>("$sampleQueryId", out queryId))
-                {                    
-                    // Get the details for this project
-                    throw new Exception("No sample query available.");
-                }
-
-                return queryId;
-            }
-        }
-
+        
         public static WebApiTeamRef FindAnyTeam(ClientSampleContext context, Guid? projectId)
         {
             WebApiTeamRef team;

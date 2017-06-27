@@ -259,7 +259,9 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             try
             {
                 QueryHierarchyItem query = workItemTrackingClient.CreateQueryAsync(postedQuery, projectId, queryPath).Result;
-                ClientSampleHelpers.SetQueryId(this.Context, query.Id);
+
+                // Save the ID of the newly created query for use in later samples
+                this.Context.SetValue<Guid>("$sampleQueryId", query.Id);
                 
                 Console.WriteLine("Query Successfully Created");
                 Console.WriteLine("Id:         {0}", query.Id);
@@ -318,7 +320,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         public QueryHierarchyItem UpdateQuery()
         {
             Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
-            string queryId = ClientSampleHelpers.GetQueryId(this.Context).ToString();
+            Guid queryId = this.Context.GetValue<Guid>("$sampleQueryId");
 
             QueryHierarchyItem queryUpdate = new QueryHierarchyItem()
             {               
@@ -330,7 +332,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
 
             try
             {
-                QueryHierarchyItem query = workItemTrackingClient.UpdateQueryAsync(queryUpdate, projectId, queryId).Result;
+                QueryHierarchyItem query = workItemTrackingClient.UpdateQueryAsync(queryUpdate, projectId, queryId.ToString()).Result;
 
                 Console.WriteLine("Query updated successfully");
                 Console.WriteLine("Id:         {0}", query.Id);
@@ -350,7 +352,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         public QueryHierarchyItem RenameQueryOrFolder()
         {
             Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
-            string queryId = ClientSampleHelpers.GetQueryId(this.Context).ToString();
+            Guid queryId = this.Context.GetValue<Guid>("$sampleQueryId");
 
             QueryHierarchyItem queryUpdate = new QueryHierarchyItem()
             {
@@ -362,7 +364,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
 
             try
             {           
-                QueryHierarchyItem query = workItemTrackingClient.UpdateQueryAsync(queryUpdate, projectId, queryId).Result;
+                QueryHierarchyItem query = workItemTrackingClient.UpdateQueryAsync(queryUpdate, projectId, queryId.ToString()).Result;
 
                 Console.WriteLine("Query renamed successfully");
                 Console.WriteLine("Id:         {0}", query.Id);
@@ -413,12 +415,12 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         public void DeleteQueryOrFolderById()
         {
             Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
-            string queryId = ClientSampleHelpers.GetQueryId(this.Context).ToString();
+            Guid queryId = this.Context.GetValue<Guid>("$sampleQueryId");
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            workItemTrackingClient.DeleteQueryAsync(projectId, queryId);
+            workItemTrackingClient.DeleteQueryAsync(projectId, queryId.ToString());
 
             Console.WriteLine("Query/folder deleted");                
         }
@@ -427,7 +429,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         public void DeleteQueryOrFolderByPath()
         {
             Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
-            string path = "My Queries/Sample";         
+            string path = "My Queries/Sample";
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
@@ -441,7 +443,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         public void UnDeleteQueryOrFolder()
         {
             Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
-            string queryId = ClientSampleHelpers.GetQueryId(this.Context).ToString();
+            Guid queryId = this.Context.GetValue<Guid>("$sampleQueryId");
 
             QueryHierarchyItem queryUpdate = new QueryHierarchyItem()
             {
@@ -451,7 +453,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            workItemTrackingClient.UpdateQueryAsync(queryUpdate, projectId, queryId, true);
+            workItemTrackingClient.UpdateQueryAsync(queryUpdate, projectId, queryId.ToString(), true);
 
             Console.WriteLine("Query/folder deleted");
         }
