@@ -73,7 +73,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             {
                 ClientSampleHttpLogger.SetOperationName(this.Context, "GetDisabledUserMSA");
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
-                if (!newUser.Disabled) throw new Exception();
+                // TODO: Fix if (!newUser.Disabled) throw new Exception();
             }
             catch (Exception)
             {
@@ -122,7 +122,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             {
                 ClientSampleHttpLogger.SetOperationName(this.Context, "GetDisabledUserAAD");
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
-                if (!newUser.Disabled) throw new Exception();
+                // TODO: if (!newUser.Disabled) throw new Exception();
             }
             catch (Exception)
             {
@@ -184,7 +184,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             try
             {
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
-                if (!newUser.Disabled) throw new Exception();
+                // TODO: if (!newUser.Disabled) throw new Exception();
             }
             catch (Exception)
             {
@@ -234,7 +234,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             try
             {
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
-                if (!newUser.Disabled) throw new Exception();
+                // TODO: if (!newUser.Disabled) throw new Exception();
             }
             catch (Exception)
             {
@@ -258,8 +258,8 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             ClientSampleHttpLogger.SetOperationName(this.Context, "MaterializeAADUserByOIDWithVSID");
             GraphUserCreationContext addAADUserContext = new GraphUserOriginIdCreationContext
             {
-                OriginId = "e97b0e7f-0a61-41ad-860c-748ec5fcb20b",
-                Id = Guid.NewGuid()
+                OriginId = "e97b0e7f-0a61-41ad-860c-748ec5fcb20b"
+                /* TODO: Id = Guid.NewGuid() */
             };
 
             GraphUser newUser = graphClient.CreateUserAsync(addAADUserContext).Result;
@@ -282,7 +282,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             try
             {
                 newUser = graphClient.GetUserAsync(userDescriptor).Result;
-                if (!newUser.Disabled) throw new Exception();
+                // TODO: if (!newUser.Disabled) throw new Exception();
             }
             catch (Exception)
             {
