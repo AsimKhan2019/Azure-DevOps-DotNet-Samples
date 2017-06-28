@@ -84,30 +84,58 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
-            // Get a release client instance
-            VssConnection connection = Context.Connection;
-            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
-
             ReleaseDefinition definition = new ReleaseDefinition()
             {
                 Name = releaseDefinitionName,
                 Revision = 1,
                 Environments = new List<ReleaseDefinitionEnvironment>()
-                       { new ReleaseDefinitionEnvironment()
-                            { Name = "PROD",
-                              DeployPhases = new List<DeployPhase>() {
-                                                                       new AgentBasedDeployPhase()
-                                                                           { Name = "Run on agent",
-                                                                             Rank = 1
-                                                                            }
-                                                                      },
-                              PreDeployApprovals = new ReleaseDefinitionApprovals() { Approvals = new List<ReleaseDefinitionApprovalStep>() { new ReleaseDefinitionApprovalStep() {IsAutomated = true, Rank = 1 } } },
-                              PostDeployApprovals = new ReleaseDefinitionApprovals() { Approvals = new List<ReleaseDefinitionApprovalStep>() {new ReleaseDefinitionApprovalStep() {IsAutomated = true, Rank = 1 } } },
-                              RetentionPolicy = new EnvironmentRetentionPolicy() { DaysToKeep = 30, ReleasesToKeep = 3, RetainBuild = true}
-                             }
-                         }
-
+                {
+                    new ReleaseDefinitionEnvironment()
+                    {
+                        Name = "PROD",
+                        DeployPhases = new List<DeployPhase>()
+                            {
+                                new AgentBasedDeployPhase()
+                                {
+                                    Name = "Run on agent",
+                                    Rank = 1
+                                }
+                            },
+                        PreDeployApprovals = new ReleaseDefinitionApprovals()
+                        {
+                            Approvals = new List<ReleaseDefinitionApprovalStep>()
+                            {
+                                new ReleaseDefinitionApprovalStep()
+                                {
+                                    IsAutomated = true,
+                                    Rank = 1
+                                }
+                            }
+                        },
+                        PostDeployApprovals = new ReleaseDefinitionApprovals()
+                        {
+                            Approvals = new List<ReleaseDefinitionApprovalStep>()
+                            {
+                                new ReleaseDefinitionApprovalStep()
+                                {
+                                    IsAutomated = true,
+                                    Rank = 1
+                                }
+                            }
+                        },
+                        RetentionPolicy = new EnvironmentRetentionPolicy()
+                        {
+                            DaysToKeep = 30,
+                            ReleasesToKeep = 3,
+                            RetainBuild = true
+                        }
+                    }
+                }
             };
+
+            // Get a release client instance
+            VssConnection connection = Context.Connection;
+            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
             // create a release definition
             ReleaseDefinition releaseDefinition = releaseClient.CreateReleaseDefinitionAsync(project: projectName, releaseDefinition: definition).Result;
@@ -333,7 +361,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
                     continuationToken = parsedContinuationToken;
                 }
             } while ((continuationToken != 0) && parseResult);
-     
+
             // Show the approvals
             foreach (ReleaseApproval releaseApproval in releaseApprovals)
             {
@@ -384,7 +412,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         public IEnumerable<ReleaseApproval> ListPendingApprovalsForASpecificARelease()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
-            
+
             // Get a release client instance
             VssConnection connection = Context.Connection;
             ReleaseHttpClient2 releaseClient = connection.GetClient<ReleaseHttpClient2>();
@@ -445,7 +473,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
-        public void DeleteAReleaseDefinition()
+        public void DeleteReleaseDefinition()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
