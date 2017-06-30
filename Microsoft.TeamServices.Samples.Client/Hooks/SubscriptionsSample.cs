@@ -4,6 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.Services.ServiceHooks.WebApi;
+using Newtonsoft.Json.Linq;
+using Microsoft.TeamFoundation.SourceControl.WebApi;
+using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 
 namespace Microsoft.TeamServices.Samples.Client.Hooks
 {
@@ -15,11 +18,11 @@ namespace Microsoft.TeamServices.Samples.Client.Hooks
         /// </summary>
         /// <returns></returns>
         [ClientSampleMethod]
-        public Subscription CreateWebHooksSubscription()
+        public Subscription CreateGitPushWebHooksSubscription()
         {
-            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
-
             VssConnection connection = this.Context.Connection;
+            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
+            
             ServiceHooksPublisherHttpClient client = connection.GetClient<ServiceHooksPublisherHttpClient>();
 
             Subscription gitPushSubscription = new Subscription()
@@ -29,8 +32,7 @@ namespace Microsoft.TeamServices.Samples.Client.Hooks
                 ResourceVersion = "1.0",
                 PublisherInputs = new Dictionary<string, string>()
                 {
-                    { "projectId", project.Id.ToString() },
-                    { "repoId", "tbd" },
+                    { "projectId", project.Id.ToString() }
                 },
                 ConsumerId = "webHooks",
                 ConsumerActionId = "httpRequest",
@@ -40,20 +42,35 @@ namespace Microsoft.TeamServices.Samples.Client.Hooks
                 }
             };
 
-            Subscription[] subscriptions = new Subscription[]
-            {
-                gitPushSubscription
-            };
+            Subscription subscription = client.CreateSubscriptionAsync(gitPushSubscription).Result;
 
-            foreach (var sub in subscriptions)
-            {
-                
-            }
+            LogSubscription(subscription);
 
-            Subscription newSubscription = client.CreateSubscriptionAsync(gitPushSubscription).Result;
-            return newSubscription;
+            return subscription;
         }
-  
+
+        public void HandleIncomingGitPushEvent(WebHookEvent webHookEvent)
+        {
+            GitRefUpdate gitRefUpdate;
+
+            // Check if the incoming event is a Git push event
+            if (String.Equals(webHookEvent.EventType, "git.push"))
+            {
+                JObject resource = webHookEvent.Resource as JObject;
+                if (resource != null)
+                {
+                    gitRefUpdate = resource.ToObject<GitRefUpdate>();
+
+                    // TODO: show name, commit, etc
+                }
+            }
+        }
+
+        private static readonly IDictionary<string, Type> s_EventResourceTypes = new Dictionary<string, Type>()
+        {
+            { "git.push", typeof(GitRefUpdate) },
+            { "workitem.updated", typeof(WorkItemUpdate) }
+        };
 
         protected void LogSubscription(Subscription subscription)
         {
