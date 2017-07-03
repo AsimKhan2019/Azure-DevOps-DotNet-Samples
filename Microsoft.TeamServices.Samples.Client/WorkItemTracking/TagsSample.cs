@@ -67,20 +67,29 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             TaggingHttpClient taggingClient = connection.GetClient<TaggingHttpClient>();
 
-            WebApiTagDefinition tag = taggingClient.GetTagAsync(projectId, tagName).Result;
+            try
+            {
+                WebApiTagDefinition tag = taggingClient.GetTagAsync(projectId, tagName).Result;
 
-            if (tag == null)
-            {
-                Console.WriteLine("Tag '{0}' not found", tagName);
-            }
-            else
-            {
                 Console.WriteLine("Name:   {0}", tagName);
                 Console.WriteLine("Id:     {0}", tag.Id.ToString());
                 Console.WriteLine("Active: {0}", tag.Active.ToString());
-            }
 
-            return tag;
+                return tag;
+            }
+            catch (AggregateException ex)
+            {
+                if (ex.InnerException.GetType().Equals(typeof(TagNotFoundException)))
+                {
+                    Console.WriteLine("Tag '{0}' not found", tagName);
+                }
+                else
+                {
+                    Console.WriteLine("Error: {0}", ex.Message);
+                }
+
+                return null;
+            }            
         }
 
         [ClientSampleMethod]
@@ -92,20 +101,29 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             TaggingHttpClient taggingClient = connection.GetClient<TaggingHttpClient>();
 
-            WebApiTagDefinition tag = taggingClient.GetTagAsync(projectId, tagId).Result;
+            try
+            {
+                WebApiTagDefinition tag = taggingClient.GetTagAsync(projectId, tagId).Result;
 
-            if (tag == null)
-            {
-                Console.WriteLine("Tag '{0}' not found", tagId);
-            }
-            else
-            {
                 Console.WriteLine("Name:   {0}", tag.Name);
                 Console.WriteLine("Id:     {0}", tag.Id.ToString());
                 Console.WriteLine("Active: {0}", tag.Active.ToString());
-            }
 
-            return tag;
+                return tag;
+            }
+            catch (AggregateException ex)
+            {
+                if (ex.InnerException.GetType().Equals(typeof(TagNotFoundException)))
+                {
+                    Console.WriteLine("TagId '{0}' not found", tagId);
+                }
+                else
+                {
+                    Console.WriteLine("Error: {0}", ex.Message);
+                }
+                
+                return null;
+            }                   
         }
 
         [ClientSampleMethod]
@@ -117,11 +135,19 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             TaggingHttpClient taggingClient = connection.GetClient<TaggingHttpClient>();
 
-            WebApiTagDefinition tag = taggingClient.CreateTagAsync(projectId, tagName).Result;
+            try
+            {
+                WebApiTagDefinition tag = taggingClient.CreateTagAsync(projectId, tagName).Result;
 
-            Console.WriteLine("Tag '{0}' successfully created", tagName);
+                Console.WriteLine("Tag '{0}' successfully created", tagName);
 
-            return tag;
+                return tag;
+            }
+            catch (AggregateException ex)
+            {
+                Console.WriteLine("Error: {0}", ex.InnerException.Message);
+                return null;
+            }   
         }
 
         [ClientSampleMethod]
@@ -133,21 +159,30 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             TaggingHttpClient taggingClient = connection.GetClient<TaggingHttpClient>();
 
-            WebApiTagDefinition tag = taggingClient.UpdateTagAsync(projectId, tagId, "Pretty Monkey", true).Result;
+            try
+            {
+                WebApiTagDefinition tag = taggingClient.UpdateTagAsync(projectId, tagId, "Pretty Monkey", true).Result;
 
-            if (tag == null)
-            {
-                Console.WriteLine("Error updating tag: ", tagId);
-            }
-            else
-            {
                 Console.WriteLine("Tag successfully updated");
                 Console.WriteLine("Name:   {0}", tag.Name);
                 Console.WriteLine("Id:     {0}", tag.Id.ToString());
                 Console.WriteLine("Active: {0}", tag.Active.ToString());
-            }
 
-            return tag;
+                return tag;
+            }
+            catch (AggregateException ex)            
+            {
+                if (ex.InnerException.GetType().Equals(typeof(TagNotFoundException)))
+                {
+                    Console.WriteLine("TagId '{0}' not found", tagId);
+                }
+                else
+                {
+                    Console.WriteLine("Error: {0}", ex.Message);
+                }
+                
+                return null;
+            }           
         }
 
         [ClientSampleMethod]
@@ -159,9 +194,23 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             TaggingHttpClient taggingClient = connection.GetClient<TaggingHttpClient>();
 
-            taggingClient.DeleteTagAsync(projectId, tagId).SyncResult();
+            try
+            {
+                taggingClient.DeleteTagAsync(projectId, tagId).SyncResult();
 
-            Console.WriteLine("Tag '{0}' deleted", tagId);
+                Console.WriteLine("Tag '{0}' deleted", tagId);
+            }
+            catch (AggregateException ex)
+            {
+                if (ex.InnerException.GetType().Equals(typeof(TagNotFoundException)))
+                {
+                    Console.WriteLine("TagId '{0}' not found", tagId);
+                }
+                else
+                {
+                    Console.WriteLine("Error: {0}", ex.Message);
+                }                
+            }           
         }
 
         [ClientSampleMethod]
@@ -182,7 +231,14 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             {
                 Console.WriteLine("  Delete tag '{0}'", tag.Name);
 
-                taggingClient.DeleteTagAsync(projectId, tag.Id).SyncResult();
+                try
+                {
+                    taggingClient.DeleteTagAsync(projectId, tag.Id).SyncResult();
+                }
+                catch (AggregateException ex)
+                {
+                    Console.WriteLine("  Error: {0}", ex.InnerException.Message);
+                }
             }
 
             Console.WriteLine("");
