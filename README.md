@@ -1,100 +1,82 @@
-# Team Services Samples for .NET
+# .NET samples for Visual Studio Team Services
 
-![buildstatus](https://mseng.visualstudio.com/_apis/public/build/definitions/b924d696-3eae-4116-8443-9a18392d8544/5045/badge)
+[![buildstatus](https://mseng.visualstudio.com/_apis/public/build/definitions/b924d696-3eae-4116-8443-9a18392d8544/5045/badge)](https://mseng.visualstudio.com/VSOnline/Open%20ALM/_build/index?context=mine&path=%5C&definitionId=5045&_a=completed)
 
-This repository contains C# samples that show how to integrate with Team Services and Team Foundation Server using our [public client libraries](https://www.nuget.org/profiles/nugetvss).
+This repository contains C# samples that show how to integrate with Team Services and Team Foundation Server using our [public client libraries](https://www.nuget.org/profiles/nugetvss), service hooks, and more.
 
-## Explore
+## Explore the samples
 
-Samples are organized by "area" (service) and "resource" within the `Microsoft.TeamServices.Samples.Client` project. Each sample class shows various ways for interacting with Team Services and Team Foundation Server.  
+Take a minute to explore the repo. It contains short snippets as well as longer examples that demonstrate how to integrate with Team Services and Team Foundation
 
-## Run the samples
+* **Snippets**: short reusable code blocks demonstrating how to call specific APIs.
+* **Quickstarts**: self-contained programs demonstrating a specific scenario, typically by calling multiple APIs.
 
-1. Clone this repository and open in Visual Studio (2015 or later)
+## About the official client libraries
 
-2. Build the solution (you may need to restore the required NuGet packages first)
+For .NET developers, the primary (and highly recommended) way to integrate with Team Services and Team Foundation Server is via our public .NET client libraries available on Nuget. [Microsoft.TeamFoundationServer.Client](https://www.nuget.org/packages/Microsoft.TeamFoundationServer.Client) is the most popular Nuget package and contains clients for interacting with work item tracking, Git, version control, build, release management and other services.
 
-3. Run the `Microsoft.TeamServices.Samples.Client.Runner` project with the required arguments:
-   * `/url:{value}`: URL of the account/collection to run the samples against.
-   * `/area:{value}`: API area (work, wit, notification, git, core, build) to run the client samples for. Use * to include all areas.
-   * `/resource:{value}`: API resource to run the client samples for. Use * to include all resources.
+See the [Team Services client library documentation](https://www.visualstudio.com/docs/integrate/get-started/client-libraries/dotnet) for more details.
 
-> **IMPORTANT**: some samples are destructive. It is recommended that you first run the samples against a test account.
+### Sample console program
 
-### Examples
+Simple console program that connects to Team Services using a personal access token and displays the field values of a work item.
 
-#### Run all samples
+```cs
+using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
+using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
+using Microsoft.VisualStudio.Services.Common;
+using Microsoft.VisualStudio.Services.WebApi;
+using System;
 
-```
-Microsoft.TeamServices.Samples.Client.Runner.exe
-    /url:https://fabrikam.visualstudio.com /area:* /resource:*
-```
+namespace ConsoleApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            if (args.Length == 3)
+            {
+                Uri accountUri = new Uri(args[0]);     // Account URL, for example: https://fabrikam.visualstudio.com                
+                String personalAccessToken = args[1];  // See https://www.visualstudio.com/docs/integrate/get-started/authentication/pats                
+                int workItemId = int.Parse(args[2]);   // ID of a work item, for example: 12
 
-#### Run all work item tracking samples
+                // Create a connection to the account
+                VssConnection connection = new VssConnection(accountUri, new VssBasicCredential(string.Empty, personalAccessToken));
+                
+                // Get an instance of the work item tracking client
+                WorkItemTrackingHttpClient witClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-```
-Microsoft.TeamServices.Samples.Client.Runner.exe
-    /url:https://fabrikam.visualstudio.com /area:wit /resource:*
-```
+                try
+                {
+                    // Get the specified work item
+                    WorkItem workitem = witClient.GetWorkItemAsync(workItemId).Result;
 
-#### Run all graph samples against vsts
-
-```
-Microsoft.TeamServices.Samples.Client.Runner.exe
-    /url:https://fabrikam.vssps.visualstudio.com /area:graph /resource:*
-```
-
-#### Run all Git pull request samples
-
-```
-Microsoft.TeamServices.Samples.Client.Runner.exe
-    /url:https://fabrikam.visualstudio.com /area:git /resource:pullrequests
-```
-
-#### Run all samples against a TFS on-premises collection
-
-```
-Microsoft.TeamServices.Samples.Client.Runner.exe
-    /url:https://mytfs:8080/tfs/testcollection /area:git /resource:*
-```
-
-### Save request and response data to a JSON file
-
-To persist the HTTP request/response as JSON for each client sample method that is run, set the `/outputPath:{value}` argument. For example:
-
-```
-Microsoft.TeamServices.Samples.Client.Runner.exe
-    /url:https://fabrikam.visualstudio.com /area:* /resource:* /outputPath:c:\temp\http-output
-```
-
-This creates a folder for each area, a folder for each resource under the area folder, and a file for each client sample method that was run. The name of the JSON file is determined by the name of the client sample method. For example:
-
-```
-|-- temp
-    |-- http-output
-        |-- Notification
-            |-- EventTypes
-                |-- ...
-            |-- Subscriptions
-                |-- CreateSubscriptionForUser.json
-                |-- QuerySubscriptionsByEventType.json
-                |-- ...
+                    // Output the work item's field values
+                    foreach (var field in workitem.Fields)
+                    {
+                        Console.WriteLine("  {0}: {1}", field.Key, field.Value);
+                    }
+                }
+                catch (AggregateException aex)
+                {
+                    VssServiceException vssex = aex.InnerException as VssServiceException;
+                    if (vssex != null)
+                    {
+                        Console.WriteLine(vssex.Message);
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Usage: ConsoleApp {accountUri} {personalAccessToken} {workItemId}");
+            }
+        }
+    }
+}
 ```
 
-Note: certain HTTP headers like `Authorization` are removed for security/privacy purposes.
+## Request other samples
 
-## About the client libraries
+Not finding a sample that demonstrates something you are trying to do? Let us know by opening an issue.
 
-For .NET developers building Windows apps and services that integrate with Visual Studio Team Services, client libraries are available for integrating with work item tracking, version control, build, and other services are now available. These packages replace the traditional TFS Client OM installer and make it easy to acquire and redistribute the libraries needed by your app or service.
 
-See [.NET client libraries for Team Services documentation](https://www.visualstudio.com/docs/integrate/get-started/client-libraries/dotnet) for more getting started details.
-
-### Other useful resources
-
-* [Official NuGet packages](https://www.nuget.org/profiles/nugetvss)
-* [.NET Client library intro](https://www.visualstudio.com/docs/integrate/get-started/client-libraries/dotnet)
-* [WIQL reference](https://msdn.microsoft.com/en-us/library/bb130198(v=vs.90).aspx)
-
-## Contribute
-
-For developers that want to contribute, learn how to [contribute a sample](./contribute.md).
