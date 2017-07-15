@@ -10,8 +10,6 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-
-            Console.WriteLine("new!");
             if (args.Length == 3)
             {
                 Uri accountUri = new Uri(args[0]);     // Account URL, for example: https://fabrikam.visualstudio.com                
