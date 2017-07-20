@@ -48,7 +48,7 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
                                                         { "scriptType", "inlineScript" },
                                                         { "inlineScript", "# You can write your powershell scripts inline here. \n# You can also pass predefined and custom variables to this scripts using arguments\n\n Write-Host \"Hello World\"" },
                                                     };
-
+            // Task inside the task group
             TaskGroupStep taskGroupStep = new TaskGroupStep()
             {
                 Enabled = true,
@@ -57,6 +57,7 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
                 Task = new TaskDefinitionReference { Id = new Guid("e213ff0f-5d5c-4791-802d-52ea3e7be1f1"), VersionSpec = "1.*", DefinitionType = "task" },
             };
 
+            // Task group object
             TaskGroup taskGroup = new TaskGroup()
             {
                 Tasks = new List<TaskGroupStep>() { taskGroupStep },
@@ -64,14 +65,16 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
                 Name = "My PowerShell TG",
                 Visibility = { "Build", "Release" },
                 DefinitionType = "metaTask",
-                InstanceNameFormat = "Task group: TG2",
+                InstanceNameFormat = "Task group: TG",
                 Version = new TaskVersion { IsTest = false, Major = 1, Minor = 0, Patch = 0 }
             };
 
+            // Create task group
             var addedTg = taskClient.AddTaskGroupAsync(project: projectName, taskGroup: taskGroup).Result;
+
             this.addedTaskGroupId = addedTg.Id;
 
-            // Show the task group
+            // Show the added task group
             Console.WriteLine("{0} {1}", addedTg.Id.ToString().PadLeft(6), addedTg.Name);
 
             return addedTg;
@@ -92,8 +95,10 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
             VssConnection connection = Context.Connection;
             TaskAgentHttpClient taskClient = connection.GetClient<TaskAgentHttpClient>();
 
+            // Get task group to update
             List<TaskGroup> taskGroups = taskClient.GetTaskGroupsAsync(project: projectName, taskGroupId: this.addedTaskGroupId).Result;
 
+            // Update comment in the task group object.
             TaskGroup taskGroup = taskGroups.FirstOrDefault();
             taskGroup.Comment = "Updated the task group";
 
@@ -119,7 +124,7 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
             VssConnection connection = Context.Connection;
             TaskAgentHttpClient taskClient = connection.GetClient<TaskAgentHttpClient>();
 
-            // Show the task groups
+            // List all task groups
             List<TaskGroup> taskGroups = taskClient.GetTaskGroupsAsync(project: projectName).Result;
 
             foreach (TaskGroup taskGroup in taskGroups)
@@ -142,6 +147,7 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
             VssConnection connection = Context.Connection;
             TaskAgentHttpClient taskClient = connection.GetClient<TaskAgentHttpClient>();
 
+            // Delete the already created task group
             taskClient.DeleteTaskGroupAsync(project: projectName, taskGroupId: this.addedTaskGroupId).SyncResult();
         }
     }
