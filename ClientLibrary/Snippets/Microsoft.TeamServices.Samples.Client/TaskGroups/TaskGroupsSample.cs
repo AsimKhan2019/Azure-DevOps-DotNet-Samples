@@ -1,0 +1,148 @@
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TaskGroupsSample.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The task groups sample.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Microsoft.TeamServices.Samples.Client.TaskGroups
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+
+    using Microsoft.TeamFoundation.DistributedTask.WebApi;
+    using Microsoft.VisualStudio.Services.WebApi;
+
+    /// <summary>
+    /// The task groups sample.
+    /// </summary>
+    [ClientSample(TaskResourceIds.AreaName, TaskResourceIds.TaskGroupsResource)]
+    public class TaskGroupsSample : ClientSample
+    {
+        /// <summary>
+        /// The added task group id.
+        /// </summary>
+        private Guid addedTaskGroupId;
+
+        /// <summary>
+        /// The add a task group.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="TaskGroup"/>.
+        /// </returns>
+        [ClientSampleMethod]
+        public TaskGroup CreateTaskGroup()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a task agent client instance
+            VssConnection connection = Context.Connection;
+            TaskAgentHttpClient taskClient = connection.GetClient<TaskAgentHttpClient>();
+
+            Dictionary<string, string> inputs = new Dictionary<string, string>()
+                                                    {
+                                                        { "scriptType", "inlineScript" },
+                                                        { "inlineScript", "# You can write your powershell scripts inline here. \n# You can also pass predefined and custom variables to this scripts using arguments\n\n Write-Host \"Hello World\"" },
+                                                    };
+
+            TaskGroupStep taskGroupStep = new TaskGroupStep()
+            {
+                Enabled = true,
+                DisplayName = "PowerShell Script",
+                Inputs = inputs,
+                Task = new TaskDefinitionReference { Id = new Guid("e213ff0f-5d5c-4791-802d-52ea3e7be1f1"), VersionSpec = "1.*", DefinitionType = "task" },
+            };
+
+            TaskGroup taskGroup = new TaskGroup()
+            {
+                Tasks = new List<TaskGroupStep>() { taskGroupStep },
+                Category = "Deploy",
+                Name = "My PowerShell TG",
+                Visibility = { "Build", "Release" },
+                DefinitionType = "metaTask",
+                InstanceNameFormat = "Task group: TG2",
+                Version = new TaskVersion { IsTest = false, Major = 1, Minor = 0, Patch = 0 }
+            };
+
+            var addedTg = taskClient.AddTaskGroupAsync(project: projectName, taskGroup: taskGroup).Result;
+            this.addedTaskGroupId = addedTg.Id;
+
+            // Show the task group
+            Console.WriteLine("{0} {1}", addedTg.Id.ToString().PadLeft(6), addedTg.Name);
+
+            return addedTg;
+        }
+
+        /// <summary>
+        /// The update task group.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="TaskGroup"/>.
+        /// </returns>
+        [ClientSampleMethod]
+        public TaskGroup UpdateTaskGroup()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a task agent client instance
+            VssConnection connection = Context.Connection;
+            TaskAgentHttpClient taskClient = connection.GetClient<TaskAgentHttpClient>();
+
+            List<TaskGroup> taskGroups = taskClient.GetTaskGroupsAsync(project: projectName, taskGroupId: this.addedTaskGroupId).Result;
+
+            TaskGroup taskGroup = taskGroups.FirstOrDefault();
+            taskGroup.Comment = "Updated the task group";
+
+            TaskGroup updatedTaskGroup = taskClient.UpdateTaskGroupAsync(project: projectName, taskGroup: taskGroup).Result;
+
+            Console.WriteLine("{0} {1}", updatedTaskGroup.Id.ToString().PadLeft(6), updatedTaskGroup.Comment);
+
+            return updatedTaskGroup;
+        }
+
+        /// <summary>
+        /// The list all task groups.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="List"/>.
+        /// </returns>
+        [ClientSampleMethod]
+        public List<TaskGroup> ListAllTaskGroups()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a task agent client instance
+            VssConnection connection = Context.Connection;
+            TaskAgentHttpClient taskClient = connection.GetClient<TaskAgentHttpClient>();
+
+            // Show the task groups
+            List<TaskGroup> taskGroups = taskClient.GetTaskGroupsAsync(project: projectName).Result;
+
+            foreach (TaskGroup taskGroup in taskGroups)
+            {
+                Console.WriteLine("{0} {1}", taskGroup.Id.ToString().PadLeft(6), taskGroup.Name);
+            }
+
+            return taskGroups;
+        }
+
+        /// <summary>
+        /// The delete a task group.
+        /// </summary>
+        [ClientSampleMethod]
+        public void DeleteATaskGroup()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a task agent client instance
+            VssConnection connection = Context.Connection;
+            TaskAgentHttpClient taskClient = connection.GetClient<TaskAgentHttpClient>();
+
+            taskClient.DeleteTaskGroupAsync(project: projectName, taskGroupId: this.addedTaskGroupId).SyncResult();
+        }
+    }
+}
