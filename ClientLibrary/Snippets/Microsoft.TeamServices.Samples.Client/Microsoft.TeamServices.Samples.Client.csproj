@@ -50,7 +50,7 @@
     <Reference Include="Microsoft.TeamFoundation.Build2.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.118.0-preview\lib\net45\Microsoft.TeamFoundation.Build2.WebApi.dll</HintPath>
     </Reference>
-	<Reference Include="Microsoft.VisualStudio.Services.ReleaseManagement.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.VisualStudio.Services.ReleaseManagement.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Services.Release.Client.15.118.0-preview\lib\net45\Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.dll</HintPath>
       <Private>True</Private>
     </Reference>
@@ -141,6 +141,7 @@
     <Compile Include="Graph\UsersSample.cs" />
     <Compile Include="Notification\*.cs" />
     <Compile Include="Release\ReleasesSample.cs" />
+    <Compile Include="Security\SecurityNamespacesSample.cs" />
     <Compile Include="WorkItemTracking\AttachmentsSample.cs" />
     <Compile Include="WorkItemTracking\BatchSample.cs" />
     <Compile Include="WorkItemTracking\ClassificationNodesSample.cs" />
