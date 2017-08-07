@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,7 +35,18 @@ namespace Microsoft.TeamServices.Samples.Client
             "activityId",
             "p3P",
             "x-Powered-By",
-            "cookie"
+            "cookie",
+            "x-TFS-FedAuthRedirect",
+            "strict-Transport-Security",
+            "x-FRAME-OPTIONS",
+            "x-Content-Type-Options",
+            "x-AspNet-Version",
+            "server"
+        };
+
+        private static HashSet<string> s_combinableHeaders = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
+        {
+            "user-Agent"
         };
 
         public ClientSampleHttpLogger()
@@ -75,18 +87,8 @@ namespace Microsoft.TeamServices.Samples.Client
                     DirectoryInfo baseOutputPath;
                     if (ClientSampleContext.CurrentContext.TryGetValue<DirectoryInfo>(PropertyOutputFilePath, out baseOutputPath))
                     {
-                        Dictionary<string, IEnumerable<string>> requestHeaders = new Dictionary<string, IEnumerable<string>>();
-                        foreach (var h in request.Headers.Where(kvp => { return !s_excludedHeaders.Contains(kvp.Key); }))
-                        {
-                            requestHeaders[h.Key] = h.Value;
-                        }
-
-                        Dictionary<string, IEnumerable<string>> responseHeaders = new Dictionary<string, IEnumerable<string>>();
-
-                        foreach (var h in response.Headers.Where(kvp => { return !s_excludedHeaders.Contains(kvp.Key); }))
-                        {
-                            responseHeaders[h.Key] = h.Value;
-                        }
+                        Dictionary<string, object> requestHeaders = ProcessHeaders(request.Headers);
+                        Dictionary<string, object> responseHeaders = ProcessHeaders(response.Headers);
 
                         dynamic requestBody = null;
                         try
@@ -120,7 +122,8 @@ namespace Microsoft.TeamServices.Samples.Client
                             RequestBody = requestBody,
                             StatusCode = (int)response.StatusCode,
                             ResponseHeaders = responseHeaders,
-                            ResponseBody = responseBody
+                            ResponseBody = responseBody,
+                            Generated = true      
                         };
 
                         string outputPath = Path.Combine(baseOutputPath.FullName, data.Area, data.Resource);
@@ -138,6 +141,32 @@ namespace Microsoft.TeamServices.Samples.Client
             }
 
             return response;
+        }
+
+        private static Dictionary<string,object> ProcessHeaders(HttpHeaders headers)
+        {
+            Dictionary<string, object> ret = new Dictionary<string, object>();
+
+            foreach (var h in headers.Where(kvp => { return !s_excludedHeaders.Contains(kvp.Key); }))
+            {
+                if (h.Value.Count() == 1)
+                {
+                    ret[h.Key] = h.Value.First();
+                }
+                else
+                {
+                    if (s_combinableHeaders.Contains(h.Key))
+                    {
+                        ret[h.Key] = String.Join(" ", h.Value);
+                    }
+                    else
+                    {
+                        ret[h.Key] = h.Value;
+                    }
+                }
+            }
+
+            return ret;
         }
 
         private static bool ResponseHasContent(HttpResponseMessage response)
@@ -206,7 +235,7 @@ namespace Microsoft.TeamServices.Samples.Client
         public String RequestUrl;
 
         [DataMember]
-        public Dictionary<String, IEnumerable<String>> RequestHeaders;
+        public Dictionary<String, object> RequestHeaders;
 
         [DataMember(EmitDefaultValue = false)]
         public Object RequestBody;
@@ -215,9 +244,12 @@ namespace Microsoft.TeamServices.Samples.Client
         public int StatusCode;
 
         [DataMember]
-        public Dictionary<String, IEnumerable<String>> ResponseHeaders;
+        public Dictionary<String, object> ResponseHeaders;
 
         [DataMember(EmitDefaultValue = false)]
         public Object ResponseBody;
+
+        [DataMember(Name = "x-vss-generated")]
+        public bool Generated;
     }
 }

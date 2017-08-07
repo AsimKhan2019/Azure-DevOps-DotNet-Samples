@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Services.WebApi;
 using System.Net.Http;
 using Microsoft.VisualStudio.Services.Common;
+using System.Runtime.Serialization;
 
 namespace Microsoft.TeamServices.Samples.Client
 {
@@ -29,12 +30,16 @@ namespace Microsoft.TeamServices.Samples.Client
     }
 
 
+    [DataContract]
     public class ClientSampleMethodInfo : IClientSampleMethodInfo
     {
+        [DataMember(EmitDefaultValue = false, Name = "x-vss-area")]
         public string Area { get; set; }
 
+        [DataMember(EmitDefaultValue = false, Name = "x-vss-resource")]
         public string Resource { get; set; }
 
+        [DataMember(EmitDefaultValue = false, Name = "x-vss-operation")]
         public string Operation { get; set; }
     }
 
