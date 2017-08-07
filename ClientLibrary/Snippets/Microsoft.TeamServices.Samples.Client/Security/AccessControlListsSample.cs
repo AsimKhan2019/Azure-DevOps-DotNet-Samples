@@ -55,6 +55,24 @@ namespace Microsoft.TeamServices.Samples.Client.Security
             }
 
             // get the details for Git permissions
+            Dictionary<int, string> permission = GetGitPermissionNames();
+
+            // use the Git permissions data to expand the ACL
+            Console.WriteLine("Expanding ACL for {0} ({1} ACEs)", acl.Token, acl.AcesDictionary.Count());
+            foreach (var kvp in acl.AcesDictionary)
+            {
+                // in the key-value pair, Key is an identity and Value is an ACE (access control entry)
+                // allow and deny are bit flags indicating which permissions are allowed/denied
+                Console.WriteLine("Identity {0}");
+                Console.WriteLine("  Allowed: {0} (value={1})", GetPermissionString(kvp.Value.Allow, permission), kvp.Value.Allow);
+                Console.WriteLine("  Denied: {0} (value={1})", GetPermissionString(kvp.Value.Deny, permission), kvp.Value.Deny);
+            }
+
+            return;
+        }
+
+        private Dictionary<int, string> GetGitPermissionNames()
+        {
             VssConnection connection = this.Context.Connection;
             SecurityHttpClient securityClient = connection.GetClient<SecurityHttpClient>();
 
@@ -67,26 +85,15 @@ namespace Microsoft.TeamServices.Samples.Client.Security
             SecurityNamespaceDescription gitNamespace = namespaces.First();
 
             Dictionary<int, string> permission = new Dictionary<int, string>();
-            foreach(ActionDefinition actionDef in gitNamespace.Actions)
+            foreach (ActionDefinition actionDef in gitNamespace.Actions)
             {
                 permission[actionDef.Bit] = actionDef.DisplayName;
             }
 
-            // use the Git permissions data to expand the ACL
-            Console.WriteLine("Expanding ACL for {0} ({1} ACEs)", acl.Token, acl.AcesDictionary.Count());
-            foreach (var kvp in acl.AcesDictionary)
-            {
-                // in the key-value pair, Key is an identity and Value is an ACE (access control entry)
-                // allow and deny are bit flags indicating which permissions are allowed/denied
-                Console.WriteLine("Identity {0} | allow {1} | deny {2}", kvp.Key, kvp.Value.Allow, kvp.Value.Deny);
-                Console.WriteLine("  Allowed: {0}", UnpackPermissionBits(kvp.Value.Allow, permission));
-                Console.WriteLine("  Denied: {0}", UnpackPermissionBits(kvp.Value.Deny, permission));
-            }
-
-            return;
+            return permission;
         }
 
-        private string UnpackPermissionBits(int bitsSet, Dictionary<int, string> bitMeanings)
+        private string GetPermissionString(int bitsSet, Dictionary<int, string> bitMeanings)
         {
             List<string> permissionStrings = new List<string>();
             foreach(var kvp in bitMeanings)
