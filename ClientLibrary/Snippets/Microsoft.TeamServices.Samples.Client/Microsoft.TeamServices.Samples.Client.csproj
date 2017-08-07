@@ -141,6 +141,7 @@
     <Compile Include="Graph\UsersSample.cs" />
     <Compile Include="Notification\*.cs" />
     <Compile Include="Release\ReleasesSample.cs" />
+    <Compile Include="Security\AccessControlListsSample.cs" />
     <Compile Include="Security\SecurityNamespacesSample.cs" />
     <Compile Include="WorkItemTracking\AttachmentsSample.cs" />
     <Compile Include="WorkItemTracking\BatchSample.cs" />
