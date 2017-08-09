@@ -145,6 +145,7 @@
     <Compile Include="Security\TokenHelpers.cs" />
     <Compile Include="Security\SecurityNamespacesSample.cs" />
     <Compile Include="Tfvc\ChangesetChangesSample.cs" />
+    <Compile Include="Tfvc\BranchesSample.cs" />
     <Compile Include="Tfvc\ChangesetsSample.cs" />
     <Compile Include="WorkItemTracking\AttachmentsSample.cs" />
     <Compile Include="WorkItemTracking\BatchSample.cs" />
