@@ -5,6 +5,7 @@
 
 *.suo
 packages/
+.vs
 
 *.csproj.user
 
