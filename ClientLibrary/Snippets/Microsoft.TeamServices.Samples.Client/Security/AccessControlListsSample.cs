@@ -47,7 +47,8 @@ namespace Microsoft.TeamServices.Samples.Client.Security
         [ClientSampleMethod]
         public void ExpandGitAcl()
         {
-            bool hasInterestingAcl = this.Context.TryGetValue(this.StoredAclKey, out AccessControlList acl);
+            AccessControlList acl;
+            bool hasInterestingAcl = this.Context.TryGetValue(this.StoredAclKey, out acl);
             if (!hasInterestingAcl)
             {
                 Console.WriteLine("no interesting ACLs found");
