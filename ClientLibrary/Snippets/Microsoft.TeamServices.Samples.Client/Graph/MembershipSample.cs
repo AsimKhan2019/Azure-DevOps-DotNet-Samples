@@ -22,7 +22,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 1: create a group at the account level
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateVSTSGroup-AddRemoveUserMembership");
             GraphGroupCreationContext createGroupContext = new GraphGroupVstsCreationContext
             {
                 DisplayName = "Developers-" + Guid.NewGuid(),
@@ -37,7 +37,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 2: add the user
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "AddUserToGroup-AddRemoveUserMembership");
             GraphUserCreationContext addUserContext = new GraphUserPrincipalNameCreationContext
             {
                 PrincipalName = "jtseng@vscsi.us"
@@ -51,7 +51,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 3: Make the user a member of the group
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateMembershipUser");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateMembershipUser-AddRemoveUserMembership");
             GraphMembership graphMembership = graphClient.AddMembershipAsync(userDescriptor, groupDescriptor).Result;
 
             //
@@ -63,53 +63,56 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 5: Check to see if the user is a member of the group
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "CheckMembershipUser");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CheckMembershipExistenceUser");
             graphClient.CheckMembershipExistenceAsync(userDescriptor, groupDescriptor).SyncResult();
 
             //
             // Part 6: Get every group the subject(user) is a member of
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipsUserUp");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "BatchGetMembershipsUserUp");
             List<GraphMembership> membershipsForUser = graphClient.GetMembershipsAsync(userDescriptor).Result;
 
             //
             // Part 7: Get every member of the group
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipsGroupDown");
-            List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(groupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down.ToString()).Result; //Bug 967647: REST: GetMembershipsAsync shouldn't take direction as string, it should be the GraphTraversalDirection enum
+            ClientSampleHttpLogger.SetOperationName(this.Context, "BatchGetMembershipsGroupDown");
+            List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(groupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down).Result;
 
             //
             // Part 8: Remove member from the group
             // 
             ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteMembershipUser");
             graphClient.RemoveMembershipAsync(userDescriptor, groupDescriptor).SyncResult();
-            try {
+            try
+            {
+                ClientSampleHttpLogger.SetOperationName(this.Context, "CheckMembershipExistenceUserDeleted");
                 graphClient.CheckMembershipExistenceAsync(userDescriptor, groupDescriptor).SyncResult();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 Context.Log("User is no longer a member of the group:" + e.Message);
-			}
+            }
 
-			//
-			// Part 9: delete the group
-			// 
-
-			graphClient.DeleteGroupAsync(groupDescriptor).SyncResult();
+            //
+            // Part 9: delete the group
+            // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteGroup-AddRemoveUserMembership");
+            graphClient.DeleteGroupAsync(groupDescriptor).SyncResult();
 
             //
             // Part 10: remove the user
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteUser-AddRemoveUserMembership");
             graphClient.DeleteUserAsync(userDescriptor).SyncResult();
-            
+
             //
             // Try to get the deleted user
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipStateUser-AddRemoveUserMembership");
+            GraphMembershipState membershipState = graphClient.GetMembershipStateAsync(userDescriptor).Result;
             try
             {
-                newUser = graphClient.GetUserAsync(userDescriptor).Result;
-
-                // TODO: Disable no longer a field of GraphUser if (!newUser.Disabled) throw new Exception();
+                if (membershipState.Active) throw new Exception();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Context.Log("The deleted user is not disabled!");
             }
@@ -128,7 +131,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 1: create a group at the account level
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateVSTSGroup-AddRemoveVSTSGroupMembership");
             GraphGroupCreationContext createGroupContext = new GraphGroupVstsCreationContext
             {
                 DisplayName = "Developers-" + Guid.NewGuid(),
@@ -141,7 +144,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 2: create a second group at the account level
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "AddUserToGroup-AddRemoveVSTSGroupMembership");
             createGroupContext = new GraphGroupVstsCreationContext
             {
                 DisplayName = "Contractors",
@@ -166,20 +169,20 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 5: Check to see if the 'Contractors' group is a member of the 'Developers' group
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "CheckMembershipVSTSGroup");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CheckMembershipExistenceVSTSGroup");
             graphClient.CheckMembershipExistenceAsync(childGroupDescriptor, parentGroupDescriptor).SyncResult();
 
             //
             // Part 6: Get every group the subject('Contractors') is a member of
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipsVSTSGroupUp");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "BatchGetMembershipsVSTSGroupUp");
             List<GraphMembership> membershipsForUser = graphClient.GetMembershipsAsync(childGroupDescriptor).Result;
 
             //
             // Part 7: Get every member of the 'Developers' group
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipsVSTSGroupDown");
-            List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(parentGroupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down.ToString()).Result; //Bug 967647: REST: GetMembershipsAsync shouldn't take direction as string, it should be the GraphTraversalDirection enum
+            ClientSampleHttpLogger.SetOperationName(this.Context, "BatchGetMembershipsVSTSGroupDown");
+            List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(parentGroupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down).Result;
 
             //
             // Part 8: Remove member from the group
@@ -188,6 +191,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             graphClient.RemoveMembershipAsync(childGroupDescriptor, parentGroupDescriptor).SyncResult();
             try
             {
+                ClientSampleHttpLogger.SetOperationName(this.Context, "CheckMembershipExistenceVSTSGroupDeleted");
                 graphClient.CheckMembershipExistenceAsync(childGroupDescriptor, parentGroupDescriptor).SyncResult();
             }
             catch (Exception e)
@@ -198,7 +202,9 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 9: delete the groups
             // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteChildGroup-AddRemoveVSTSGroupMembership");
             graphClient.DeleteGroupAsync(childGroupDescriptor).SyncResult();
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteParentGroup-AddRemoveVSTSGroupMembership");
             graphClient.DeleteGroupAsync(parentGroupDescriptor).SyncResult();
         }
 
@@ -208,14 +214,14 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
         [ClientSampleMethod]
         public void AddRemoveAADGroupMembership()
         {
-			// Get the client
+            // Get the client
             VssConnection connection = Context.Connection;
             GraphHttpClient graphClient = connection.GetClient<GraphHttpClient>();
 
             //
             // Part 1: create a group at the account level
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateVSTSGroup-AddRemoveAADGroupMembership");
             GraphGroupCreationContext createGroupContext = new GraphGroupVstsCreationContext
             {
                 DisplayName = "Developers-" + Guid.NewGuid(),
@@ -228,7 +234,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 2: add the AAD group
             // 
-
+            ClientSampleHttpLogger.SetOperationName(this.Context, "AddUserToGroup-AddRemoveAADGroupMembership");
             GraphGroupCreationContext addAADGroupContext = new GraphGroupOriginIdCreationContext
             {
                 OriginId = "a42aad15-d654-4b16-9309-9ee34d5aacfb"
@@ -241,32 +247,32 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 3: Make the AAD group a member of the VSTS 'Developers' group
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateMembershipAADGroup");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateMembershipAADGroup-AddRemoveAADGroupMembership");
             GraphMembership graphMembership = graphClient.AddMembershipAsync(aadGroupDescriptor, parentGroupDescriptor).Result;
 
             //
             // Part 4: get the membership
             //
-            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipAADGroup");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipAADGroup-AddRemoveAADGroupMembership");
             graphMembership = graphClient.GetMembershipAsync(aadGroupDescriptor, parentGroupDescriptor).Result;
 
             //
             // Part 5: Check to see if the AAD group is a member of the VSTS 'Developers' group
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "CheckMembershipAADGroup");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CheckMembershipExistenceAADGroup");
             graphClient.CheckMembershipExistenceAsync(aadGroupDescriptor, parentGroupDescriptor).SyncResult();
 
             //
             // Part 6: Get every group the subject(AAD group) is a member of
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipsAADGroupDown");
+            ClientSampleHttpLogger.SetOperationName(this.Context, "BatchGetMembershipsAADGroupDown");
             List<GraphMembership> membershipsForUser = graphClient.GetMembershipsAsync(aadGroupDescriptor).Result;
 
             //
             // Part 7: Get every member of the VSTS 'Developers' group
             // 
-            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipsAADGroupUp");
-            List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(parentGroupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down.ToString()).Result; //Bug 967647: REST: GetMembershipsAsync shouldn't take direction as string, it should be the GraphTraversalDirection enum
+            ClientSampleHttpLogger.SetOperationName(this.Context, "BatchGetMembershipsAADGroupUp");
+            List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(parentGroupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down).Result;
 
             //
             // Part 8: Remove member from the group
@@ -275,6 +281,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             graphClient.RemoveMembershipAsync(aadGroupDescriptor, parentGroupDescriptor).SyncResult();
             try
             {
+                ClientSampleHttpLogger.SetOperationName(this.Context, "CheckMembershipExistenceAADGroupDeleted");
                 graphClient.CheckMembershipExistenceAsync(aadGroupDescriptor, parentGroupDescriptor).SyncResult();
             }
             catch (Exception e)
@@ -285,7 +292,9 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 9: delete the groups
             // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteAADGroup-AddRemoveAADGroupMembership");
             graphClient.DeleteGroupAsync(aadGroupDescriptor).SyncResult();
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteParentGroup-AddRemoveAADGroupMembership");
             graphClient.DeleteGroupAsync(parentGroupDescriptor).SyncResult();
         }
     }
