@@ -11,7 +11,6 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
 
     using Microsoft.TeamFoundation.DistributedTask.WebApi;
@@ -63,8 +62,6 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
                 Tasks = new List<TaskGroupStep>() { taskGroupStep },
                 Category = "Deploy",
                 Name = "My PowerShell TG",
-                Visibility = { "Build", "Release" },
-                DefinitionType = "metaTask",
                 InstanceNameFormat = "Task group: TG",
                 Version = new TaskVersion { IsTest = false, Major = 1, Minor = 0, Patch = 0 }
             };
@@ -110,13 +107,13 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
         }
 
         /// <summary>
-        /// The list all task groups.
+        /// Get task group.
         /// </summary>
         /// <returns>
         /// The <see cref="List"/>.
         /// </returns>
         [ClientSampleMethod]
-        public List<TaskGroup> ListAllTaskGroups()
+        public TaskGroup GetTaskGroup()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
@@ -124,15 +121,12 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
             VssConnection connection = Context.Connection;
             TaskAgentHttpClient taskClient = connection.GetClient<TaskAgentHttpClient>();
 
-            // List all task groups
-            List<TaskGroup> taskGroups = taskClient.GetTaskGroupsAsync(project: projectName).Result;
+            // Get task group for a given taskgroupId and version.
+            TaskGroup taskGroup = taskClient.GetTaskGroupAsync(project: projectName, taskGroupId: addedTaskGroupId, versionSpec: "1.0").Result;
 
-            foreach (TaskGroup taskGroup in taskGroups)
-            {
-                Console.WriteLine("{0} {1}", taskGroup.Id.ToString().PadLeft(6), taskGroup.Name);
-            }
+            Console.WriteLine("{0} {1}", taskGroup.Id.ToString().PadLeft(6), taskGroup.Name);
 
-            return taskGroups;
+            return taskGroup;
         }
 
         /// <summary>
