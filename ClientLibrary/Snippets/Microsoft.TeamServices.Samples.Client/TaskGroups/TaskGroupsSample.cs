@@ -110,7 +110,7 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
         /// Get task group.
         /// </summary>
         /// <returns>
-        /// The <see cref="List"/>.
+        /// The <see cref="TaskGroup"/>.
         /// </returns>
         [ClientSampleMethod]
         public TaskGroup GetTaskGroup()
