@@ -195,6 +195,18 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
 
             // Part 5: remove the group
             graphClient.DeleteGroupAsync(groupDescriptor).SyncResult();
+
+            // Try to get the deleted group
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetMembershipStateAADGroup");
+            membershipState = graphClient.GetMembershipStateAsync(groupDescriptor).Result;
+            try
+            {
+                if (membershipState.Active) throw new Exception();
+            }
+            catch (Exception e)
+            {
+                Context.Log("The deleted group is not disabled!");
+            }
         }
 
         /// <summary>
