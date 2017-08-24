@@ -375,12 +375,12 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
         }
 
         /// <summary>
-        /// Follow a work item (get notified about certain updates to a work item)
+        /// Follow a work item (get notified about certain updates to a work item),
+        /// and then unfollow the same workitem (stop getting notified about the certain updates to the above work item)
         /// </summary>
-        /// <param name="workItemId"></param>
         /// <returns></returns>
         [ClientSampleMethod]
-        public NotificationSubscription FollowWorkItem()
+        public NotificationSubscription FollowUnfollowWorkItem()
         {
             NotificationSubscription newFollowSubscription;
 
@@ -406,6 +406,9 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
             newFollowSubscription  = notificationClient.CreateSubscriptionAsync(createParams).Result;
 
             LogSubscription(newFollowSubscription);
+            
+            // Unfollow the above workitem
+            notificationClient.DeleteSubscriptionAsync(newFollowSubscription.Id).SyncResult();
 
             // Cleanup the temporary work item
             using (new ClientSampleHttpLoggerOutputSuppression())
