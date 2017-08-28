@@ -140,7 +140,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
-            // Get a manual interventions
+            // Get a manual intervention
             ManualIntervention manualIntervention = releaseClient.GetManualInterventionAsync(project: projectName, releaseId: this._newlyCreatedRelease.Id, manualInterventionId: this._manualInterventions.FirstOrDefault().Id).Result;
             Console.WriteLine("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
 
@@ -162,7 +162,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
                 Comment = "Good to resume"
             };
 
-            // Get a manual interventions
+            // Update a manual intervention
             ManualIntervention manualIntervention = releaseClient.UpdateManualInterventionAsync(manualInterventionUpdateMetadata: manualInterventionUpdateMetadata, project: projectName, releaseId: this._newlyCreatedRelease.Id, manualInterventionId: this._manualInterventions.FirstOrDefault().Id).Result;
             Console.WriteLine("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
 
