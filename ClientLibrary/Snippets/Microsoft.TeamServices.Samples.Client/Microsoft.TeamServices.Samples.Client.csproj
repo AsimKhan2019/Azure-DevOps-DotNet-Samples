@@ -175,6 +175,7 @@
     <Compile Include="Graph\GroupsSample.cs" />
     <Compile Include="Graph\UsersSample.cs" />
     <Compile Include="Notification\*.cs" />
+    <Compile Include="Release\ManualInterventionSample.cs" />
     <Compile Include="Release\ReleasesSample.cs" />
     <Compile Include="Security\AccessControlListsSample.cs" />
     <Compile Include="Security\TokenHelpers.cs" />
