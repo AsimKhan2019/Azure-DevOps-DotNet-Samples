@@ -20,6 +20,97 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         private int newlyCreatedReleaseDefinitionId = 0;
 
         [ClientSampleMethod]
+        public ReleaseDefinition CreateReleaseDefinition()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+            string currentUserId = ClientSampleHelpers.GetCurrentUserId(this.Context).ToString();
+
+            ReleaseDefinition definition = new ReleaseDefinition()
+            {
+                Name = releaseDefinitionName,
+                Revision = 1,
+                Environments = new List<ReleaseDefinitionEnvironment>()
+                {
+                    new ReleaseDefinitionEnvironment()
+                    {
+                        Name = "PROD",
+                        DeployPhases = new List<DeployPhase>()
+                            {
+                                new AgentBasedDeployPhase()
+                                {
+                                    Name = "Run on agent",
+                                    Rank = 1,
+                                    DeploymentInput = new AgentDeploymentInput()
+                                    {
+                                      QueueId = 1
+                                    }
+                                }
+                            },
+                        PreDeployApprovals = new ReleaseDefinitionApprovals()
+                        {
+                            Approvals = new List<ReleaseDefinitionApprovalStep>()
+                            {
+                                new ReleaseDefinitionApprovalStep()
+                                {
+                                    IsAutomated = false,
+                                    Rank = 1,
+                                    Approver = new IdentityRef() { Id = currentUserId }
+                                },
+                            }
+                        },
+                        PostDeployApprovals = new ReleaseDefinitionApprovals()
+                        {
+                            Approvals = new List<ReleaseDefinitionApprovalStep>()
+                            {
+                                new ReleaseDefinitionApprovalStep()
+                                {
+                                    IsAutomated = true,
+                                    Rank = 1
+                                }
+                            }
+                        },
+                        RetentionPolicy = new EnvironmentRetentionPolicy()
+                        {
+                            DaysToKeep = 30,
+                            ReleasesToKeep = 3,
+                            RetainBuild = true
+                        }
+                    }
+                }
+            };
+
+            // Get a release client instance
+            VssConnection connection = Context.Connection;
+            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
+
+            // create a release definition
+            ReleaseDefinition releaseDefinition = releaseClient.CreateReleaseDefinitionAsync(project: projectName, releaseDefinition: definition).Result;
+
+            newlyCreatedReleaseDefinitionId = releaseDefinition.Id;
+
+            Console.WriteLine("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
+
+            return releaseDefinition;
+        }
+
+        [ClientSampleMethod]
+        public ReleaseDefinition GetReleaseDefinition()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a release client instance
+            VssConnection connection = Context.Connection;
+            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
+
+            // Show a release definitions
+            ReleaseDefinition releaseDefinition = releaseClient.GetReleaseDefinitionAsync(project: projectName, definitionId: newlyCreatedReleaseDefinitionId).Result;
+
+            Console.WriteLine("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
+
+            return releaseDefinition;
+        }
+
+        [ClientSampleMethod]
         public List<ReleaseDefinition> ListAllReleaseDefinitions()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
@@ -80,91 +171,6 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
-        public ReleaseDefinition CreateReleaseDefinition()
-        {
-            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
-
-            ReleaseDefinition definition = new ReleaseDefinition()
-            {
-                Name = releaseDefinitionName,
-                Revision = 1,
-                Environments = new List<ReleaseDefinitionEnvironment>()
-                {
-                    new ReleaseDefinitionEnvironment()
-                    {
-                        Name = "PROD",
-                        DeployPhases = new List<DeployPhase>()
-                            {
-                                new AgentBasedDeployPhase()
-                                {
-                                    Name = "Run on agent",
-                                    Rank = 1
-                                }
-                            },
-                        PreDeployApprovals = new ReleaseDefinitionApprovals()
-                        {
-                            Approvals = new List<ReleaseDefinitionApprovalStep>()
-                            {
-                                new ReleaseDefinitionApprovalStep()
-                                {
-                                    IsAutomated = true,
-                                    Rank = 1
-                                }
-                            }
-                        },
-                        PostDeployApprovals = new ReleaseDefinitionApprovals()
-                        {
-                            Approvals = new List<ReleaseDefinitionApprovalStep>()
-                            {
-                                new ReleaseDefinitionApprovalStep()
-                                {
-                                    IsAutomated = true,
-                                    Rank = 1
-                                }
-                            }
-                        },
-                        RetentionPolicy = new EnvironmentRetentionPolicy()
-                        {
-                            DaysToKeep = 30,
-                            ReleasesToKeep = 3,
-                            RetainBuild = true
-                        }
-                    }
-                }
-            };
-
-            // Get a release client instance
-            VssConnection connection = Context.Connection;
-            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
-
-            // create a release definition
-            ReleaseDefinition releaseDefinition = releaseClient.CreateReleaseDefinitionAsync(project: projectName, releaseDefinition: definition).Result;
-
-            newlyCreatedReleaseDefinitionId = releaseDefinition.Id;
-
-            Console.WriteLine("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
-
-            return releaseDefinition;
-        }
-
-        [ClientSampleMethod]
-        public ReleaseDefinition GetReleaseDefinition()
-        {
-            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
-
-            // Get a release client instance
-            VssConnection connection = Context.Connection;
-            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
-
-            // Show a release definitions
-            ReleaseDefinition releaseDefinition = releaseClient.GetReleaseDefinitionAsync(project: projectName, definitionId: newlyCreatedReleaseDefinitionId).Result;
-
-            Console.WriteLine("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
-
-            return releaseDefinition;
-        }
-
-        [ClientSampleMethod]
         public ReleaseDefinition UpdateReleaseDefinition()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
@@ -210,6 +216,43 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
+        public WebApiRelease CreateRelease()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a release client instance
+            VssConnection connection = Context.Connection;
+            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
+
+            WebApiRelease release = CreateRelease(releaseClient, newlyCreatedReleaseDefinitionId, projectName);
+
+            Console.WriteLine("{0} {1}", release.Id.ToString().PadLeft(6), release.Name);
+
+            return release;
+        }
+
+        [ClientSampleMethod]
+        public WebApiRelease GetRelease()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a release client instance
+            VssConnection connection = Context.Connection;
+            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
+
+            List<WebApiRelease> releases = releaseClient.GetReleasesAsync(project: projectName).Result;
+
+            int releaseId = releases.FirstOrDefault().Id;
+
+            // Show a release
+            WebApiRelease release = releaseClient.GetReleaseAsync(project: projectName, releaseId: releaseId).Result;
+
+            Console.WriteLine("{0} {1}", release.Id.ToString().PadLeft(6), release.Name);
+
+            return release;
+        }
+
+        [ClientSampleMethod]
         public IEnumerable<WebApiRelease> ListAllReleases()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
@@ -246,43 +289,6 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             }
 
             return releases;
-        }
-
-        [ClientSampleMethod]
-        public WebApiRelease GetRelease()
-        {
-            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
-
-            // Get a release client instance
-            VssConnection connection = Context.Connection;
-            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
-
-            List<WebApiRelease> releases = releaseClient.GetReleasesAsync(project: projectName).Result;
-
-            int releaseId = releases.FirstOrDefault().Id;
-
-            // Show a release
-            WebApiRelease release = releaseClient.GetReleaseAsync(project: projectName, releaseId: releaseId).Result;
-
-            Console.WriteLine("{0} {1}", release.Id.ToString().PadLeft(6), release.Name);
-
-            return release;
-        }
-
-        [ClientSampleMethod]
-        public WebApiRelease CreateRelease()
-        {
-            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
-
-            // Get a release client instance
-            VssConnection connection = Context.Connection;
-            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
-
-            WebApiRelease release = CreateRelease(releaseClient, newlyCreatedReleaseDefinitionId, projectName);
-
-            Console.WriteLine("{0} {1}", release.Id.ToString().PadLeft(6), release.Name);
-
-            return release;
         }
 
         [ClientSampleMethod]
@@ -486,7 +492,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
         }
 
-        private static WebApiRelease CreateRelease(ReleaseHttpClient releaseClient, int releaseDefinitionId, string projectName)
+        public static WebApiRelease CreateRelease(ReleaseHttpClient releaseClient, int releaseDefinitionId, string projectName)
         {
             BuildVersion instanceReference = new BuildVersion { Id = "2" };
             ArtifactMetadata artifact = new ArtifactMetadata { Alias = "Fabrikam.CI", InstanceReference = instanceReference };
