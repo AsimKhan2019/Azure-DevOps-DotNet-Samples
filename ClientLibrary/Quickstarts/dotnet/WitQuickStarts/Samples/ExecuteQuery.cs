@@ -33,6 +33,12 @@ namespace WitQuickStarts.Samples
             _project = "project name";
         }
 
+        public ExecuteQuery(string url, string pat, string project)
+        {
+            _uri = url;
+            _personalAccessToken = pat;
+            _project = project;
+        }
         /// <summary>
         /// Execute a WIQL query to reutnr a list of bugs using the .NET client library
         /// </summary>
