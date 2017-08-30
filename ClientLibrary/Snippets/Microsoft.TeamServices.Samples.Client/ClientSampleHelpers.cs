@@ -2,10 +2,12 @@
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.TeamServices.Samples.Client
@@ -132,6 +134,73 @@ namespace Microsoft.TeamServices.Samples.Client
         public static String GetSampleBinaryFile()
         {
             return GetSampleFilePath("Microsoft.TeamServices.Samples.Client.WorkItemTracking.SampleFile.png");
+        }
+
+        public static void Retry(TimeSpan timeout, TimeSpan sleepInterval, Func<bool> action)
+        {
+            TimeSpan s_marginOfError = TimeSpan.FromMilliseconds(30);
+
+            if (timeout <= TimeSpan.Zero)
+            {
+                throw new ArgumentException("Timeout value must be a positive timespan.", "timeout");
+            }
+
+            if (sleepInterval < TimeSpan.Zero)
+            {
+                throw new ArgumentException("SleepInterval value must be >= TimeSpan.Zero.", "sleepInterval");
+            }
+
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action), $"{nameof(action)} must not be null.");
+            }
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            HashSet<String> exceptionsSeen = new HashSet<string>();
+
+            while (true)
+            {
+                // Track any exception for this iteration.
+                Exception exception = null;
+                try
+                {
+                    if (action())
+                    {
+                        // Action reported success.
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Save for later.
+                    exception = ex;
+                    String exceptionString = ex.ToString();
+                    if (!exceptionsSeen.Contains(exceptionString))
+                    {
+                        // Don't spam the log.
+                        exceptionsSeen.Add(exceptionString);
+                    }
+                }
+                TimeSpan timeLeft = timeout - stopwatch.Elapsed;
+                if(timeLeft <= s_marginOfError)
+                {
+                    // If an exception was handled this iteration, throw it again.
+                    if (exception != null)
+                    {
+                        throw exception;
+                    }
+                    string message = $"Retry reached timeout of {timeout}";
+                    throw new TimeoutException(message);
+                }
+
+                // Sleep if we are supposed to.
+                if (sleepInterval > TimeSpan.Zero && timeLeft > TimeSpan.Zero)
+                {
+                    // Don't sleep longer than timeLeft.
+                    TimeSpan sleepTime = sleepInterval < timeLeft ? sleepInterval : timeLeft;
+                    Thread.Sleep(sleepTime);
+                }
+            }
         }
 
         /// <summary>
