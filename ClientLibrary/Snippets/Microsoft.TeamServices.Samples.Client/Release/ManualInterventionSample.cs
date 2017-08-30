@@ -112,7 +112,6 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         [ClientSampleMethod]
         public IList<ManualIntervention> GetManualInterventions()
         {
-            Debugger.Launch();
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
             // Get a release client instance
