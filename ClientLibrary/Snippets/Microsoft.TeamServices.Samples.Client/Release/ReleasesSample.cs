@@ -501,7 +501,6 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         [ClientSampleMethod]
         public IEnumerable<Deployment> ListDeploymentsForAGivenDefinitionId()
         {
-            Debugger.Launch();
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
             // Get a release client instance
