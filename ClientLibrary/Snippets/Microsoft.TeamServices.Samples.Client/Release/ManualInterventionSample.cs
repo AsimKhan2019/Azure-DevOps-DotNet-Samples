@@ -2,9 +2,7 @@
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Contracts;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Contracts.Conditions;
@@ -20,10 +18,11 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         private const string releaseDefinitionName = "Fabrikam-web-with-MI";
         private int _newlyCreatedReleaseDefinitionId = 0;
         private IList<ManualIntervention> _manualInterventions;
-        private WebApiRelease _newlyCreatedRelease;
+        private WebApiRelease _newlyCreatedRelease1;
+        private WebApiRelease _newlyCreatedRelease2;
 
         [ClientSampleMethod]
-        public WebApiRelease CreateReleaseWithManualIntervention()
+        public void CreateReleaseWithManualIntervention()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
@@ -102,11 +101,11 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             ReleaseDefinition releaseDefinition = releaseClient.CreateReleaseDefinitionAsync(project: projectName, releaseDefinition: definition).Result;
             this._newlyCreatedReleaseDefinitionId = releaseDefinition.Id;
 
-            this._newlyCreatedRelease = ReleasesSample.CreateRelease(releaseClient, _newlyCreatedReleaseDefinitionId, projectName);
+            this._newlyCreatedRelease1 = ReleasesSample.CreateRelease(releaseClient, _newlyCreatedReleaseDefinitionId, projectName);
+            this._newlyCreatedRelease2 = ReleasesSample.CreateRelease(releaseClient, _newlyCreatedReleaseDefinitionId, projectName);
 
-            Console.WriteLine("{0} {1}", _newlyCreatedRelease.Id.ToString().PadLeft(6), _newlyCreatedRelease.Name);
-
-            return _newlyCreatedRelease;
+            Console.WriteLine("{0} {1}", _newlyCreatedRelease1.Id.ToString().PadLeft(6), _newlyCreatedRelease1.Name);
+            Console.WriteLine("{0} {1}", _newlyCreatedRelease2.Id.ToString().PadLeft(6), _newlyCreatedRelease2.Name);
         }
 
         [ClientSampleMethod]
@@ -118,8 +117,18 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
+            IList<ManualIntervention> manualInterventions = null;
+            
             // Get all manual interventions
-            IList<ManualIntervention> manualInterventions = releaseClient.GetManualInterventionsAsync(project: projectName, releaseId: this._newlyCreatedRelease.Id).Result;
+            ClientSampleHelpers.Retry(
+            TimeSpan.FromMinutes(2),
+            TimeSpan.FromSeconds(5),
+            () =>
+                {
+                  manualInterventions = releaseClient.GetManualInterventionsAsync(project: projectName, releaseId: this._newlyCreatedRelease1.Id).Result;
+                                   return manualInterventions.Count > 0;
+                });
+
             foreach (ManualIntervention manualIntervention in manualInterventions)
             {
                 Console.WriteLine("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
@@ -140,14 +149,14 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
             // Get a manual intervention
-            ManualIntervention manualIntervention = releaseClient.GetManualInterventionAsync(project: projectName, releaseId: this._newlyCreatedRelease.Id, manualInterventionId: this._manualInterventions.FirstOrDefault().Id).Result;
+            ManualIntervention manualIntervention = releaseClient.GetManualInterventionAsync(project: projectName, releaseId: this._newlyCreatedRelease1.Id, manualInterventionId: this._manualInterventions.FirstOrDefault().Id).Result;
             Console.WriteLine("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
 
             return manualIntervention;
         }
 
         [ClientSampleMethod]
-        public ManualIntervention UpdateManualIntervention()
+        public ManualIntervention ResumeManualIntervention()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
@@ -162,7 +171,41 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             };
 
             // Update a manual intervention
-            ManualIntervention manualIntervention = releaseClient.UpdateManualInterventionAsync(manualInterventionUpdateMetadata: manualInterventionUpdateMetadata, project: projectName, releaseId: this._newlyCreatedRelease.Id, manualInterventionId: this._manualInterventions.FirstOrDefault().Id).Result;
+            ManualIntervention manualIntervention = releaseClient.UpdateManualInterventionAsync(manualInterventionUpdateMetadata: manualInterventionUpdateMetadata, project: projectName, releaseId: this._newlyCreatedRelease1.Id, manualInterventionId: this._manualInterventions.FirstOrDefault().Id).Result;
+            Console.WriteLine("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
+
+            return manualIntervention;
+        }
+
+        [ClientSampleMethod]
+        public ManualIntervention RejectManualIntervention()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a release client instance
+            VssConnection connection = Context.Connection;
+            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
+
+            ManualInterventionUpdateMetadata manualInterventionUpdateMetadata = new ManualInterventionUpdateMetadata()
+            {
+                Status = ManualInterventionStatus.Rejected,
+                Comment = "Reject MI"
+            };
+
+            IList<ManualIntervention> manualInterventions = null;
+
+            // Get all manual interventions
+            ClientSampleHelpers.Retry(
+            TimeSpan.FromMinutes(2),
+            TimeSpan.FromSeconds(5),
+            () =>
+            {
+                manualInterventions = releaseClient.GetManualInterventionsAsync(project: projectName, releaseId: this._newlyCreatedRelease2.Id).Result;
+                return manualInterventions.Count > 0;
+            });
+
+            // Update a manual intervention
+            ManualIntervention manualIntervention = releaseClient.UpdateManualInterventionAsync(manualInterventionUpdateMetadata: manualInterventionUpdateMetadata, project: projectName, releaseId: this._newlyCreatedRelease2.Id, manualInterventionId: manualInterventions.FirstOrDefault().Id).Result;
             Console.WriteLine("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
 
             return manualIntervention;
@@ -181,6 +224,5 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             releaseClient.DeleteReleaseDefinitionAsync(project: projectName, definitionId: this._newlyCreatedReleaseDefinitionId).SyncResult();
 
         }
-        
     }
 }
