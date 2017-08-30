@@ -479,6 +479,47 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         }
 
         [ClientSampleMethod]
+        public IEnumerable<Deployment> ListDeployments()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a release client instance
+            VssConnection connection = Context.Connection;
+            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
+
+            List<Deployment> deployments = releaseClient.GetDeploymentsAsync(project: projectName).Result;
+
+            // Show the deployments
+            foreach (Deployment deployment in deployments)
+            {
+                Console.WriteLine("{0} {1}", deployment.Id.ToString().PadLeft(6), deployment.Release.Name);
+            }
+
+            return deployments;
+        }
+
+        [ClientSampleMethod]
+        public IEnumerable<Deployment> ListDeploymentsForAGivenDefinitionId()
+        {
+            Debugger.Launch();
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a release client instance
+            VssConnection connection = Context.Connection;
+            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
+
+            List<Deployment> deployments = releaseClient.GetDeploymentsAsync(project: projectName, definitionId: newlyCreatedReleaseDefinitionId).Result;
+
+            // Show the deployments
+            foreach (Deployment deployment in deployments)
+            {
+                Console.WriteLine("{0} {1}", deployment.Id.ToString().PadLeft(6), deployment.Release.Name);
+            }
+
+            return deployments;
+        }
+
+        [ClientSampleMethod]
         public void DeleteReleaseDefinition()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
