@@ -375,7 +375,7 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
         }
 
         /// <summary>
-        /// Follow a work item (get notified about certain updates to a work item),
+        /// Follow a work item (get notified about certain updates to a work item)
         /// </summary>
         /// <returns></returns>
         [ClientSampleMethod]
@@ -405,7 +405,7 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
             newFollowSubscription  = notificationClient.CreateSubscriptionAsync(createParams).Result;
 
             LogSubscription(newFollowSubscription);
-            
+
             // Cleanup the temporary work item
             using (new ClientSampleHttpLoggerOutputSuppression())
             {
