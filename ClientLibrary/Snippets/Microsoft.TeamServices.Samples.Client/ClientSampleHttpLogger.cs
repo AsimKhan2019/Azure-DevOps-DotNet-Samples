@@ -41,7 +41,14 @@ namespace Microsoft.TeamServices.Samples.Client
             "x-FRAME-OPTIONS",
             "x-Content-Type-Options",
             "x-AspNet-Version",
-            "server"
+            "server",
+            "pragma",
+            "vary",
+            "x-MSEdge-Ref",
+            "cache-Control",
+            "date",
+            "user-Agent",
+            "accept-Language"
         };
 
         private static HashSet<string> s_combinableHeaders = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
@@ -112,21 +119,41 @@ namespace Microsoft.TeamServices.Samples.Client
                         }
                         catch (Exception) { }
 
+                        ApiResponseMetadata responseData = new ApiResponseMetadata()
+                        {
+                            Body = responseBody,
+                            Headers = responseHeaders
+                        };
+
+                        Dictionary<string, object> requestParameters = new Dictionary<string, object>
+                        {
+                            { "body", requestBody }
+                        };
+                        foreach (var rh in requestHeaders)
+                        {
+                            requestParameters.Add(rh.Key, rh.Value);
+                        }
+
+                        if (!requestParameters.ContainsKey("account"))
+                        {
+                            requestParameters["account"] = "fabrikam";
+                        }
+
                         ApiRequestResponseMetdata data = new ApiRequestResponseMetdata()
                         {
                             Area = runnableMethod.Area,
                             Resource = runnableMethod.Resource,
                             HttpMethod = request.Method.ToString().ToUpperInvariant(),
                             RequestUrl = request.RequestUri.ToString(),
-                            RequestHeaders = requestHeaders,
-                            RequestBody = requestBody,
-                            StatusCode = (int)response.StatusCode,
-                            ResponseHeaders = responseHeaders,
-                            ResponseBody = responseBody,
+                            Parameters = requestParameters,
+                            Responses = new Dictionary<string, ApiResponseMetadata>()
+                            {
+                                {  ((int)response.StatusCode).ToString(), responseData }
+                            },                            
                             Generated = true      
                         };
 
-                        string outputPath = Path.Combine(baseOutputPath.FullName, data.Area, data.Resource);
+                        string outputPath = Path.Combine(baseOutputPath.FullName, char.ToLower(data.Area[0]) + data.Area.Substring(1), char.ToLower(data.Resource[0]) + data.Resource.Substring(1));
                         string outputFileName = operationName + ".json";
 
                         DirectoryInfo outputDirectory = Directory.CreateDirectory(outputPath);
@@ -228,28 +255,32 @@ namespace Microsoft.TeamServices.Samples.Client
     [DataContract]
     class ApiRequestResponseMetdata : ClientSampleMethodInfo
     {
-        [DataMember(Name = "method")]
+        [DataMember(Name = "x-vss-request-method")]
         public String HttpMethod;
 
-        [DataMember]
+        [DataMember(Name = "x-vss-request-url")]
         public String RequestUrl;
 
         [DataMember]
-        public Dictionary<String, object> RequestHeaders;
-
-        [DataMember(EmitDefaultValue = false)]
-        public Object RequestBody;
+        public Dictionary<string, object> Parameters;
 
         [DataMember]
-        public int StatusCode;
-
-        [DataMember]
-        public Dictionary<String, object> ResponseHeaders;
-
-        [DataMember(EmitDefaultValue = false)]
-        public Object ResponseBody;
+        public Dictionary<string, ApiResponseMetadata> Responses;
 
         [DataMember(Name = "x-vss-generated")]
         public bool Generated;
+
+        [DataMember(Name = "x-vss-format")]
+        public int Format { get { return 1; } }
+    }
+
+    [DataContract]
+    class ApiResponseMetadata
+    {
+        [DataMember]
+        public Dictionary<String, object> Headers;
+
+        [DataMember(EmitDefaultValue = false)]
+        public Object Body;
     }
 }
