@@ -64,9 +64,6 @@ namespace Microsoft.TeamServices.Samples.Client
 
                             if (!string.IsNullOrEmpty(runnableMethod.Area) && !string.IsNullOrEmpty(runnableMethod.Resource))
                             {
-                                runnableMethod.Area = char.ToUpper(runnableMethod.Area[0]) + runnableMethod.Area.Substring(1);
-                                runnableMethod.Resource = char.ToUpper(runnableMethod.Resource[0]) + runnableMethod.Resource.Substring(1);
-
                                 runnableMethod.MethodBase = m;
                                 runnableMethods.Add(runnableMethod);
                             }
