@@ -1,35 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
+﻿using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.Common;
-using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
-using Microsoft.VisualStudio.Services.WebApi.Patch;
 using Microsoft.VisualStudio.Services.WebApi;
-using System.Net.Http.Headers;
-using System.Net.Http;
+using Microsoft.VisualStudio.Services.WebApi.Patch;
+using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
 using Newtonsoft.Json;
+using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace WitQuickStarts.Samples
-{  
+{
     public class CreateBug 
     {
         readonly string _uri;
         readonly string _personalAccessToken;
         readonly string _project;
 
-        /// <summary>
-        /// Constructor. Manaully set values to match your account.
-        /// </summary>
         public CreateBug()
         {
             _uri = "https://accountname.visualstudio.com";
             _personalAccessToken = "personal access token";
             _project = "project name";
+        }
+
+        /// <summary>
+        /// Constructor. Manaully set values to match your account.
+        /// </summary>
+        public CreateBug(string url, string pat, string project)
+        {
+            _uri = url;
+            _personalAccessToken = pat;
+            _project = project;
         }
 
         /// <summary>
