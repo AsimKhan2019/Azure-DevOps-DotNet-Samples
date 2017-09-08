@@ -149,8 +149,9 @@ namespace Microsoft.TeamServices.Samples.Client
                             Responses = new Dictionary<string, ApiResponseMetadata>()
                             {
                                 {  ((int)response.StatusCode).ToString(), responseData }
-                            },                            
-                            Generated = true      
+                            },
+                            Generated = true,
+                            GeneratedDate = DateTime.Now
                         };
 
                         string outputPath = Path.Combine(baseOutputPath.FullName, char.ToLower(data.Area[0]) + data.Area.Substring(1), char.ToLower(data.Resource[0]) + data.Resource.Substring(1));
@@ -269,6 +270,9 @@ namespace Microsoft.TeamServices.Samples.Client
 
         [DataMember(Name = "x-vss-generated")]
         public bool Generated;
+
+        [DataMember(Name = "x-vss-generated-date")]
+        public DateTime GeneratedDate;
 
         [DataMember(Name = "x-vss-format")]
         public int Format { get { return 1; } }
