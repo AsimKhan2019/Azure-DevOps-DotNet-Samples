@@ -256,10 +256,10 @@ namespace Microsoft.TeamServices.Samples.Client
     [DataContract]
     class ApiRequestResponseMetdata : ClientSampleMethodInfo
     {
-        [DataMember(Name = "x-vss-request-method")]
+        [DataMember(Name = "x-ms-vss-request-method")]
         public String HttpMethod;
 
-        [DataMember(Name = "x-vss-request-url")]
+        [DataMember(Name = "x-ms-vss-request-url")]
         public String RequestUrl;
 
         [DataMember]
@@ -268,13 +268,13 @@ namespace Microsoft.TeamServices.Samples.Client
         [DataMember]
         public Dictionary<string, ApiResponseMetadata> Responses;
 
-        [DataMember(Name = "x-vss-generated")]
+        [DataMember(Name = "x-ms-vss-generated")]
         public bool Generated;
 
-        [DataMember(Name = "x-vss-generated-date")]
+        [DataMember(Name = "x-ms-vss-generated-date")]
         public DateTime GeneratedDate;
 
-        [DataMember(Name = "x-vss-format")]
+        [DataMember(Name = "x-ms-vss-format")]
         public int Format { get { return 1; } }
     }
 

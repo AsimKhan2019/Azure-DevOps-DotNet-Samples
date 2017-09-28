@@ -109,14 +109,18 @@ namespace Microsoft.TeamServices.Samples.Client
 
             Dictionary<ClientSample, IEnumerable<RunnableClientSampleMethod>> runnableMethodsBySample = GetRunnableClientSampleMethods(area, resource);
 
-            if (runnableMethodsBySample.Any())
+            if (!runnableMethodsBySample.Any())
+            {
+                Console.WriteLine("No samples found to run.");
+            }
+            else
             {
                 ClientSampleContext context = new ClientSampleContext(connectionUrl, credentials);
 
                 Console.WriteLine("Start running client samples...");
                 Console.WriteLine("");
                 Console.WriteLine("  URL     : {0}", connectionUrl);
-                Console.WriteLine("  Area    : {0}", (area  == null ? "(all)" : area));
+                Console.WriteLine("  Area    : {0}", (area == null ? "(all)" : area));
                 Console.WriteLine("  Resource: {0}", (resource == null ? "(all)" : resource));
                 Console.WriteLine("  Output  : {0}", (outputPath == null ? "(disabled)" : outputPath.FullName));
                 Console.WriteLine("");
