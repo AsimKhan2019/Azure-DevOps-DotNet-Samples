@@ -34,5 +34,29 @@ namespace Microsoft.TeamServices.Samples.Client.Tfvc
 
             return items;
         }
+
+        [ClientSampleMethod]
+        public TfvcItem DownloadItem()
+        {
+            VssConnection connection = this.Context.Connection;
+            TfvcHttpClient tfvcClient = connection.GetClient<TfvcHttpClient>();
+
+            // get the items in the root of the project
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+            string scopePath = $"$/{projectName}/";
+            List<TfvcItem> items = tfvcClient.GetItemsAsync(scopePath: scopePath, recursionLevel: VersionControlRecursionType.OneLevel).Result;
+
+            foreach (TfvcItem item in items)
+            {
+                if (!item.IsFolder)
+                {
+                    Console.WriteLine("You can download file contents for {0} at {1}", item.Path, item.Url);
+                    return item;
+                }
+            }
+
+            Console.WriteLine("No files found in the root.");
+            return null;
+        }
     }
 }
