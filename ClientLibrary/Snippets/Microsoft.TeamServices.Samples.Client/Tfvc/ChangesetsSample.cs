@@ -86,5 +86,86 @@ namespace Microsoft.TeamServices.Samples.Client.Tfvc
 
             return null;
         }
+
+        [ClientSampleMethod]
+        public TfvcChangesetRef CreateChangeMultiFile()
+        {
+            VssConnection connection = this.Context.Connection;
+            TfvcHttpClient tfvcClient = connection.GetClient<TfvcHttpClient>();
+
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+            DateTime time = DateTime.UtcNow;
+            string destinationFilePath1 = string.Format("$/{0}/example-file-{1}.1.txt", projectName, time.ToString("yyyy-MM-dd-HH-mm-ss-ff"));
+            string destinationFileContents1 = string.Format("File 1 contents as of {0}", time);
+            string destinationFilePath2 = string.Format("$/{0}/example-file-{1}.2.txt", projectName, time.ToString("yyyy-MM-dd-HH-mm-ss-ff"));
+            string destinationFileContents2 = string.Format("File 2 contents as of {0}", time);
+
+            TfvcChangeset changeset = new TfvcChangeset()
+            {
+                Changes = new[]
+                {
+                    new TfvcChange()
+                    {
+                        ChangeType = VersionControlChangeType.Add,
+                        Item = new TfvcItem()
+                        {
+                            Path = destinationFilePath1,
+                            ContentMetadata = new FileContentMetadata()
+                            {
+                                Encoding = Encoding.UTF8.WindowsCodePage,
+                                ContentType = "text/plain",
+                            }
+                        },
+                        NewContent = new ItemContent()
+                        {
+                            Content = destinationFileContents1,
+                            ContentType = ItemContentType.RawText,
+                        },
+                    },
+                    new TfvcChange()
+                    {
+                        ChangeType = VersionControlChangeType.Add,
+                        Item = new TfvcItem()
+                        {
+                            Path = destinationFilePath2,
+                            ContentMetadata = new FileContentMetadata()
+                            {
+                                Encoding = Encoding.UTF8.WindowsCodePage,
+                                ContentType = "text/plain",
+                            }
+                        },
+                        NewContent = new ItemContent()
+                        {
+                            Content = destinationFileContents2,
+                            ContentType = ItemContentType.RawText,
+                        },
+                    },
+                },
+                Comment = "(sample) Adding multiple files via API",
+            };
+
+            try
+            {
+                Console.WriteLine("Writing files {0} and {1}", destinationFilePath1, destinationFilePath2);
+                TfvcChangesetRef changesetRef = tfvcClient.CreateChangesetAsync(changeset).Result;
+                Console.WriteLine("{0} by {1}: {2}", changesetRef.ChangesetId, changesetRef.Author.DisplayName, changesetRef.Comment ?? "<no comment>");
+                return changesetRef;
+            }
+            catch (AggregateException e)
+            {
+                Console.WriteLine("Something went wrong, could not create TFVC changeset.");
+                if (e.InnerException.Message.Contains(projectName))
+                {
+                    Console.WriteLine("This may mean project \"{0}\" isn't configured for TFVC.", projectName);
+                    Console.WriteLine("Add a TFVC repo to the project, then try this sample again.");
+                }
+                else
+                {
+                    Console.WriteLine(e.InnerException.Message);
+                }
+            }
+
+            return null;
+        }
     }
 }
