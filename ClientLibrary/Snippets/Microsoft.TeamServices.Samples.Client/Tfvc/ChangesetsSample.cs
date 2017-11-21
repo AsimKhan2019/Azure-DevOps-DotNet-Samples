@@ -167,5 +167,117 @@ namespace Microsoft.TeamServices.Samples.Client.Tfvc
 
             return null;
         }
+
+        [ClientSampleMethod]
+        public TfvcChangesetRef EditExistingFile()
+        {
+            VssConnection connection = this.Context.Connection;
+            TfvcHttpClient tfvcClient = connection.GetClient<TfvcHttpClient>();
+
+            // first, create a file we know is safe to edit
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+            DateTime time = DateTime.UtcNow;
+            string destinationFilePath = string.Format("$/{0}/file-to-edit-{1}.txt", projectName, time.ToString("yyyy-MM-dd-HH-mm-ss-ff"));
+            string originalFileContents = string.Format("Initial contents as of {0}", time);
+
+            TfvcChangeset createFile = new TfvcChangeset()
+            {
+                Changes = new[]
+                {
+                    new TfvcChange()
+                    {
+                        ChangeType = VersionControlChangeType.Add,
+                        Item = new TfvcItem()
+                        {
+                            Path = destinationFilePath,
+                            ContentMetadata = new FileContentMetadata()
+                            {
+                                Encoding = Encoding.UTF8.WindowsCodePage,
+                                ContentType = "text/plain",
+                            }
+                        },
+                        NewContent = new ItemContent()
+                        {
+                            Content = originalFileContents,
+                            ContentType = ItemContentType.RawText,
+                        },
+                    },
+                },
+                Comment = "(sample) Adding a file which we'll later edit",
+            };
+
+            TfvcChangesetRef createFileRef;
+            try
+            {
+                createFileRef = tfvcClient.CreateChangesetAsync(createFile).Result;
+                Console.WriteLine("{0} by {1}: {2}", createFileRef.ChangesetId, createFileRef.Author.DisplayName, createFileRef.Comment ?? "<no comment>");
+            }
+            catch (AggregateException e)
+            {
+                Console.WriteLine("Something went wrong, could not create TFVC changeset.");
+                if (e.InnerException.Message.Contains(projectName))
+                {
+                    Console.WriteLine("This may mean project \"{0}\" isn't configured for TFVC.", projectName);
+                    Console.WriteLine("Add a TFVC repo to the project, then try this sample again.");
+                }
+                else
+                {
+                    Console.WriteLine(e.InnerException.Message);
+                }
+                return null;
+            }
+
+            // now edit the file contents
+            string editedFileContents = originalFileContents + "\nEdited contents";
+            TfvcChangeset changeset = new TfvcChangeset()
+            {
+                Changes = new[]
+                {
+                    new TfvcChange()
+                    {
+                        ChangeType = VersionControlChangeType.Edit,
+                        Item = new TfvcItem()
+                        {
+                            Path = destinationFilePath,
+                            ContentMetadata = new FileContentMetadata()
+                            {
+                                Encoding = Encoding.UTF8.WindowsCodePage,
+                                ContentType = "text/plain",
+                            },
+                            // must tell the API what version we want to change
+                            ChangesetVersion = createFileRef.ChangesetId,
+                        },
+                        NewContent = new ItemContent()
+                        {
+                            Content = editedFileContents,
+                            ContentType = ItemContentType.RawText,
+                        },
+                    },
+                },
+                Comment = "(sample) Editing the file via API",
+            };
+
+            try
+            {
+                TfvcChangesetRef changesetRef = tfvcClient.CreateChangesetAsync(changeset).Result;
+                Console.WriteLine("{0} by {1}: {2}", changesetRef.ChangesetId, changesetRef.Author.DisplayName, changesetRef.Comment ?? "<no comment>");
+                return changesetRef;
+            }
+            catch (AggregateException e)
+            {
+                Console.WriteLine("Something went wrong, could not create TFVC changeset.");
+                if (e.InnerException.Message.Contains(projectName))
+                {
+                    Console.WriteLine("This may mean project \"{0}\" isn't configured for TFVC.", projectName);
+                    Console.WriteLine("Add a TFVC repo to the project, then try this sample again.");
+                }
+                else
+                {
+                    Console.WriteLine(e.InnerException.Message);
+                }
+            }
+
+            return null;
+        }
     }
 }
