@@ -50,7 +50,13 @@ namespace GraphQuickStarts.Samples
                         users = graphClient.GetUsersAsync(continuationToken: continuationToken).Result;
                         graphUsers.AddRange(users.GraphUsers);
 
-                        continuationToken = users.ContinuationToken.FirstOrDefault();
+                        if (users.ContinuationToken != null) { 
+                            continuationToken = users.ContinuationToken.FirstOrDefault();
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
 
                     return graphUsers;
