@@ -377,7 +377,6 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
         /// <summary>
         /// Follow a work item (get notified about certain updates to a work item)
         /// </summary>
-        /// <param name="workItemId"></param>
         /// <returns></returns>
         [ClientSampleMethod]
         public NotificationSubscription FollowWorkItem()
@@ -415,6 +414,68 @@ namespace Microsoft.TeamServices.Samples.Client.Notification
             }
 
             return newFollowSubscription;
+        }
+        
+        /// <summary>
+        /// Unfollow a workitem (stop getting notified about the certain updates to a work item)
+        /// </summary>
+        /// <returns></returns>
+        [ClientSampleMethod]
+        public NotificationSubscription UnfollowWorkItem()
+        {
+            NotificationSubscription newFollowSubscription;
+
+            // Step 1: Get a work item to follow. For this sample, just create a temporary work item.
+            WorkItem newWorkItem;
+            using (new ClientSampleHttpLoggerOutputSuppression())
+            {
+                WorkItemsSample witSample = new WorkItemsSample();
+                witSample.Context = this.Context;
+                newWorkItem = witSample.CreateWorkItem();
+            }
+
+            string workItemArtifactUri = "vstfs:///WorkItemTracking/WorkItem/" + newWorkItem.Id;
+
+            // Step 2: Follow this workitem by creating a subscription
+            NotificationSubscriptionCreateParameters createParams = new NotificationSubscriptionCreateParameters()
+            {
+                Filter = new ArtifactFilter(workItemArtifactUri),
+                Channel = new UserSubscriptionChannel()
+            };
+
+            VssConnection connection = Context.Connection;
+            NotificationHttpClient notificationClient = Context.Connection.GetClient<NotificationHttpClient>();
+            newFollowSubscription = notificationClient.CreateSubscriptionAsync(createParams).Result;
+
+            LogSubscription(newFollowSubscription);
+
+            // Step 3: Query for the follow subscription
+            SubscriptionQuery query = new SubscriptionQuery()
+            {
+                Conditions = new[]
+                {
+                    new SubscriptionQueryCondition()
+                    {
+                        Filter = new ArtifactFilter(workItemArtifactUri)
+                    }
+                }
+            };
+            NotificationSubscription followSubscription = notificationClient.QuerySubscriptionsAsync(query).Result.FirstOrDefault();
+
+            // Step 4: Now, unfollow the above workitem, by deleting the subscription
+            if (followSubscription != null)
+            {
+                notificationClient.DeleteSubscriptionAsync(followSubscription.Id).SyncResult();
+            }
+
+            // Step 5: Cleanup the temporary work item
+            using (new ClientSampleHttpLoggerOutputSuppression())
+            {
+                WorkItemTrackingHttpClient witClient = connection.GetClient<WorkItemTrackingHttpClient>();
+                witClient.DeleteWorkItemAsync(newWorkItem.Id.Value, destroy: true);
+            }
+
+            return followSubscription;
         }
 
         /// <summary>

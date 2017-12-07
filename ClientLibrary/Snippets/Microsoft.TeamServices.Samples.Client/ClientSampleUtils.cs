@@ -64,9 +64,6 @@ namespace Microsoft.TeamServices.Samples.Client
 
                             if (!string.IsNullOrEmpty(runnableMethod.Area) && !string.IsNullOrEmpty(runnableMethod.Resource))
                             {
-                                runnableMethod.Area = char.ToUpper(runnableMethod.Area[0]) + runnableMethod.Area.Substring(1);
-                                runnableMethod.Resource = char.ToUpper(runnableMethod.Resource[0]) + runnableMethod.Resource.Substring(1);
-
                                 runnableMethod.MethodBase = m;
                                 runnableMethods.Add(runnableMethod);
                             }
@@ -112,14 +109,18 @@ namespace Microsoft.TeamServices.Samples.Client
 
             Dictionary<ClientSample, IEnumerable<RunnableClientSampleMethod>> runnableMethodsBySample = GetRunnableClientSampleMethods(area, resource);
 
-            if (runnableMethodsBySample.Any())
+            if (!runnableMethodsBySample.Any())
+            {
+                Console.WriteLine("No samples found to run.");
+            }
+            else
             {
                 ClientSampleContext context = new ClientSampleContext(connectionUrl, credentials);
 
                 Console.WriteLine("Start running client samples...");
                 Console.WriteLine("");
                 Console.WriteLine("  URL     : {0}", connectionUrl);
-                Console.WriteLine("  Area    : {0}", (area  == null ? "(all)" : area));
+                Console.WriteLine("  Area    : {0}", (area == null ? "(all)" : area));
                 Console.WriteLine("  Resource: {0}", (resource == null ? "(all)" : resource));
                 Console.WriteLine("  Output  : {0}", (outputPath == null ? "(disabled)" : outputPath.FullName));
                 Console.WriteLine("");
