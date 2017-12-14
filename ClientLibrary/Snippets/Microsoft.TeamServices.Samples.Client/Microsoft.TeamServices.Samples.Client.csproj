@@ -169,6 +169,7 @@
     <Compile Include="WorkItemTracking\TagsSample.cs" />
     <Compile Include="WorkItemTracking\RevisionsSample.cs" />
     <Compile Include="WorkItemTracking\UpdatesSample.cs" />
+    <Compile Include="WorkItemTracking\WorkItemsIconSample.cs" />
     <Compile Include="WorkItemTracking\WorkItemTypeCategoriesSample.cs" />
     <Compile Include="WorkItemTracking\FieldsSample.cs" />
     <Compile Include="WorkItemTracking\QueriesSample.cs" />
