@@ -33,13 +33,13 @@ namespace Microsoft.TeamServices.Samples.Client
     [DataContract]
     public class ClientSampleMethodInfo : IClientSampleMethodInfo
     {
-        [DataMember(EmitDefaultValue = false, Name = "x-vss-area")]
+        [DataMember(EmitDefaultValue = false, Name = "x-ms-vss-area")]
         public string Area { get; set; }
 
-        [DataMember(EmitDefaultValue = false, Name = "x-vss-resource")]
+        [DataMember(EmitDefaultValue = false, Name = "x-ms-vss-resource")]
         public string Resource { get; set; }
 
-        [DataMember(EmitDefaultValue = false, Name = "x-vss-operation")]
+        [DataMember(EmitDefaultValue = false, Name = "x-ms-vss-operation")]
         public string Operation { get; set; }
     }
 
