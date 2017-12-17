@@ -11,7 +11,6 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
 
     using Microsoft.TeamFoundation.DistributedTask.WebApi;
@@ -46,7 +45,7 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
             Dictionary<string, string> inputs = new Dictionary<string, string>()
                                                     {
                                                         { "scriptType", "inlineScript" },
-                                                        { "inlineScript", "# You can write your powershell scripts inline here. \n# You can also pass predefined and custom variables to this scripts using arguments\n\n Write-Host \"Hello World\"" },
+                                                        { "inlineScript", "Write-Host \"Hello World\"" },
                                                     };
             // Task inside the task group
             TaskGroupStep taskGroupStep = new TaskGroupStep()
@@ -98,10 +97,24 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
             // Get task group to update
             List<TaskGroup> taskGroups = taskClient.GetTaskGroupsAsync(project: projectName, taskGroupId: this.addedTaskGroupId).Result;
 
+            Dictionary<string, string> inputs = new Dictionary<string, string>()
+                                                    {
+                                                        { "scriptType", "inlineScript" },
+                                                        { "inlineScript", "Write-Host \"New task\"" },
+                                                    };
+            // New Task to be added in the task group
+            TaskGroupStep newTask = new TaskGroupStep()
+                                              {
+                                                  Enabled = true,
+                                                  DisplayName = "PowerShell Script",
+                                                  Inputs = inputs,
+                                                  Task = new TaskDefinitionReference { Id = new Guid("e213ff0f-5d5c-4791-802d-52ea3e7be1f1"), VersionSpec = "1.*", DefinitionType = "task" },
+                                              };
+
             // Update comment in the task group object.
             TaskGroup taskGroup = taskGroups.FirstOrDefault();
             taskGroup.Comment = "Updated the task group";
-
+            taskGroup.Tasks.Add(newTask);
             TaskGroup updatedTaskGroup = taskClient.UpdateTaskGroupAsync(project: projectName, taskGroup: taskGroup).Result;
 
             Console.WriteLine("{0} {1}", updatedTaskGroup.Id.ToString().PadLeft(6), updatedTaskGroup.Comment);
