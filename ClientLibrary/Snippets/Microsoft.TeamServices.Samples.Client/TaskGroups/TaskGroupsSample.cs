@@ -63,7 +63,6 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
                 Category = "Deploy",
                 Name = "PowerShell TG1",
                 Visibility = { "Build", "Release" },
-                DefinitionType = "metaTask",
                 InstanceNameFormat = "Task group: TG",
                 Version = new TaskVersion { IsTest = false, Major = 1, Minor = 0, Patch = 0 }
             };
