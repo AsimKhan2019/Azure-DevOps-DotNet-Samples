@@ -70,6 +70,9 @@
     <Reference Include="Microsoft.TeamFoundation.Policy.WebApi, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.16.141.1-preview\lib\net45\Microsoft.TeamFoundation.Policy.WebApi.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.TeamFoundation.DistributedTask.WebApi">
+      <HintPath>..\packages\Microsoft.TeamFoundation.DistributedTask.WebApi.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.DistributedTask.WebApi.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation.SourceControl.WebApi, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.16.141.1-preview\lib\net45\Microsoft.TeamFoundation.SourceControl.WebApi.dll</HintPath>
     </Reference>
@@ -180,6 +183,7 @@
     <Compile Include="Security\TokenHelpers.cs" />
     <Compile Include="Security\SecurityNamespacesSample.cs" />
     <Compile Include="Hooks\SubscriptionsSample.cs" />
+    <Compile Include="TaskGroups\TaskGroupsSample.cs" />
     <Compile Include="Test\TestCaseSample.cs" />
     <Compile Include="Test\TestConfigurationSample.cs" />
     <Compile Include="Test\TestPlanSample.cs" />
