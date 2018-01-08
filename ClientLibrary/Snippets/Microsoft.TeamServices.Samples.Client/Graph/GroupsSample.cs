@@ -18,7 +18,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
         {
             VssConnection connection = Context.Connection;
             GraphHttpClient graphClient = connection.GetClient<GraphHttpClient>();
-            PagedGraphGroups groups = graphClient.GetGroupsAsync().Result;
+            PagedGraphGroups groups = graphClient.ListGroupsAsync().Result;
 
             foreach (var group in groups.GraphGroups)
             {

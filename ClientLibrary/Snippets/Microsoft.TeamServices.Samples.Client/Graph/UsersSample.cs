@@ -18,7 +18,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
         {
             VssConnection connection = Context.Connection;
             GraphHttpClient graphClient = connection.GetClient<GraphHttpClient>();
-            PagedGraphUsers users = graphClient.GetUsersAsync().Result;
+            PagedGraphUsers users = graphClient.ListUsersAsync().Result;
 
             foreach (var user in users.GraphUsers)
             {
