@@ -34,6 +34,9 @@ namespace Microsoft.TeamServices.Samples.Client.Git
             // generate a unique name to suggest for the branch
             string suggestedBranchName = "refs/heads/vsts-dotnet-samples/" + GitSampleHelpers.ChooseRefsafeName();
 
+            // write down the name for a later sample
+            this.Context.SetValue<string>("$gitSamples.suggestedRevertBranchName", suggestedBranchName);
+
             // revert it relative to master
             GitRevert revert = gitClient.CreateRevertAsync(
                 new GitAsyncRefOperationParameters()
@@ -53,6 +56,30 @@ namespace Microsoft.TeamServices.Samples.Client.Git
 
             // typically, the next thing you'd do is create a PR for this revert
             return revert;
+        }
+
+        [ClientSampleMethod]
+        public GitRevert GetRevert()
+        {
+            VssConnection connection = this.Context.Connection;
+            GitHttpClient gitClient = connection.GetClient<GitHttpClient>();
+
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
+            GitRepository repo = GitSampleHelpers.FindAnyRepository(this.Context, projectId);
+
+            // pull out the branch name we suggested before
+            string branchName;
+            if (this.Context.TryGetValue<string>("$gitSamples.suggestedRevertBranchName", out branchName))
+            {
+
+                GitRevert revert = gitClient.GetRevertForRefNameAsync(projectId, repo.Id, branchName).Result;
+
+                Console.WriteLine("Revert {0} found with status {1}", revert.RevertId, revert.Status);
+                return revert;
+            }
+
+            Console.WriteLine("(skipping sample; did not find a branch to check for reverts)");
+            return null;
         }
     }
 }
