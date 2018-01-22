@@ -48,55 +48,61 @@
       <HintPath>..\packages\WindowsAzure.ServiceBus.4.1.1\lib\net45\Microsoft.ServiceBus.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Build2.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.121.0-preview\lib\net45\Microsoft.TeamFoundation.Build2.WebApi.dll</HintPath>
+      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.Build2.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Chat.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.121.0-preview\lib\net45\Microsoft.TeamFoundation.Chat.WebApi.dll</HintPath>
+      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.Chat.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Services.Client.15.121.0-preview\lib\net45\Microsoft.TeamFoundation.Common.dll</HintPath>
+      <HintPath>..\packages\Microsoft.VisualStudio.Services.Client.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Core.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.121.0-preview\lib\net45\Microsoft.TeamFoundation.Core.WebApi.dll</HintPath>
+      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.Core.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Dashboards.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.121.0-preview\lib\net45\Microsoft.TeamFoundation.Dashboards.WebApi.dll</HintPath>
+      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.Dashboards.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.DistributedTask.Common.Contracts, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.TeamFoundation.DistributedTask.Common.Contracts.15.121.0-preview\lib\net45\Microsoft.TeamFoundation.DistributedTask.Common.Contracts.dll</HintPath>
+      <HintPath>..\packages\Microsoft.TeamFoundation.DistributedTask.Common.Contracts.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.DistributedTask.Common.Contracts.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Policy.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.121.0-preview\lib\net45\Microsoft.TeamFoundation.Policy.WebApi.dll</HintPath>
+      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.Policy.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.SourceControl.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.121.0-preview\lib\net45\Microsoft.TeamFoundation.SourceControl.WebApi.dll</HintPath>
+      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.SourceControl.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Test.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.121.0-preview\lib\net45\Microsoft.TeamFoundation.Test.WebApi.dll</HintPath>
+      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.Test.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.TestManagement.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.121.0-preview\lib\net45\Microsoft.TeamFoundation.TestManagement.WebApi.dll</HintPath>
+      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.TestManagement.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Work.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.121.0-preview\lib\net45\Microsoft.TeamFoundation.Work.WebApi.dll</HintPath>
+      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.Work.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.121.0-preview\lib\net45\Microsoft.TeamFoundation.WorkItemTracking.WebApi.dll</HintPath>
+      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.WorkItemTracking.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.Client.Interactive, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Services.InteractiveClient.15.121.0-preview\lib\net45\Microsoft.VisualStudio.Services.Client.Interactive.dll</HintPath>
+      <HintPath>..\packages\Microsoft.VisualStudio.Services.InteractiveClient.15.122.1-preview\lib\net45\Microsoft.VisualStudio.Services.Client.Interactive.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Services.Client.15.121.0-preview\lib\net45\Microsoft.VisualStudio.Services.Common.dll</HintPath>
+      <HintPath>..\packages\Microsoft.VisualStudio.Services.Client.15.122.1-preview\lib\net45\Microsoft.VisualStudio.Services.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.ExtensionManagement.WebApi, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Services.ExtensionManagement.WebApi.15.122.1-preview\lib\net45\Microsoft.VisualStudio.Services.ExtensionManagement.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.Gallery.WebApi, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Services.Gallery.WebApi.15.122.1-preview\lib\net45\Microsoft.VisualStudio.Services.Gallery.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.Notifications.WebApi, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Services.Notifications.WebApi.15.121.0-preview\lib\net45\Microsoft.VisualStudio.Services.Notifications.WebApi.dll</HintPath>
+      <HintPath>..\packages\Microsoft.VisualStudio.Services.Notifications.WebApi.15.122.1-preview\lib\net45\Microsoft.VisualStudio.Services.Notifications.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.ReleaseManagement.WebApi, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Services.Release.Client.15.121.0-preview\lib\net45\Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.dll</HintPath>
+      <HintPath>..\packages\Microsoft.VisualStudio.Services.Release.Client.15.122.1-preview\lib\net45\Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.WebApi, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Services.Client.15.121.0-preview\lib\net45\Microsoft.VisualStudio.Services.WebApi.dll</HintPath>
+      <HintPath>..\packages\Microsoft.VisualStudio.Services.Client.15.122.1-preview\lib\net45\Microsoft.VisualStudio.Services.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -136,6 +142,7 @@
     <Compile Include="ClientSampleHelpers.cs" />
     <Compile Include="ClientSampleHttpLogger.cs" />
     <Compile Include="ClientSampleUtils.cs" />
+    <Compile Include="ExtensionManagement\InstalledExtensionsSample.cs" />
     <Compile Include="Graph\DescriptorsSample.cs" />
     <Compile Include="Graph\MembershipStatesSample.cs" />
     <Compile Include="Graph\StorageKeySample.cs" />
@@ -162,6 +169,7 @@
     <Compile Include="WorkItemTracking\TagsSample.cs" />
     <Compile Include="WorkItemTracking\RevisionsSample.cs" />
     <Compile Include="WorkItemTracking\UpdatesSample.cs" />
+    <Compile Include="WorkItemTracking\WorkItemsIconSample.cs" />
     <Compile Include="WorkItemTracking\WorkItemTypeCategoriesSample.cs" />
     <Compile Include="WorkItemTracking\FieldsSample.cs" />
     <Compile Include="WorkItemTracking\QueriesSample.cs" />
