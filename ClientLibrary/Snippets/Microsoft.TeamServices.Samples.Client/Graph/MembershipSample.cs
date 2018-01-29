@@ -70,13 +70,13 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             // Part 6: Get every group the subject(user) is a member of
             // 
             ClientSampleHttpLogger.SetOperationName(this.Context, "BatchGetMembershipsUserUp");
-            List<GraphMembership> membershipsForUser = graphClient.GetMembershipsAsync(userDescriptor).Result;
+            List<GraphMembership> membershipsForUser = graphClient.ListMembershipsAsync(userDescriptor).Result;
 
             //
             // Part 7: Get every member of the group
             // 
             ClientSampleHttpLogger.SetOperationName(this.Context, "BatchGetMembershipsGroupDown");
-            List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(groupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down).Result;
+            List<GraphMembership> membershipsOfGroup = graphClient.ListMembershipsAsync(groupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down).Result;
 
             //
             // Part 8: Remove member from the group
@@ -176,13 +176,13 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             // Part 6: Get every group the subject('Contractors') is a member of
             // 
             ClientSampleHttpLogger.SetOperationName(this.Context, "BatchGetMembershipsVSTSGroupUp");
-            List<GraphMembership> membershipsForUser = graphClient.GetMembershipsAsync(childGroupDescriptor).Result;
+            List<GraphMembership> membershipsForUser = graphClient.ListMembershipsAsync(childGroupDescriptor).Result;
 
             //
             // Part 7: Get every member of the 'Developers' group
             // 
             ClientSampleHttpLogger.SetOperationName(this.Context, "BatchGetMembershipsVSTSGroupDown");
-            List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(parentGroupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down).Result;
+            List<GraphMembership> membershipsOfGroup = graphClient.ListMembershipsAsync(parentGroupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down).Result;
 
             //
             // Part 8: Remove member from the group
@@ -266,13 +266,13 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             // Part 6: Get every group the subject(AAD group) is a member of
             // 
             ClientSampleHttpLogger.SetOperationName(this.Context, "BatchGetMembershipsAADGroupDown");
-            List<GraphMembership> membershipsForUser = graphClient.GetMembershipsAsync(aadGroupDescriptor).Result;
+            List<GraphMembership> membershipsForUser = graphClient.ListMembershipsAsync(aadGroupDescriptor).Result;
 
             //
             // Part 7: Get every member of the VSTS 'Developers' group
             // 
             ClientSampleHttpLogger.SetOperationName(this.Context, "BatchGetMembershipsAADGroupUp");
-            List<GraphMembership> membershipsOfGroup = graphClient.GetMembershipsAsync(parentGroupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down).Result;
+            List<GraphMembership> membershipsOfGroup = graphClient.ListMembershipsAsync(parentGroupDescriptor, Microsoft.VisualStudio.Services.Graph.GraphTraversalDirection.Down).Result;
 
             //
             // Part 8: Remove member from the group
