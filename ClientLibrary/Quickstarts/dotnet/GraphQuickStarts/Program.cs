@@ -13,11 +13,11 @@ namespace GraphQuickStarts
                 return 0;
             }
 
-            string connectionUrl, token = "";
+            string connectionUrl, token, groupName, clientId, redirectURL = "";
 
             try
             {
-                CheckArguments(args, out connectionUrl, out token);
+                CheckArguments(args, out connectionUrl, out token, out groupName, out clientId, out redirectURL);
             }
             catch (ArgumentException ex)
             {
@@ -38,7 +38,11 @@ namespace GraphQuickStarts
                 //execute the client lib code. If you want to run the direct http calls then adjust (see below)
                 objUsers.RunEnumerateUsersUsingClientLib();
 
-                objUsers = null;
+                //instantiate objects & execute
+                Samples.EnumerateMembersOfGroups objMembers = new Samples.EnumerateMembersOfGroups(connectionUrl, clientId, redirectURL);
+
+                //execute the client lib code. If you want to run the direct http calls then adjust (see below)
+                objMembers.RunEnumerateMembersOfGroupsUsingClientLib(groupName);
 
                 Console.ReadKey();
             }
@@ -61,16 +65,19 @@ namespace GraphQuickStarts
             Console.WriteLine("");
             Console.WriteLine("Arguments:");
             Console.WriteLine("");
-            Console.WriteLine("  /url:fabrikam.vssps.visualstudio.com /token:personalaccesstoken");
+            Console.WriteLine("  /url:http://fabrikam.vssps.visualstudio.com /token:personalaccesstoken /group:Developers /clientId:7e2fa445-a7c0-48b2-b1b2-be805e7a2fdf /redirectUrl:http://sampleUrl");
             Console.WriteLine("");
 
             Console.ReadKey();
         }
 
-        private static void CheckArguments(string[] args, out string connectionUrl, out string token)
+        private static void CheckArguments(string[] args, out string connectionUrl, out string token, out string groupName, out string clientId, out string redirectUrl)
         {
             connectionUrl = null;
             token = null;
+            groupName = null;
+            clientId = null;
+            redirectUrl = null;
 
             Dictionary<string, string> argsMap = new Dictionary<string, string>();
             foreach (var arg in args)
@@ -89,7 +96,19 @@ namespace GraphQuickStarts
                         case "token":
                             token = value;
                             break;
-                            
+
+                        case "group":
+                            groupName = value;
+                            break;
+
+                        case "clientId":
+                            clientId = value;
+                            break;
+
+                        case "redirectUrl":
+                            redirectUrl = value;
+                            break;
+
                         default:
                             throw new ArgumentException("Unknown argument", key);
                     }
