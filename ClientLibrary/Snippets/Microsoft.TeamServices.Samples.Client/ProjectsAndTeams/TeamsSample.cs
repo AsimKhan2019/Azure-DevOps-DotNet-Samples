@@ -68,7 +68,7 @@ namespace Microsoft.TeamServices.Samples.Client.ProjectsAndTeams
             VssConnection connection = Context.Connection;
             TeamHttpClient teamClient = connection.GetClient<TeamHttpClient>();
 
-            IEnumerable<IdentityRef> teamMembers = teamClient.GetTeamMembersAsync(projectId.ToString(), teamId.ToString()).Result;
+            IEnumerable<IdentityRef> teamMembers = teamClient.GetTeamMembers(projectId.ToString(), teamId.ToString()).Result;
 
             Console.WriteLine("Members of {0}:", teamId);
             foreach (var member in teamMembers)
