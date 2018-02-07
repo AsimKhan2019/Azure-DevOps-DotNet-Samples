@@ -44,18 +44,22 @@ namespace GraphQuickStarts.Samples
                     List<GraphUser> graphUsers = new List<GraphUser>(users.GraphUsers);
 
                     // If there are more than a page's worth of users, continue retrieving users from the server a page at a time
-                    string continuationToken = users.ContinuationToken.FirstOrDefault();
-                    while (continuationToken != null)
+                    if (users.ContinuationToken != null)
                     {
-                        users = graphClient.GetUsersAsync(continuationToken: continuationToken).Result;
-                        graphUsers.AddRange(users.GraphUsers);
-
-                        if (users.ContinuationToken != null) { 
-                            continuationToken = users.ContinuationToken.FirstOrDefault();
-                        }
-                        else
+                        string continuationToken = users.ContinuationToken.FirstOrDefault();
+                        while (continuationToken != null)
                         {
-                            break;
+                            users = graphClient.GetUsersAsync(continuationToken: continuationToken).Result;
+                            graphUsers.AddRange(users.GraphUsers);
+
+                            if (users.ContinuationToken != null)
+                            {
+                                continuationToken = users.ContinuationToken.FirstOrDefault();
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
                     }
 
