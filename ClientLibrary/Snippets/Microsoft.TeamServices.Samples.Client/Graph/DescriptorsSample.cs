@@ -41,7 +41,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             // Part 2: get the descriptor
             //
             ClientSampleHttpLogger.SetOperationName(this.Context, "GetDescriptorById");
-            GraphDescriptorResult descriptor = graphClient.GetDescriptorAsync(storageKey).Result; //TODO: This is failing!!!!!
+            GraphDescriptorResult descriptor = graphClient.GetDescriptorAsync(storageKey).Result; 
             try
             {
                 if (descriptor.Value != userDescriptor) throw new Exception();
