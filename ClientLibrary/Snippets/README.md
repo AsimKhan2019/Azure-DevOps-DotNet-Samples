@@ -37,7 +37,7 @@ Microsoft.TeamServices.Samples.Client.Runner.exe
     /url:https://fabrikam.visualstudio.com /area:wit /resource:*
 ```
 
-#### Run all graph samples against vsts
+#### Run all graph samples against VSTS/SPS
 
 ```
 Microsoft.TeamServices.Samples.Client.Runner.exe
