@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Services.Graph;
+﻿using Microsoft.TeamFoundation.Core.WebApi;
+using Microsoft.VisualStudio.Services.Graph;
 using Microsoft.VisualStudio.Services.Graph.Client;
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
@@ -67,6 +68,64 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             // Part 3: delete the group
             // 
 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteGroup");
+            graphClient.DeleteGroupAsync(groupDescriptor).SyncResult();
+
+            // Try to get the deleted group (should result in an exception)
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetDisabledGroup");
+            try
+            {
+                newGroup = graphClient.GetGroupAsync(groupDescriptor).Result;
+            }
+            catch (Exception e)
+            {
+                Context.Log("Unable to get the deleted group:" + e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Create a new project level group and then delete the group
+        /// </summary>
+        [ClientSampleMethod]
+        public void CreateDeleteProjectVSTSGroup()
+        {
+            // Get the client
+            VssConnection connection = Context.Connection;
+
+            //
+            // Part 1: get the project id
+            //
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetProjectId");
+            ProjectHttpClient projectClient = connection.GetClient<ProjectHttpClient>();
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+            TeamProject project = projectClient.GetProject(projectName, includeCapabilities: true, includeHistory: true).Result;
+            Guid projectId = project.Id;
+
+            //
+            // Part 2: get the project scope descriptor
+            //
+            ClientSampleHttpLogger.SetOperationName(this.Context, "GetProjectScopeDescriptor");
+            GraphHttpClient graphClient = connection.GetClient<GraphHttpClient>();
+            GraphDescriptorResult projectDescriptor = graphClient.GetDescriptorAsync(projectId).Result;
+
+            //
+            // Part 3: create a group at the project level
+            // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "CreateGroupInProject");
+            GraphGroupCreationContext createGroupContext = new GraphGroupVstsCreationContext
+            {
+                DisplayName = "Project Developers-" + Guid.NewGuid(),
+                Description = "Group at project level created via client library"
+            };
+
+            GraphGroup newGroup = graphClient.CreateGroupAsync(createGroupContext, projectDescriptor.Value).Result;
+            string groupDescriptor = newGroup.Descriptor;
+
+            Context.Log("New group created! ID: {0}", groupDescriptor);
+
+            //
+            // Part 4: delete the group
+            // 
             ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteGroup");
             graphClient.DeleteGroupAsync(groupDescriptor).SyncResult();
 
