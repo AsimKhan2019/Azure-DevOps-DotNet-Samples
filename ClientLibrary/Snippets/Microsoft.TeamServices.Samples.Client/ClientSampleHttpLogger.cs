@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -11,6 +12,7 @@ using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Microsoft.TeamServices.Samples.Client
 {
@@ -94,8 +96,8 @@ namespace Microsoft.TeamServices.Samples.Client
                     DirectoryInfo baseOutputPath;
                     if (ClientSampleContext.CurrentContext.TryGetValue<DirectoryInfo>(PropertyOutputFilePath, out baseOutputPath))
                     {
-                        Dictionary<string, object> requestHeaders = ProcessHeaders(request.Headers);
-                        Dictionary<string, object> responseHeaders = ProcessHeaders(response.Headers);
+                        Dictionary<string, string> requestHeaders = ProcessHeaders(request.Headers);
+                        Dictionary<string, string> responseHeaders = ProcessHeaders(response.Headers);
 
                         dynamic requestBody = null;
                         try
@@ -125,15 +127,41 @@ namespace Microsoft.TeamServices.Samples.Client
                             Headers = responseHeaders
                         };
 
-                        Dictionary<string, object> requestParameters = new Dictionary<string, object>
+                        Dictionary<string, object> requestParameters = new Dictionary<string, object>();
+
+                        // Add the request body (if there is one)
+                        if (requestBody != null)
                         {
-                            { "body", requestBody }
-                        };
-                        foreach (var rh in requestHeaders)
-                        {
-                            requestParameters.Add(rh.Key, rh.Value);
+                            requestParameters["body"] = requestBody;
                         }
 
+                        // Add query parameters (if any)
+                        if (!String.IsNullOrEmpty(request.RequestUri.Query))
+                        {
+                            NameValueCollection queryParams = HttpUtility.ParseQueryString(request.RequestUri.Query);
+                            foreach (string param in queryParams.Keys)
+                            {
+                                requestParameters[param] = queryParams[param];
+                            }
+                        }
+
+                        // Add request headers
+                        foreach (var rh in requestHeaders)
+                        {
+                            // Look for api-version
+                            if (rh.Key.Equals("Accept") && rh.Value.Contains("api-version="))
+                            {
+                                int s = rh.Value.IndexOf("api-version=") + "api-version=".Length;
+                                int e = rh.Value.IndexOf(';', s);
+                                requestParameters.Add("api-version", e != -1 ? rh.Value.Substring(s, e) : rh.Value.Substring(s));
+                            }
+                            else
+                            {
+                                requestParameters.Add(rh.Key, rh.Value);
+                            }
+                        }
+
+                        // Add sample account name if "account" parameter not already set
                         if (!requestParameters.ContainsKey("account"))
                         {
                             requestParameters["account"] = "fabrikam";
@@ -171,9 +199,9 @@ namespace Microsoft.TeamServices.Samples.Client
             return response;
         }
 
-        private static Dictionary<string,object> ProcessHeaders(HttpHeaders headers)
+        private static Dictionary<string,string> ProcessHeaders(HttpHeaders headers)
         {
-            Dictionary<string, object> ret = new Dictionary<string, object>();
+            Dictionary<string, string> ret = new Dictionary<string, string>();
 
             foreach (var h in headers.Where(kvp => { return !s_excludedHeaders.Contains(kvp.Key); }))
             {
@@ -189,7 +217,7 @@ namespace Microsoft.TeamServices.Samples.Client
                     }
                     else
                     {
-                        ret[h.Key] = h.Value;
+                        ret[h.Key] = h.Value.ToString();
                     }
                 }
             }
@@ -282,7 +310,7 @@ namespace Microsoft.TeamServices.Samples.Client
     class ApiResponseMetadata
     {
         [DataMember]
-        public Dictionary<String, object> Headers;
+        public Dictionary<string,string> Headers;
 
         [DataMember(EmitDefaultValue = false)]
         public Object Body;
