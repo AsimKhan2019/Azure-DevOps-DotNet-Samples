@@ -7,9 +7,52 @@ using System.Collections.Generic;
 
 namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
 {
-    [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.WorkItems)]
+    [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, "workitemsrecyclebin")]
     public class RecycleBinSample : ClientSample
     {
+        int _id;
+        int[] _ids;
+
+        [ClientSampleMethod]
+        public void CreateSampleData()
+        {           
+            WorkItem workItem1;
+            WorkItem workItem2;
+            WorkItem workItem3;
+            WorkItem newWorkItem;
+
+            using (new ClientSampleHttpLoggerOutputSuppression())
+            {
+                WorkItemsSample witSample = new WorkItemsSample();
+                witSample.Context = this.Context;
+                newWorkItem = witSample.CreateWorkItem("Sample work item for comments");    
+                
+                _id = Convert.ToInt32(newWorkItem.Id);
+
+                workItem1 = witSample.CreateWorkItem("Sample work item for comments #1");
+                workItem2 = witSample.CreateWorkItem("Sample work item for comments #2");
+                workItem3 = witSample.CreateWorkItem("Sample work item for comments #3");
+
+                _ids = new int[] { Convert.ToInt32(workItem1.Id), Convert.ToInt32(workItem2.Id), Convert.ToInt32(workItem3.Id) };
+            }
+        }
+
+        [ClientSampleMethod]
+        public WorkItemDelete DeleteWorkItems()
+        {
+            int id = _id;
+            int[] ids = _ids;
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            WorkItemDelete result = workItemTrackingClient.DeleteWorkItemAsync(id).Result;
+            result = workItemTrackingClient.DeleteWorkItemAsync(ids[0]).Result;
+            result = workItemTrackingClient.DeleteWorkItemAsync(ids[1]).Result;
+            result = workItemTrackingClient.DeleteWorkItemAsync(ids[2]).Result;
+
+            return result;
+        }
 
         [ClientSampleMethod]
         public List<WorkItemDeleteReference> GetDeletedWorkItems()
@@ -23,16 +66,16 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
 
             return results;
         }
-
+      
         [ClientSampleMethod]
         public WorkItemDelete GetDeletedWorkItem()
         {
-            int workItemId = -1; // TODO
+            int id = _id;
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            WorkItemDelete result = workItemTrackingClient.GetDeletedWorkItemAsync(workItemId).Result;
+            WorkItemDelete result = workItemTrackingClient.GetDeletedWorkItemAsync(id).Result;
 
             return result;
         }
@@ -40,7 +83,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public List<WorkItemDeleteReference> GetMultipledDeletedWorkItems()
         {
-            int[] ids = { 72, 73, 81 }; //TODO
+            int[] ids = _ids;
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
@@ -52,7 +95,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItemDelete RestoreWorkItem()
         {
-            int workItemId = -1; // TODO
+            int id = _id;
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
@@ -61,7 +104,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
                 IsDeleted = false
             };
 
-            WorkItemDelete result = workItemTrackingClient.RestoreWorkItemAsync(updateParameters, workItemId).Result;
+            WorkItemDelete result = workItemTrackingClient.RestoreWorkItemAsync(updateParameters, id).Result;
 
             return result;
         }
@@ -69,7 +112,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public void RestoreMultipleWorkItems()
         {
-            int[] ids = { 72, 73, 81 }; //TODO
+            int[] ids = _ids;
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
@@ -89,21 +132,28 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public void PermenentlyDeleteWorkItem()
         {
-            int workItemId = -1; // TODO
+            int id = _id;
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            workItemTrackingClient.DestroyWorkItemAsync(workItemId);
+            WorkItemDelete result = workItemTrackingClient.DeleteWorkItemAsync(id).Result;           
+
+            workItemTrackingClient.DestroyWorkItemAsync(id);
         }
 
         [ClientSampleMethod]
         public void PermenentlyDeleteMultipleWorkItems()
         {
-            int[] ids = { 72, 73, 81 }; //TODO
+            int[] ids = _ids;
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            WorkItemDelete delResult;
+            delResult = workItemTrackingClient.DeleteWorkItemAsync(ids[0]).Result;
+            delResult = workItemTrackingClient.DeleteWorkItemAsync(ids[1]).Result;
+            delResult = workItemTrackingClient.DeleteWorkItemAsync(ids[2]).Result;
 
             List<WorkItemDeleteReference> result = workItemTrackingClient.GetDeletedWorkItemsAsync(ids).Result;      
 

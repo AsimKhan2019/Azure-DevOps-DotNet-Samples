@@ -6,19 +6,28 @@ using System.Collections.Generic;
 
 namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
 {
-    [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.WorkItems)]
+    [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, "workitemscomments")]
     public class CommentsSample : ClientSample
     {
         [ClientSampleMethod]
         public WorkItemComment GetSingleWorkItemComment()
         {
-            int id = 23; //TODO
-            int revision = 1;
+            WorkItem newWorkItem;
+            
+            using (new ClientSampleHttpLoggerOutputSuppression())
+            {
+                WorkItemsSample witSample = new WorkItemsSample();
+                witSample.Context = this.Context;
+                newWorkItem = witSample.CreateWorkItem("Sample work item for comments");
+                Context.SetValue<WorkItem>("$newWorkItem", newWorkItem);
+            }
+
+            int id = Convert.ToInt32(newWorkItem.Id);           
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            WorkItemComment result = workItemTrackingClient.GetCommentAsync(id, revision).Result;
+            WorkItemComment result = workItemTrackingClient.GetCommentAsync(id, 1).Result;
 
             Console.WriteLine("Revision: {0}", result.Revision);
             Console.WriteLine("Text: {0}", result.Text);
@@ -29,8 +38,8 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItemComments GetPageOfWorkItemComments()
         {
-            int id = 23; //TODO           
-
+            int id = Convert.ToInt32(Context.GetValue<WorkItem>("$newWorkItem").Id);
+            
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
