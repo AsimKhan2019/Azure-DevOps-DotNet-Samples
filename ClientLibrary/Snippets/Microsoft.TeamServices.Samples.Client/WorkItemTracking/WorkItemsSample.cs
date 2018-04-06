@@ -48,7 +48,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         }
 
         [ClientSampleMethod]
-        public WorkItem CreateWorkItem(string title)
+        public WorkItem CreateWorkItem(string title, string type)
         {
             // Construct the object containing field values required for the new work item
             JsonPatchDocument patchDocument = new JsonPatchDocument();
@@ -69,7 +69,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
 
             // Create the new work item
-            WorkItem newWorkItem = workItemTrackingClient.CreateWorkItemAsync(patchDocument, project.Id, "Task").Result;
+            WorkItem newWorkItem = workItemTrackingClient.CreateWorkItemAsync(patchDocument, project.Id, type).Result;
 
             Console.WriteLine("Created work item ID {0} {1}", newWorkItem.Id, newWorkItem.Fields["System.Title"]);
             
@@ -81,13 +81,13 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         {
             WorkItem newWorkItem;
 
-            newWorkItem = this.CreateWorkItem("Sample Task #1");           
+            newWorkItem = this.CreateWorkItem("Sample Task #1", "Task");           
             Context.SetValue<WorkItem>("$newWorkItem1", newWorkItem);
 
-            newWorkItem = this.CreateWorkItem("Sample Task #2");
+            newWorkItem = this.CreateWorkItem("Sample Task #2", "Task");
             Context.SetValue<WorkItem>("$newWorkItem2", newWorkItem);
 
-            newWorkItem = this.CreateWorkItem("Sample Task #3");
+            newWorkItem = this.CreateWorkItem("Sample Task #3", "Task");
             Context.SetValue<WorkItem>("$newWorkItem3", newWorkItem);
         }   
               
@@ -250,8 +250,8 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             
 
             return workitem;
-        }              
-
+        }
+        
         [ClientSampleMethod]
         public WorkItem CreateAndLinkToWorkItem()
         {
@@ -490,6 +490,59 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, sourceWorkItemId).Result;
 
             return result;
+        }
+
+        /// <summary>
+        /// get a list of the child work items for a specific parent
+        /// </summary>
+        /// <returns></returns>
+        [ClientSampleMethod]
+        public List<WorkItem> GetChildWorkItemsByParent()
+        {
+            int id = Convert.ToInt32(Context.GetValue<WorkItem>("$newWorkItem1").Id);
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            WorkItem workitem = workItemTrackingClient.GetWorkItemAsync(id, expand: WorkItemExpand.Relations).Result;
+            List<WorkItem> workitems = null;
+
+            if (workitem.Relations == null)
+            {
+                Console.WriteLine("  No relations found for this work item");
+            }
+            else
+            {
+                List<int> list = new List<int>();
+
+                Console.WriteLine("Getting child work items from parent...");
+
+                foreach (var relation in workitem.Relations)
+                {
+                    //get the child links
+                    if (relation.Rel == "System.LinkTypes.Hierarchy-Forward")
+                    {
+                        var lastIndex = relation.Url.LastIndexOf("/");
+                        var itemId = relation.Url.Substring(lastIndex + 1);
+                        list.Add(Convert.ToInt32(itemId));
+
+                        Console.WriteLine("  {0} ", itemId);
+                    };
+                }
+
+                int[] workitemIds = list.ToArray();
+
+                workitems = workItemTrackingClient.GetWorkItemsAsync(workitemIds).Result;
+
+                Console.WriteLine("Getting full work item for each child...");
+
+                foreach (var item in workitems)
+                {
+                    Console.WriteLine(" {0}: {1} : {2}", item.Fields["System.WorkItemType"], item.Id, item.Fields["System.Title"]);
+                }
+            }
+
+            return workitems;
         }
 
         [ClientSampleMethod]
@@ -760,7 +813,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             WorkItem newWorkItem;
             using (new ClientSampleHttpLoggerOutputSuppression())
             {                
-                newWorkItem = this.CreateWorkItem("Another Sample Work Item");
+                newWorkItem = this.CreateWorkItem("Another Sample Work Item", "Task");
             }
 
             int id = Convert.ToInt32(newWorkItem.Id);

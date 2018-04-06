@@ -25,13 +25,13 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             {
                 WorkItemsSample witSample = new WorkItemsSample();
                 witSample.Context = this.Context;
-                newWorkItem = witSample.CreateWorkItem("Sample work item for comments");    
+                newWorkItem = witSample.CreateWorkItem("Sample work item for comments", "Task");    
                 
                 _id = Convert.ToInt32(newWorkItem.Id);
 
-                workItem1 = witSample.CreateWorkItem("Sample work item for comments #1");
-                workItem2 = witSample.CreateWorkItem("Sample work item for comments #2");
-                workItem3 = witSample.CreateWorkItem("Sample work item for comments #3");
+                workItem1 = witSample.CreateWorkItem("Sample work item for comments #1", "Task");
+                workItem2 = witSample.CreateWorkItem("Sample work item for comments #2", "Task");
+                workItem3 = witSample.CreateWorkItem("Sample work item for comments #3", "Task");
 
                 _ids = new int[] { Convert.ToInt32(workItem1.Id), Convert.ToInt32(workItem2.Id), Convert.ToInt32(workItem3.Id) };
             }

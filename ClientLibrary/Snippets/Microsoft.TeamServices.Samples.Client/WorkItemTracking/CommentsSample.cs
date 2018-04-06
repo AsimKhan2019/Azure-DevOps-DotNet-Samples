@@ -18,7 +18,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             {
                 WorkItemsSample witSample = new WorkItemsSample();
                 witSample.Context = this.Context;
-                newWorkItem = witSample.CreateWorkItem("Sample work item for comments");
+                newWorkItem = witSample.CreateWorkItem("Sample work item for comments", "Task");
                 Context.SetValue<WorkItem>("$newWorkItem", newWorkItem);
             }
 
