@@ -75,7 +75,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             
             return newWorkItem;
         }
-
+                
         [ClientSampleMethod]
         public void CreateSampleWorkItemData()
         {
@@ -356,6 +356,40 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
 
             WorkItem result = workItemTrackingClient.CreateWorkItemAsync(patchDocument, project.Name, "Task", bypassRules: true).Result;
             
+            return result;
+        }
+
+        [ClientSampleMethod]
+        public WorkItem UpdateValidateOnly()
+        {
+            int id = Convert.ToInt32(Context.GetValue<WorkItem>("$newWorkItem").Id);
+
+            JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Test,
+                    Path = "/rev",
+                    Value = "1"
+                }
+            );
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.Title",
+                    Value = "Hello World"
+                }
+            );          
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            //set validateOnly param == true. This will only validate the work item. it will not attempt to save it.
+            WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id, true).Result;
+
             return result;
         }
 
