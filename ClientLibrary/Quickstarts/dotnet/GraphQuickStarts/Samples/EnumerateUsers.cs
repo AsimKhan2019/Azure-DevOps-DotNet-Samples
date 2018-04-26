@@ -69,5 +69,30 @@ namespace GraphQuickStarts.Samples
 
             return null;
         }
+
+        public List<string> RunEnumerateEnumerateGroupMembershipsUsingClientLib(List<GraphUser> users)
+        {
+            Uri uri = new Uri(_uri);
+            VssBasicCredential credentials = new VssBasicCredential("", _personalAccessToken);
+
+            using (GraphHttpClient graphClient = new GraphHttpClient(uri, credentials))
+            {
+                List<string> memberships = new List<string>();
+
+                foreach (GraphUser user in users)
+                {
+                    List<GraphMembership> groupMemberships = graphClient.GetMembershipsAsync(user.Descriptor).Result;
+                    foreach(GraphMembership membership in groupMemberships)
+                    {
+                        GraphGroup resolvedGroup = graphClient.GetGroupAsync(membership.ContainerDescriptor).Result;
+                        memberships.Add(String.Format("{0}:{1} --> {2}:{3}", user.DisplayName, user.PrincipalName, resolvedGroup.Origin, resolvedGroup.DisplayName));
+                    }
+                }
+
+                return memberships;
+            }
+
+            return null;
+        }
     }
 }

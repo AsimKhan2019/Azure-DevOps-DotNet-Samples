@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Services.Graph.Client;
+using System;
 using System.Collections.Generic;
 
 namespace GraphQuickStarts
@@ -32,16 +33,15 @@ namespace GraphQuickStarts
                 Console.WriteLine("Executing Graph quick start samples...");
                 Console.WriteLine("");
 
-                //instantiate objects & execute
+                // Enumerate Users sample
                 Samples.EnumerateUsers objUsers = new Samples.EnumerateUsers(connectionUrl, token);
+                List<GraphUser> users = objUsers.RunEnumerateUsersUsingClientLib();
 
-                //execute the client lib code. If you want to run the direct http calls then adjust (see below)
-                objUsers.RunEnumerateUsersUsingClientLib();
+                // Enumber Group Memberships sample
+                objUsers.RunEnumerateEnumerateGroupMembershipsUsingClientLib(users);
 
-                //instantiate objects & execute
+                // Enumerate Members of Groups sample
                 Samples.EnumerateMembersOfGroups objMembers = new Samples.EnumerateMembersOfGroups(connectionUrl, clientId, redirectURL);
-
-                //execute the client lib code. If you want to run the direct http calls then adjust (see below)
                 objMembers.RunEnumerateMembersOfGroupsUsingClientLib(groupName);
 
                 Console.ReadKey();
