@@ -1,4 +1,5 @@
 ﻿using Microsoft.TeamFoundation.Core.WebApi;
+using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.WebApi;
@@ -846,10 +847,66 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             return result;
         }
 
-        public WorkItem UpdateWorkItemAddCommitLink()
+        public WorkItem UpdateWorkItemLinkToPullRequest()
         {
             int id = Convert.ToInt32(Context.GetValue<WorkItem>("$newWorkItem2").Id);
-            string commitUri = null; // vstfs:///Git/Commit/1435ac99-ba45-43e7-9c3d-0e879e7f2691%2Fd00dd2d9-55dd-46fc-ad00-706891dfbc48%2F3fefa488aac46898a25464ca96009cf05a6426e3
+            
+            VssConnection connection = Context.Connection;
+            GitHttpClient gitClient = connection.GetClient<GitHttpClient>();
+
+            //you will need to edit this line and enter a legit pull request id
+            var pullRequest = gitClient.GetPullRequestByIdAsync(999).Result;
+            var pullRequestUri = pullRequest.ArtifactId;
+
+            JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            patchDocument.Add(
+               new JsonPatchOperation()
+               {
+                   Operation = Operation.Test,
+                   Path = "/rev",
+                   Value = "3"
+               }
+            );
+
+            patchDocument.Add(
+                new JsonPatchOperation()
+                {
+                    Operation = Operation.Add,
+                    Path = "/relations/-",
+                    Value = new
+                    {
+                        rel = "ArtifactLink",
+                        url = pullRequestUri,
+                        attributes = new { 
+                            comment = "Fixed in Commit",
+                            name = "pull request"
+                        }
+                    }
+                }
+            );
+
+            
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id).Result;
+
+            return result;
+        }
+
+        public WorkItem UpdateWorkItemLinkToCommit()
+        {
+            int id = Convert.ToInt32(Context.GetValue<WorkItem>("$newWorkItem2").Id);
+            System.Guid repositoryId = new Guid("2f3d611a-f012-4b39-b157-8db63f380226");
+            string commitId = "be67f8871a4d2c75f13a51c1d3c30ac0d74d4ef4";
+
+            VssConnection connection = Context.Connection;
+            GitHttpClient gitClient = connection.GetClient<GitHttpClient>();
+
+            //you will need to edit this line and enter a legit repo id and commit id
+            //these are samples and will not work
+            var commit = gitClient.GetCommitAsync(commitId, repositoryId).Result;
+            var commitUri = commit.Url;
 
             JsonPatchDocument patchDocument = new JsonPatchDocument();
 
@@ -871,12 +928,16 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
                     {
                         rel = "ArtifactLink",
                         url = commitUri,
-                        attributes = new { comment = "Fixed in Commit" }
+                        attributes = new
+                        {
+                            comment = "Fixed in Commit",
+                            name = "commit"
+                        }
                     }
                 }
             );
 
-            VssConnection connection = Context.Connection;
+
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, id).Result;
