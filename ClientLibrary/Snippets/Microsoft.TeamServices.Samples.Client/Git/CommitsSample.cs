@@ -124,6 +124,22 @@ namespace Microsoft.TeamServices.Samples.Client.Git
                 .GetCommitsAsync(repo.Id, new GitQueryCommitsCriteria() { }, skip: 1, top: 2).Result;
         }
 
+        [ClientSampleMethod]
+        public List<GitCommitRef> GetCommitsMultipleById()
+        {
+            GitRepository repo = GitSampleHelpers.FindAnyRepositoryOnAnyProject(this.Context);
+
+            return this.Context.Connection.GetClient<GitHttpClient>()
+                .GetCommitsAsync(repo.Id, new GitQueryCommitsCriteria()
+                {
+                    Ids = new List<string>()
+                    {
+                        "9991b4f66def4c0a9ad8f9f27043ece7eddcf1c7",
+                        "9c1e8b082e2c2f041bdd5db76d6bf5c11572524f"
+                    }
+                }).Result;
+        }
+
         private GitVersionDescriptor m_oldestDescriptor = new GitVersionDescriptor()
         {
             VersionType = GitVersionType.Commit,
