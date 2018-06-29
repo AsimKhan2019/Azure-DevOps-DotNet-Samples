@@ -11,6 +11,12 @@ namespace Microsoft.TeamServices.Samples.Client.Git
 {
     public class GitSampleHelpers
     {
+        public static GitRepository FindAnyRepositoryOnAnyProject(ClientSampleContext context)
+        {
+            Guid projectId = ClientSampleHelpers.FindAnyProject(context).Id;
+            return FindAnyRepository(context, projectId);
+        }
+
         public static GitRepository FindAnyRepository(ClientSampleContext context, Guid projectId)
         {
             GitRepository repo;
