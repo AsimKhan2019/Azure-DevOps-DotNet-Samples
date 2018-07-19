@@ -17,32 +17,39 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
     /// but is commented with the HTTP calls that you can make to perform these same operations directly over the wire.
     /// </summary>
     /// <remarks>
-    /// <p>
-    /// NOTE ON REQUIRED PERMISSIONS: To be able to call of all the endpoints in this sample, 
+    /// <para>
+    /// NOTE ON REQUIRED PERMISSIONS: 
+    /// To be able to call of all the endpoints in this sample, 
     /// you will need to be an administrator of the target organization.
     /// Non-administrators will receive an authorization error.
-    /// </p>
-    /// <p>
-    /// NOTE ON CONNECTION DETAILS: For this sample, we will be using the connection from our current client context, 
-    /// which includes our base URL and our authentication credentials through the parameters passed in through the runner.
-    /// If you are calling these endpoints directly over the wire,
-    /// your base URL will be => https://{yourOrganization}.vssps.visualstudio.com
-    /// and the recommended approach for authentication is to acquire an ADAL access token and pass it in the header => Authorization: Bearer {yourADALAccessToken}
-    /// For further guidance on how to acquire an ADAL access token, see:
-    /// https://github.com/Microsoft/vsts-auth-samples/tree/master/ManagedClientConsoleAppSample
-    /// For further guidance on other authentication options, see:
-    /// https://docs.microsoft.com/en-us/vsts/integrate/get-started/authentication/authentication-guidance?view=vsts
-    /// </p>
+    /// </para>
+    /// <para>
+    /// NOTE ON CONNECTION DETAILS: 
+    /// For this sample, we will be using the Context.Connection variable from our enclosing context, 
+    /// which forwards our base URL and authentication credentials through the parameters passed in through the runner.
+    /// If instead you are calling these endpoints directly over the wire:
+    /// - your base URL will be 
+    ///     => https://{yourOrganization}.vssps.visualstudio.com
+    /// - and the recommended approach for authentication 
+    ///   is to acquire an ADAL access token and pass it in the header, i.e. 
+    ///     => Authorization: Bearer {yourADALAccessToken}
+    ///   For further guidance on how to acquire an ADAL access token, see:
+    ///   https://github.com/Microsoft/vsts-auth-samples/tree/master/ManagedClientConsoleAppSample
+    ///   For further guidance on other authentication options, see:
+    ///   https://docs.microsoft.com/en-us/vsts/integrate/get-started/authentication/authentication-guidance?view=vsts
+    /// </para>
+    /// <para>
+    /// NOTE ON TARGET ENDPOINTS: 
+    /// The areas of the VSTS REST API / HTTP clients that we will be using for these administration tasks are:
+    /// - the Graph endpoints, corresponding to the path pattern: /_apis/graph/*
+    /// - the TokenAdmin endpoints, corresponding to the path pattern: /_apis/tokenAdmin/*
+    ///   The C# client for this latter area may not be available until the next release of our client libraries,
+    ///   but the REST endpoints themselves should be available at the time of publishing.
+    /// </para>
     /// </remarks>
     [ClientSample(TokenAdminResourceIds.AreaName)]
     public class TokenAdminSample : ClientSample
     {
-        // The areas of the VSTS REST API / HTTP clients that we will be using for these administration tasks are:
-        // - the Graph endpoints, corresponding to the path pattern: /_apis/graph/*
-        // - the TokenAdmin endpoints, corresponding to the path pattern: /_apis/tokenAdmin/*
-        //   The C# client for this latter area may not be available until the next release of our client libraries,
-        //   but the REST endpoints themselves should be available at the time of publishing.
-
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.PersonalAccessTokensResource)]
         public List<Guid> GetPersonalAccessTokenAuthorizationIdsForSpecificUsersInYourOrganization()
         {
