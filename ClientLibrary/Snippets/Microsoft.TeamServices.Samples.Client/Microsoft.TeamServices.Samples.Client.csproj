@@ -154,13 +154,14 @@
     <Compile Include="Graph\MembershipStatesSample.cs" />
     <Compile Include="Graph\StorageKeySample.cs" />
     <Compile Include="Graph\SubjectLookupSample.cs" />
+    <Compile Include="Graph\GroupsSample.cs" />
+    <Compile Include="Graph\UsersSample.cs" />
+    <Compile Include="Graph\MembershipSample.cs" />
     <Compile Include="ProjectsAndTeams\ProcessesSample.cs" />
     <Compile Include="ProjectsAndTeams\ProjectCollectionsSample.cs" />
     <Compile Include="ProjectsAndTeams\ProjectsSample.cs" />
     <Compile Include="ProjectsAndTeams\TeamsSample.cs" />
     <Compile Include="Git\*.cs" />
-    <Compile Include="Graph\GroupsSample.cs" />
-    <Compile Include="Graph\UsersSample.cs" />
     <Compile Include="Notification\*.cs" />
     <Compile Include="Release\ReleasesSample.cs" />
     <Compile Include="Security\AccessControlListsSample.cs" />
@@ -171,6 +172,9 @@
     <Compile Include="Tfvc\ChangesetChangesSample.cs" />
     <Compile Include="Tfvc\BranchesSample.cs" />
     <Compile Include="Tfvc\ChangesetsSample.cs" />
+    <Compile Include="TokenAdmin\FromFutureWebApi\TokenAdminContracts.cs" />
+    <Compile Include="TokenAdmin\FromFutureWebApi\TokenAdminHttpClient.cs" />
+    <Compile Include="TokenAdmin\TokenAdminSample.cs" />
     <Compile Include="WorkItemTracking\AttachmentsSample.cs" />
     <Compile Include="WorkItemTracking\BatchSample.cs" />
     <Compile Include="WorkItemTracking\ClassificationNodesSample.cs" />
@@ -190,7 +194,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <Compile Include="Graph\MembershipSample.cs" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
