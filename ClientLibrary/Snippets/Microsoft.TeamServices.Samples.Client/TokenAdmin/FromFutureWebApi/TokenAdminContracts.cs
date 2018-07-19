@@ -41,7 +41,7 @@ namespace Microsoft.VisualStudio.Services.TokenAdmin.Client
         [DataMember]
         public Guid? ContinuationToken { get; set; }
     }
-    
+
     /// <summary>
     /// A rule which is applied to disable any incoming delegated authorization
     /// which matches the given properties.
@@ -49,11 +49,19 @@ namespace Microsoft.VisualStudio.Services.TokenAdmin.Client
     public class TokenAdminRevocationRule
     {
         /// <summary>
-        /// The OAuth scope for which matching authorizations should be rejected.
+        /// A string containing a space-delimited list of OAuth scopes.
+        /// A token matching any one of the scopes will be rejected.
         /// For a list of all OAuth scopes supported by VSTS, see:
-        /// https://docs.microsoft.com/en-us/vsts/integrate/get-started/authentication/oauth?view=vsts#scopes
+        /// https://docs.microsoft.com/en-us/vsts/integrate/get-started/authentication/oauth?view=vsts#scopes.
+        /// This is a mandatory parameter.
         /// </summary>
-        public string Scope { get; set; }
+        public string Scopes { get; set; }
+
+        /// <summary>
+        /// A datetime cutoff. Tokens created before this time will be rejected.
+        /// This is an optional paramter. If omitted, defaults to the time at which the rule was created. 
+        /// </summary>
+        public DateTime? CreatedBefore { get; set; }
     }
 
     /// <summary>

@@ -42,7 +42,7 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
         public List<Guid> GetPersonalAccessTokenDetailsForUsersInYourOrganization()
         {
             List<Guid> authorizationIds = new List<Guid>();
-            
+
             var graphHttpClient = Context.Connection.GetClient<GraphHttpClient>();
             var tokenAdminHttpClient = Context.Connection.GetClient<TokenAdminHttpClient>();
 
@@ -147,17 +147,21 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
             // Not all kinds of OAuth authorizations can be revoked directly.
             // Some, such as self-describing session tokens, must instead by revoked by creating a rule
             // which will be evaluated and used to reject matching OAuth credentials at authentication time.
-            // Revocation rules as shown here will apply to all credentials that were issued before the datetime
-            // at which the rule was created, and which match a particular OAuth scope.
+            // Revocation rules as shown here will apply to all credentials that were issued before the supplied datetime
+            // (if omitted, at the time at which the rule is created), and which match a particular set of OAuth scopes (must be provided).
             // For a list of all OAuth scopes supported by VSTS, see: 
             // https://docs.microsoft.com/en-us/vsts/integrate/get-started/authentication/oauth?view=vsts#scopes
 
-            var scopeToRevoke = "vso.code";
-            var revocationRule = new TokenAdminRevocationRule { Scope = scopeToRevoke };
+            var revocationRule = new TokenAdminRevocationRule
+            {
+                Scopes = "vso.code vso.packaging", // reject any token presented which matches EITHER the Code OR the Packaging scope
+                CreatedBefore = DateTime.Now - TimeSpan.FromDays(1) // reject any token that was created more than a day ago
+            };
 
             // HTTP: POST /_apis/tokenAdmin/revocationRules
             //       {
-            //         "scope":"{scopeToRevoke}"
+            //         "scopes":"{scopeToRevoke}",
+            //         "createdBefore":"{dateTimeToStopRevokingAt}"
             //       }
             //       => 204 No Content
             tokenAdminHttpClient.CreateRevocationRuleAsync(revocationRule).SyncResult();
