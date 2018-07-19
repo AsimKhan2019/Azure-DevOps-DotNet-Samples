@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.TeamFoundation.Common;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.Graph.Client;
 using Microsoft.VisualStudio.Services.TokenAdmin.Client;
@@ -51,21 +52,22 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
     public class TokenAdminSample : ClientSample
     {
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.PersonalAccessTokensResource)]
-        public List<Guid> GetPersonalAccessTokenAuthorizationIdsForSpecificUsersInYourOrganization()
+        public IEnumerable<Guid> GetPersonalAccessTokenAuthorizationIdsForSpecificUsersInYourOrganization()
         {
             var graphHttpClient = Context.Connection.GetClient<GraphHttpClient>();
 
-            // In this example, we assume that you already have a set of VSIDs or subject descriptors 
-            // for the users whose PAT tokens you want to retrieve. If this is not the case, see the sample for all users further below. 
-            // If you have VSIDs, you will need to first convert them to subject descriptors as shown below.
-            // If you have subject descriptors, you can go directly to the code in GetPersonalAccessTokenDetailsForASetOfUsers.
+            // In this example, we assume that you already have a set of 
+            // VSIDs or subject descriptors for the users whose PAT tokens you want to retrieve.
+            // If have neither of these, go to (2) to see how to enumerate your organization's users.
+            // If you have VSIDs, continue below to see how to first convert them to subject descriptors.
+            // If you have subject descriptors, go directly to (3) to retrieve the authorization details.
 
             // (1) CONVERTING VSIDS to SUBJECT DESCRIPTORS
 
             var vsids = new[]
             {
-                new Guid("e3b2f97f-8fd8-4086-82b4-e7d878e89c37"),
-                new Guid("1b90428b-d3f0-4703-812b-e497f08f183a"),
+                new Guid("372b07fb-6d3a-69d2-bffc-3e141cdefa7e"),
+                new Guid("3cdead07-1a99-46f6-80cb-2d247ad68606"),
             };
 
             // For each VSID, we ask Graph for the corresponding subject descriptor:
@@ -76,19 +78,19 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
             //                 }
             var subjectDescriptors = vsids.Select(vsid => graphHttpClient.GetDescriptorAsync(vsid).SyncResult()).Select(result => result.Value);
 
-            // (2) RETRIEVING PERSONAL ACCESS TOKEN AUTHORIZATION IDS FOR A SET OF SUBJECT DESCRIPTORS => see (4) below.
+            // Once we have the subject descriptors, we can query for the personal access token details:
             return GetPersonalAccessTokenAuthorizationIdsForASetOfUsers(subjectDescriptors);
         }
 
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.PersonalAccessTokensResource)]
-        public List<Guid> GetPersonalAccessTokenAuthorizationIdsForAllUsersInYourOrganization()
+        public IEnumerable<Guid> GetPersonalAccessTokenAuthorizationIdsForAllUsersInYourOrganization()
             => GetPersonalAccessTokenAuthorizationIdsForAllUsersInYourOrganization(thenForEachPage: null);
 
-        private List<Guid> GetPersonalAccessTokenAuthorizationIdsForAllUsersInYourOrganization(Action<List<Guid>> thenForEachPage)
+        private IEnumerable<Guid> GetPersonalAccessTokenAuthorizationIdsForAllUsersInYourOrganization(Action<IEnumerable<Guid>> thenForEachPage)
         {
             var graphHttpClient = Context.Connection.GetClient<GraphHttpClient>();
 
-            // (3) RETRIEVING SUBJECT DESCRIPTORS FOR ALL USERS
+            // (2) RETRIEVING SUBJECT DESCRIPTORS FOR ALL USERS
 
             // First, we will use the Graph endpoints to find the subject descriptors of all users in the organization.
             // This is a paginated API, so you may need to keep track of the continuation token
@@ -133,11 +135,16 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
             return authorizationIds;
         }
 
-        private List<Guid> GetPersonalAccessTokenAuthorizationIdsForASetOfUsers(IEnumerable<SubjectDescriptor> userDescriptors)
+        private IEnumerable<Guid> GetPersonalAccessTokenAuthorizationIdsForASetOfUsers(IEnumerable<SubjectDescriptor> userDescriptors)
         {
+            if (userDescriptors.IsNullOrEmpty())
+            {
+                return Enumerable.Empty<Guid>();
+            }
+
             var tokenAdminHttpClient = Context.Connection.GetClient<TokenAdminHttpClient>();
 
-            // (4) RETRIEVING PERSONAL ACCESS TOKEN AUTHORIZATION IDS FOR A SET OF SUBJECT DESCRIPTORS
+            // (3) RETRIEVING PERSONAL ACCESS TOKEN AUTHORIZATION IDS FOR A SET OF SUBJECT DESCRIPTORS
 
             // Given a user's subject descriptor, you can retrieve the authorization IDs that correspond
             // to their personal access tokens as shown below.
@@ -185,9 +192,9 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.RevocationsResource)]
         public void RevokePersonalAccessTokensForSpecificUsersInYourOrganization()
         {
-            // (5) REVOKING PERSONAL ACCESS TOKENS FOR SPECIFIC USERS
-            // - Get the authorization IDs corresponding to those specific users' personal access tokens, as in either (4) or (1+4) above.
-            // - For those specific authorization IDs, create and send the corresponding revocations, as in (7) below
+            // (4) REVOKING PERSONAL ACCESS TOKENS FOR SPECIFIC USERS
+            // - Get the authorization IDs corresponding to those specific users' personal access tokens, as in either (3) or (1+3) above.
+            // - For those specific authorization IDs, create and send the corresponding revocations, as in (6) below
             var authorizationIds = GetPersonalAccessTokenAuthorizationIdsForSpecificUsersInYourOrganization();
             RevokeAuthorizationsForASetOfUsers(authorizationIds);
         }
@@ -195,17 +202,22 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.RevocationsResource)]
         public void RevokePersonalAccessTokensForAllUsersInYourOrganization()
         {
-            // (6) REVOKING PERSONAL ACCESS TOKENS FOR ALL USERS
-            // - In pages, get the authorization IDs corresponding to the users' personal access tokens, as in (3+4) above.
-            // - For each page of authorization IDs, create and send the corresponding page of revocations, as in (7) below.
+            // (5) REVOKING PERSONAL ACCESS TOKENS FOR ALL USERS
+            // - In pages, get the authorization IDs corresponding to the users' personal access tokens, as in (2+3) above.
+            // - For each page of authorization IDs, create and send the corresponding page of revocations, as in (6) below.
             GetPersonalAccessTokenAuthorizationIdsForAllUsersInYourOrganization(thenForEachPage: RevokeAuthorizationsForASetOfUsers);
         }
 
         private void RevokeAuthorizationsForASetOfUsers(IEnumerable<Guid> authorizationIds)
         {
+            if (authorizationIds.IsNullOrEmpty())
+            {
+                return;
+            }
+
             var tokenAdminHttpClient = Context.Connection.GetClient<TokenAdminHttpClient>();
 
-            // (7) REVOKING SPECIFIC AUTHORIZATIONS
+            // (6) REVOKING SPECIFIC AUTHORIZATIONS
 
             // Once you have the list of authorization IDs you want to revoke, 
             // you can use the following token administration endpoint to revoke them in batch, up to a server-side limit. 
@@ -227,7 +239,7 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
         {
             var tokenAdminHttpClient = Context.Connection.GetClient<TokenAdminHttpClient>();
 
-            // (8) CREATING OAUTH REVOCATION RULES
+            // (7) CREATING OAUTH REVOCATION RULES
 
             // Not all kinds of OAuth authorizations can be revoked directly.
             // Some, such as self-describing session tokens, must instead by revoked by creating a rule
