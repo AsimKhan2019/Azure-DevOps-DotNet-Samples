@@ -44,14 +44,24 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
     /// The areas of the VSTS REST API / HTTP clients that we will be using for these administration tasks are:
     /// - the Graph endpoints, corresponding to the path pattern: /_apis/graph/*
     /// - the TokenAdmin endpoints, corresponding to the path pattern: /_apis/tokenAdmin/*
-    ///   The C# client for this latter area may not be available until the next release of our client libraries,
-    ///   but the REST endpoints themselves should be available at the time of publishing.
+    ///   The C# client for this latter area will not be available until the next release of our client libraries
+    ///   and so are included in this branch (under the folder FromFutureWebApi).
+    ///   The REST endpoints themselves are presently available.
     /// </para>
     /// </remarks>
     [ClientSample(TokenAdminResourceIds.AreaName)]
     public class TokenAdminSample : ClientSample
     {
-        [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.PersonalAccessTokensResource)]
+        // To run these samples:
+        // 1) clone this repo and checkout this branch
+        // 2) build the Microsoft.TeamServices.Samples.Client solution
+        // 3) find the location of Microsoft.TeamServices.Samples.Client.Runner.exe in the bin directory
+        // 4) run the lines above each method marked with ">" from that folder in the cmd prompt
+        //    - make sure to replace "{yourOrganization}" in the /url parameter with the appropriate value
+        //    - the runner will pop up a window prompting you to authenticate, where you will need to sign in as one of the organization's administrators
+
+        // > Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://{yourOrganization}.visualstudio.com /area:TokenAdmin /resource:PersonalAccessTokensSubset /outputPath:C:\Temp
+        [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.PersonalAccessTokensResource + "Subset")]
         public IEnumerable<Guid> GetPersonalAccessTokenAuthorizationIdsForSpecificUsersInYourOrganization()
         {
             var graphHttpClient = Context.Connection.GetClient<GraphHttpClient>();
@@ -82,6 +92,7 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
             return GetPersonalAccessTokenAuthorizationIdsForASetOfUsers(subjectDescriptors);
         }
 
+        // > Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://{yourOrganization}.visualstudio.com /area:TokenAdmin /resource:PersonalAccessTokens /outputPath:C:\Temp
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.PersonalAccessTokensResource)]
         public IEnumerable<Guid> GetPersonalAccessTokenAuthorizationIdsForAllUsersInYourOrganization()
             => GetPersonalAccessTokenAuthorizationIdsForAllUsersInYourOrganization(thenForEachPage: null);
@@ -191,7 +202,8 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
             return authorizationIds;
         }
 
-        [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.RevocationsResource)]
+        // > Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://{yourOrganization}.visualstudio.com /area:TokenAdmin /resource:RevocationsSubset /outputPath:C:\Temp
+        [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.RevocationsResource + "Subset")]
         public void RevokePersonalAccessTokensForSpecificUsersInYourOrganization()
         {
             // (4) REVOKING PERSONAL ACCESS TOKENS FOR SPECIFIC USERS
@@ -201,6 +213,7 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
             RevokeAuthorizationsForASetOfUsers(authorizationIds);
         }
 
+        // > Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://{yourOrganization}.visualstudio.com /area:TokenAdmin /resource:Revocations /outputPath:C:\Temp
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.RevocationsResource)]
         public void RevokePersonalAccessTokensForAllUsersInYourOrganization()
         {
@@ -236,6 +249,7 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
             tokenAdminHttpClient.RevokeAuthorizationsAsync(revocations).SyncResult();
         }
 
+        // > Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://{yourOrganization}.visualstudio.com /area:TokenAdmin /resource:RevocationRules /outputPath:C:\Temp
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.RevocationRulesResource)]
         public void RevokeSelfDescribingSessionTokensForUsersInYourOrganization()
         {
