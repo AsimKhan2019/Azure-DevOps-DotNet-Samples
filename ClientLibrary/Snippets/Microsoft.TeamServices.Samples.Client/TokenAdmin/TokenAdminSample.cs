@@ -137,11 +137,6 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
 
         private IEnumerable<Guid> GetPersonalAccessTokenAuthorizationIdsForASetOfUsers(IEnumerable<SubjectDescriptor> userDescriptors)
         {
-            if (userDescriptors.IsNullOrEmpty())
-            {
-                return Enumerable.Empty<Guid>();
-            }
-
             var tokenAdminHttpClient = Context.Connection.GetClient<TokenAdminHttpClient>();
 
             // (3) RETRIEVING PERSONAL ACCESS TOKEN AUTHORIZATION IDS FOR A SET OF SUBJECT DESCRIPTORS
@@ -154,6 +149,13 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
             // We pass null below to use the default (recommended), but you can adjust it if desired.
             // However, keep in mind that you will receive an error if you pass too high a value.
             int? patPageSize = null;
+
+            // We can only get personal access tokens for users, so ignore non-user descriptors.
+            userDescriptors = userDescriptors?.Where(descriptor => descriptor.IsUserType()).ToList();
+            if (userDescriptors.IsNullOrEmpty())
+            {
+                return Enumerable.Empty<Guid>();
+            }
 
             var authorizationIds = new List<Guid>();
 
@@ -188,7 +190,7 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
 
             return authorizationIds;
         }
-        
+
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.RevocationsResource)]
         public void RevokePersonalAccessTokensForSpecificUsersInYourOrganization()
         {
