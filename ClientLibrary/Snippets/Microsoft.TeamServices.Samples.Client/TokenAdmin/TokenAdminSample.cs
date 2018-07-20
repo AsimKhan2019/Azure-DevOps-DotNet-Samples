@@ -60,6 +60,7 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
         //    - make sure to replace "{yourOrganization}" in the /url parameter with the appropriate value
         //    - the runner will pop up a window prompting you to authenticate, where you will need to sign in as one of the organization's administrators
 
+        // TO GET THE PERSONAL ACCESS TOKEN AUTHORIZATION DETAILS FOR A SUBSET OF USERS IN YOUR ORGANIZATION:
         // > Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://{yourOrganization}.visualstudio.com /area:TokenAdmin /resource:PersonalAccessTokensSubset /outputPath:C:\Temp
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.PersonalAccessTokensResource + "Subset")]
         public IEnumerable<Guid> GetPersonalAccessTokenAuthorizationIdsForSpecificUsersInYourOrganization()
@@ -92,6 +93,7 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
             return GetPersonalAccessTokenAuthorizationIdsForASetOfUsers(subjectDescriptors);
         }
 
+        // TO GET THE PERSONAL ACCESS TOKEN AUTHORIZATION DETAILS FOR ALL THE USERS IN YOUR ORGANIZATION:
         // > Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://{yourOrganization}.visualstudio.com /area:TokenAdmin /resource:PersonalAccessTokens /outputPath:C:\Temp
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.PersonalAccessTokensResource)]
         public IEnumerable<Guid> GetPersonalAccessTokenAuthorizationIdsForAllUsersInYourOrganization()
@@ -202,6 +204,7 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
             return authorizationIds;
         }
 
+        // TO REVOKE THE PERSONAL ACCESS TOKENS OF A SUBSET OF USERS IN YOUR ORGANIZATION:
         // > Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://{yourOrganization}.visualstudio.com /area:TokenAdmin /resource:RevocationsSubset /outputPath:C:\Temp
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.RevocationsResource + "Subset")]
         public void RevokePersonalAccessTokensForSpecificUsersInYourOrganization()
@@ -213,6 +216,7 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
             RevokeAuthorizationsForASetOfUsers(authorizationIds);
         }
 
+        // TO REVOKE THE PERSONAL ACCESS TOKENS OF ALL USERS IN YOUR ORGANIZATION:
         // > Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://{yourOrganization}.visualstudio.com /area:TokenAdmin /resource:Revocations /outputPath:C:\Temp
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.RevocationsResource)]
         public void RevokePersonalAccessTokensForAllUsersInYourOrganization()
@@ -249,6 +253,7 @@ namespace Microsoft.TeamServices.Samples.Client.TokenAdmin
             tokenAdminHttpClient.RevokeAuthorizationsAsync(revocations).SyncResult();
         }
 
+        // TO REVOKE THE SELF-DESCRIBING SESSION TOKENS ISSUED FOR A PARTICULAR SCOPE AND BEFORE A CERTAIN DATE FOR ALL USERS IN YOUR ORGANIZATION:
         // > Microsoft.TeamServices.Samples.Client.Runner.exe /url:https://{yourOrganization}.visualstudio.com /area:TokenAdmin /resource:RevocationRules /outputPath:C:\Temp
         [ClientSampleMethod(TokenAdminResourceIds.AreaName, TokenAdminResourceIds.RevocationRulesResource)]
         public void RevokeSelfDescribingSessionTokensForUsersInYourOrganization()
