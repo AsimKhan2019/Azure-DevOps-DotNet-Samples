@@ -171,6 +171,12 @@
     <Compile Include="Tfvc\ChangesetChangesSample.cs" />
     <Compile Include="Tfvc\BranchesSample.cs" />
     <Compile Include="Tfvc\ChangesetsSample.cs" />
+    <Compile Include="Wiki\Helpers.cs" />
+    <Compile Include="Wiki\Extensions.cs" />
+    <Compile Include="Wiki\WikiAttachmentsSample.cs" />
+    <Compile Include="Wiki\WikiPageMovesSample.cs" />
+    <Compile Include="Wiki\WikiPagesSample.cs" />
+    <Compile Include="Wiki\WikisSample.cs" />
     <Compile Include="WorkItemTracking\AttachmentsSample.cs" />
     <Compile Include="WorkItemTracking\BatchSample.cs" />
     <Compile Include="WorkItemTracking\ClassificationNodesSample.cs" />
@@ -209,6 +215,11 @@
     <EmbeddedResource Include="Git\WordList.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
