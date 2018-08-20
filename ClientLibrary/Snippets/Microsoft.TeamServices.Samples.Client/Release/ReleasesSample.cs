@@ -485,6 +485,47 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             releaseClient.DeleteReleaseDefinitionAsync(project: projectName, definitionId: newlyCreatedReleaseDefinitionId).SyncResult();
 
         }
+        
+        [ClientSampleMethod]
+        public IEnumerable<Deployment> ListAllDeploymentsForASpecificReleaseDefinitionId()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a release client instance
+            VssConnection connection = Context.Connection;
+            ReleaseHttpClient2 releaseClient = connection.GetClient<ReleaseHttpClient2>();
+
+            List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName).Result;
+
+            int releaseDefinitionId = releaseDefinitions.FirstOrDefault().Id;
+
+            List<Deployment> deployments = new List<Deployment>();
+
+            // Iterate (as needed) to get the full set of deployments
+            int continuationToken = 0;
+            bool parseResult;
+            do
+            {
+                IPagedCollection<Deployment> releaseDeploymentsPage = releaseClient.GetDeploymentsAsync2(project: projectName, definitionId: releaseDefinitionId, continuationToken: continuationToken).Result;
+
+                deployments.AddRange(releaseDeploymentsPage);
+
+                int parsedContinuationToken = 0;
+                parseResult = int.TryParse(releaseDeploymentsPage.ContinuationToken, out parsedContinuationToken);
+                if (parseResult)
+                {
+                    continuationToken = parsedContinuationToken;
+                }
+            } while ((continuationToken != 0) && parseResult);
+
+            // Show the deployments
+            foreach (Deployment deployment in deployments)
+            {
+                Context.Log("{0} {1}", deployment.Id.ToString().PadLeft(6), deployment.DeploymentStatus);
+            }
+
+            return deployments;
+        }
 
         private static WebApiRelease CreateRelease(ReleaseHttpClient releaseClient, int releaseDefinitionId, string projectName)
         {
