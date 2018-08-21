@@ -31,6 +31,28 @@ namespace Microsoft.TeamServices.Samples.Client.Work
         }
 
         [ClientSampleMethod]
+        public List<TeamSettingsIteration> GetTeamSettingsCurrentIteration()
+        {
+            VssConnection connection = Context.Connection;
+            WorkHttpClient workClient = connection.GetClient<WorkHttpClient>();
+
+            Guid projectId = ClientSampleHelpers.FindAnyProject(this.Context).Id;
+            Guid teamId = ClientSampleHelpers.FindAnyTeam(this.Context, projectId).Id;
+
+            var context = new TeamContext(projectId, teamId);
+            List<TeamSettingsIteration> result = workClient.GetTeamIterationsAsync(context, "current").Result;
+
+            foreach(var item in result)
+            {
+                Console.WriteLine("Current Iteration: {0}", item.Name);
+                Console.WriteLine("Start Date: {0}", item.Attributes.StartDate.ToString());
+                Console.WriteLine("Finish Date: {0}", item.Attributes.FinishDate.ToString());
+            }           
+
+            return result;
+        }
+
+        [ClientSampleMethod]
         public TeamSetting UpdateTeamSettings()
         {
             IDictionary<string, bool> backlogVisibilities = new Dictionary<string, bool>() {

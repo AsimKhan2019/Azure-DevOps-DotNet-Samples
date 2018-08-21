@@ -21,6 +21,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         {
             // Construct the object containing field values required for the new work item
             JsonPatchDocument patchDocument = new JsonPatchDocument();
+            
             patchDocument.Add(
                 new JsonPatchOperation()
                 {
@@ -28,7 +29,16 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
                     Path = "/fields/System.Title",
                     Value = "Sample task 1"
                 }
-            );
+            );            
+
+            //patchDocument.Add(
+            //    new JsonPatchOperation()
+            //    {
+            //        Operation = Operation.Add,
+            //        Path = "/fields/System.IterationPath",
+            //        Value = "Test Project\\Iteration 1"
+            //    }
+            //);
 
             // Get a client
             VssConnection connection = Context.Connection;
