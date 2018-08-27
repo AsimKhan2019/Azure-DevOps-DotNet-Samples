@@ -9,4 +9,8 @@
     <PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.137.0-preview" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Helpers\Helpers.csproj" />
+  </ItemGroup>
+
 </Project>
