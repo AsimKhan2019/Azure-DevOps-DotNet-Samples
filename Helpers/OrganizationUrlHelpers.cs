@@ -24,7 +24,7 @@ namespace Samples.Helpers
         {
             try
             {
-                HttpResponseMessage response = await s_client.GetAsync($"https://app.vssps.visualstudio.com/_apis/resourceAreas?accountName={organizationName}");
+                HttpResponseMessage response = await s_client.GetAsync($"https://app.vssps.visualstudio.com/_apis/resourceAreas?accountName={organizationName}&api-version=5.0-preview.1");
             
                 var wrapper = await response.Content.ReadAsAsync<VssJsonCollectionWrapper<List<ResourceAreaInfo>>>();
 
@@ -43,7 +43,7 @@ namespace Samples.Helpers
         {
             try
             {
-                HttpResponseMessage response = await s_client.GetAsync($"https://app.vssps.visualstudio.com/_apis/resourceAreas?hostId={organizationId}");
+                HttpResponseMessage response = await s_client.GetAsync($"https://app.vssps.visualstudio.com/_apis/resourceAreas?hostId={organizationId}&api-version=5.0-preview.1");
             
                 var wrapper = await response.Content.ReadAsAsync<VssJsonCollectionWrapper<List<ResourceAreaInfo>>>();
 
