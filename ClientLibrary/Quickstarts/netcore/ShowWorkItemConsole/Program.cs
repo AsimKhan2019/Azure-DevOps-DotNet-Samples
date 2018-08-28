@@ -6,11 +6,10 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
-
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
-
 using Microsoft.VisualStudio.Services.Common;
+using Microsoft.VisualStudio.Services.Organization;
 using Microsoft.VisualStudio.Services.WebApi;
 
 using Samples.Helpers;
@@ -56,7 +55,7 @@ namespace Samples.ClientLibrary.Quickstarts.ShowWorkItemConsole
         static async Task<WorkItem> GetWorkItem(string organizationName, string accessToken, int workItemId)
         {
             // Get the connection URL for the specified VSTS organization
-            Uri organizationUrl = await OrganizationUrlHelpers.GetConnectionUrl(organizationName);
+            Uri organizationUrl = await OrganizationUrlHelpers.GetUrl(organizationName);
            
             // Create a connection to the organization
             VssConnection connection = new VssConnection(organizationUrl, new VssBasicCredential(string.Empty, accessToken));

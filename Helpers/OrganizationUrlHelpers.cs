@@ -5,9 +5,9 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.Location;
+using Microsoft.VisualStudio.Services.Organization;
 using Microsoft.VisualStudio.Services.WebApi;
 
 namespace Samples.Helpers
@@ -20,52 +20,49 @@ namespace Samples.Helpers
         /// <summary>
         /// Gets the connection URL for the specified VSTS organization name.
         /// </summary>
-        public static async Task<Uri> GetConnectionUrl(string organizationName)
+        public static async Task<Uri> GetUrl(string organizationName)
         {
-            try
-            {
-                HttpResponseMessage response = await s_client.GetAsync($"https://app.vssps.visualstudio.com/_apis/resourceAreas?accountName={organizationName}&api-version=5.0-preview.1");
-            
-                var wrapper = await response.Content.ReadAsAsync<VssJsonCollectionWrapper<List<ResourceAreaInfo>>>();
+            string requestUrl = $"{s_locationServiceUrl}/_apis/resourceAreas/{s_defaultResourceAreaId}/?accountName={organizationName}&api-version=5.0-preview.1";
 
-                return new Uri(wrapper.Value.First(resourceArea => resourceArea.Id == s_coreResourceAreaId).LocationUrl);
-            }
-            catch (Exception ex)
+            HttpResponseMessage response = await s_client.GetAsync(requestUrl);
+            
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                throw new OrganizationNotFoundException(organizationName, ex);
-            }
+                ResourceAreaInfo value = await response.Content.ReadAsAsync<ResourceAreaInfo>();
+
+                if (value != null)
+                {
+                    return new Uri(value.LocationUrl);
+                }
+            };
+
+            throw new OrganizationNotFoundException(organizationName);
         }
 
         /// <summary>
         /// Gets the connection URL for the specified VSTS organization ID.
         /// </summary>
-        public static async Task<Uri> GetConnectionUrl(Guid organizationId)
+        public static async Task<Uri> GetUrl(Guid organizationId)
         {
-            try
-            {
-                HttpResponseMessage response = await s_client.GetAsync($"https://app.vssps.visualstudio.com/_apis/resourceAreas?hostId={organizationId}&api-version=5.0-preview.1");
-            
-                var wrapper = await response.Content.ReadAsAsync<VssJsonCollectionWrapper<List<ResourceAreaInfo>>>();
+            string requestUrl = $"{s_locationServiceUrl}/_apis/resourceAreas/{s_defaultResourceAreaId}/?hostid={organizationId}&api-version=5.0-preview.1";
 
-                return new Uri(wrapper.Value.First(resourceArea => resourceArea.Id == s_coreResourceAreaId).LocationUrl);
-            }
-            catch (Exception ex)
+            HttpResponseMessage response = await s_client.GetAsync(requestUrl);
+            
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                throw new OrganizationNotFoundException(organizationId.ToString(), ex);
-            }
+                ResourceAreaInfo value = await response.Content.ReadAsAsync<ResourceAreaInfo>();
+
+                if (value != null)
+                {
+                    return new Uri(value.LocationUrl);
+                }
+            };
+
+            throw new OrganizationNotFoundException(organizationId.ToString());
         }
 
         private static readonly HttpClient s_client = new HttpClient();
-
-        public static readonly Guid s_coreResourceAreaId = Guid.Parse("79134C72-4A58-4B42-976C-04E7115F32BF");
+        private static readonly string s_locationServiceUrl = "https://app.vssps.visualstudio.com";
+        private static readonly Guid s_defaultResourceAreaId = Guid.Parse("79134C72-4A58-4B42-976C-04E7115F32BF");
     }
-    
-    public class OrganizationNotFoundException : Exception
-    {
-        public OrganizationNotFoundException(string message, Exception ex)
-            : base(message, ex)
-        {  
-        }
-    }
-
 }
