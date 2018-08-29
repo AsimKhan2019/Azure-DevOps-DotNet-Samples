@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Services.Common;
-using Microsoft.VisualStudio.Services.Location;
-using Microsoft.VisualStudio.Services.Organization;
-using Microsoft.VisualStudio.Services.WebApi;
+using Newtonsoft.Json.Linq;
 
 namespace Samples.Helpers
 {
     /// <summary>
-    /// Helper methods for building URLs to VSTS organization ("account") resources.
+    /// Helper methods for building URLs to VSTS organization ("account") resources using just a name or ID.
     /// </summmary> 
     public static class OrganizationUrlHelpers
     {
@@ -26,17 +20,7 @@ namespace Samples.Helpers
 
             HttpResponseMessage response = await s_client.GetAsync(requestUrl);
             
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                ResourceAreaInfo value = await response.Content.ReadAsAsync<ResourceAreaInfo>();
-
-                if (value != null)
-                {
-                    return new Uri(value.LocationUrl);
-                }
-            };
-
-            throw new OrganizationNotFoundException(organizationName);
+            return await ExtractLocationUrl(response);
         }
 
         /// <summary>
@@ -48,17 +32,22 @@ namespace Samples.Helpers
 
             HttpResponseMessage response = await s_client.GetAsync(requestUrl);
             
+            return await ExtractLocationUrl(response);
+        }
+
+        private static async Task<Uri> ExtractLocationUrl(HttpResponseMessage response)
+        {            
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                ResourceAreaInfo value = await response.Content.ReadAsAsync<ResourceAreaInfo>();
+                var resourceArea = await response.Content.ReadAsAsync<JObject>();
 
-                if (value != null)
+                if (resourceArea != null)
                 {
-                    return new Uri(value.LocationUrl);
+                    return new Uri(resourceArea["locationUrl"].ToString());
                 }
-            };
+            }
 
-            throw new OrganizationNotFoundException(organizationId.ToString());
+            return null;
         }
 
         private static readonly HttpClient s_client = new HttpClient();
