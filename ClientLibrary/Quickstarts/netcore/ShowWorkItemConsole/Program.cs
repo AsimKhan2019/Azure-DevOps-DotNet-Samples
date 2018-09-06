@@ -5,12 +5,10 @@ using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 
-using Samples.Helpers;
-
-namespace Samples.ClientLibrary.Quickstarts.ShowWorkItemConsole
+namespace ShowWorkItemConsole
 {
     /// <summary>
-    /// Simple .NET console program that shows information about a VSTS work item.
+    /// Simple console program that shows information about a VSTS work item.
     ///
     /// Usage:
     ///      ShowWorkItemConsole [organizationName] [personalAccessToken] [workItemNumber]
@@ -21,7 +19,7 @@ namespace Samples.ClientLibrary.Quickstarts.ShowWorkItemConsole
         {
             string organizationName = args[0];   // Organization (formerly called "account") name, for example: "fabrikam"  
             string accessToken = args[1];        // Personal access token. See https://docs.microsoft.com/vsts/integrate/get-started/authentication/pats?view=vsts
-            int workItemId = int.Parse(args[2]); // Work item ID, for example: 12
+            int workItemId = int.Parse(args[2]); // Work item ID, for example: 12       
 
             try
             {
@@ -50,7 +48,7 @@ namespace Samples.ClientLibrary.Quickstarts.ShowWorkItemConsole
         static async Task<WorkItem> GetWorkItem(string organizationName, string accessToken, int workItemId)
         {            
             // Get the connection URL for the specified VSTS organization name
-            Uri organizationUrl = await OrganizationUrlHelpers.GetUrl(organizationName);
+            Uri organizationUrl = await VssConnectionHelper.GetOrganizationUrlAsync(organizationName);
            
             // Create a connection to the organization
             VssConnection connection = new VssConnection(organizationUrl, new VssBasicCredential(string.Empty, accessToken));
@@ -59,7 +57,7 @@ namespace Samples.ClientLibrary.Quickstarts.ShowWorkItemConsole
             WorkItemTrackingHttpClient witClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
             // Make the call and return the work item
-           return await witClient.GetWorkItemAsync(workItemId);
+            return await witClient.GetWorkItemAsync(workItemId);
         }
     }
 }
