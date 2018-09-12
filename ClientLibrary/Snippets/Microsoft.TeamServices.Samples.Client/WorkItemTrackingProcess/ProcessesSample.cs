@@ -17,10 +17,11 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
     [ClientSample(Microsoft.TeamFoundation.WorkItemTracking.WebApi.WitConstants.WorkItemTrackingWebConstants.RestAreaName, "process")]
     public class ProcessesSample : ClientSample
     {
-        readonly string _refname = "fabrikam.MyNewAgileProcess";
-        
+        private string _refName = "fabrikam.MyNewAgileProcess";
+        private string _witRefName = "MyNewAgileProcess.ChangeRequest";
+
         [ClientSampleMethod]
-        public List<ProcessInfo> List()        
+        public List<ProcessInfo> Process_List()        
         {          
             VssConnection connection = Context.Connection;
             WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
@@ -47,20 +48,25 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
         }              
 
         [ClientSampleMethod]
-        public ProcessInfo Create()
+        public ProcessInfo Process_Create()
         {            
-            ProcessInfo processInfo = null;
-
+            ProcessInfo processInfo = Process_Get();
+            
+            if (processInfo != null)
+            {
+                return processInfo;
+            }
+                       
             //create process model record object that will be used to create the process
             CreateProcessModel processModel = new CreateProcessModel
             {                
                 Name = "MyNewAgileProcess",
                 ParentProcessTypeId = new System.Guid("adcc42ab-9882-485e-a3ed-7678f01f66bc"),
-                ReferenceName = _refname,
+                ReferenceName = _refName,
                 Description = "My new process"
             };
 
-            Console.Write("Creating new processes '" + _refname + "'...");
+            Console.Write("Creating new processes '" + _refName + "'...");
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
@@ -72,6 +78,8 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
 
                 Console.WriteLine("success");
                 Console.WriteLine("Process Id: {0}", processInfo.TypeId);
+
+                Context.SetValue<Guid>("$processId", processInfo.TypeId);
             }
             catch (Exception ex) //exception will be thrown if process already exists
             {               
@@ -88,40 +96,169 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
         }
 
         [ClientSampleMethod]
-        public ProcessInfo Get()
-        {
-            System.Guid processTypeId; 
+        public ProcessInfo Process_Get()
+        {            
             ProcessInfo processInfo = null;
+            
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();                                 
+
+            //extra step to get the process by name
+            //you should not have to do this
+            List<ProcessInfo> list = client.GetListOfProcessesAsync().Result;
+            ProcessInfo item = list.Find(x => x.ReferenceName == _refName);
+
+            //we did not find the process by name
+            if (item == null)
+            {
+                Console.WriteLine("Process '{0}' not found", _refName);
+                return null;
+            }
+
+            //we found something, so lets store the id in cache
+            Context.SetValue<Guid>("$processId", item.TypeId);           
+
+            //load the process by id
+            processInfo = client.GetProcessByItsIdAsync(item.TypeId).Result;
+
+            Console.WriteLine("Get process...success");
+            Console.WriteLine("{0}    {1}", _refName, processInfo.TypeId);
+
+            return processInfo;
+        }
+
+        [ClientSampleMethod]
+        public List<ProcessWorkItemType> WorkItemTypes_List()
+        {
+            //get process id stored in cache so we don't have to load it each time
+            System.Guid processId = Context.GetValue<Guid>("$processId");
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
 
-            Console.Write("Get process....");
+            Console.Write("Getting list of work item types for '" + processId.ToString() + "'...");
+            List<ProcessWorkItemType> list = client.GetProcessWorkItemTypesAsync(processId).Result;
+            Console.WriteLine("success");
 
-            //get a list of the procesess so i can pull the right process and get the id
-            //shouldn't need to do this in production code. Just save the typeId to load process directly
-            List<ProcessInfo> list = client.GetListOfProcessesAsync().Result;
-            
-            //get the process for a specific refname
-            var item = list.Find(x => x.ReferenceName == _refname);
-            
-            if (item == null)
+            foreach (var item in list)
             {
-                Console.WriteLine("Failed");
-                Console.WriteLine("No process found for '{0}'", _refname);
+                Console.WriteLine("{0} : {1}", item.Name, item.ReferenceName);
+            }
+
+            return list;
+        }
+
+        [ClientSampleMethod]
+        public ProcessWorkItemType WorkItemTypes_Create()
+        {
+            //get process id stored in cache so we don't have to load it each time
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+
+            ProcessWorkItemType processWorkItemType = null;
+
+            CreateProcessWorkItemTypeRequest createWorkItemType = new CreateProcessWorkItemTypeRequest()
+            {
+                Name = "Change Request",
+                Description = "Change request to track requests for changes :)",
+                Color = "f6546a",
+                Icon = "icon_airplane"
+                //InheritsFrom = "Microsoft.VSTS.WorkItemTypes.UserStory"
+            };
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            Console.Write("Does work item type '{0}' already exists? ... ", createWorkItemType.Name);
+
+            //get list of work item types and see if wit exists
+            List<ProcessWorkItemType> list = client.GetProcessWorkItemTypesAsync(processId).Result;
+            processWorkItemType = list.Find(x => x.Name == "Change Request");
+
+            if (processWorkItemType == null)
+            {
+                Console.WriteLine("No");
+                Console.WriteLine("");
+                Console.Write("Creating new work item type '" + createWorkItemType.Name + "'...");
+
+                try
+                {
+                    //create new work item type
+                    processWorkItemType = client.CreateProcessWorkItemTypeAsync(createWorkItemType, processId).Result;
+
+                    Console.WriteLine("success");
+                    Console.WriteLine("{0} : {1}", processWorkItemType.Name, processWorkItemType.ReferenceName);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("failed");
+                    Console.WriteLine("Error creating work item type: " + ex.InnerException.Message);
+                }
             }
             else
             {
-                processTypeId = item.TypeId;
+                Console.WriteLine("Yes");
+                Console.WriteLine("{0} : {1}", processWorkItemType.Name, processWorkItemType.ReferenceName);
+            }
 
-                //load the process by id
-                processInfo = client.GetProcessByItsIdAsync(processTypeId).Result;
+            Context.SetValue<ProcessWorkItemType>("$newWorkItemType", processWorkItemType);
 
-                Console.WriteLine("success");
-                Console.WriteLine("{0}    {1}", _refname, processInfo.TypeId);
-            }          
-            
-            return processInfo;
+            return processWorkItemType;
+        }
+
+        [ClientSampleMethod]
+        public ProcessWorkItemType WorkItemTypes_Update()
+        {
+            //get process id stored in cache so we don't have to load it each time
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+
+            //create UpdateProcessWorkItemTypeRequest object and set properties for whatever you want to change
+            UpdateProcessWorkItemTypeRequest updateWorkItemType = new UpdateProcessWorkItemTypeRequest()
+            {
+                Description = "This is my description"
+            };
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            Console.Write("Updating description for 'Change Request' work item type...");
+            ProcessWorkItemType result = client.UpdateProcessWorkItemTypeAsync(updateWorkItemType, processId, _witRefName).Result;
+            Console.WriteLine("success");
+
+            return result;
+        }
+
+        [ClientSampleMethod]
+        public FormLayout Layout_Get()
+        {
+            //get process id stored in cache so we don't have to load it each time
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            Console.Write("Getting layout for '{0}'....", _witRefName);
+            FormLayout layout = client.GetFormLayoutAsync(processId, _witRefName).Result;
+            Console.WriteLine("success");
+            Console.WriteLine("");
+
+            IList<Page> pages = layout.Pages;
+
+            foreach(Page page in pages)
+            {
+                Console.WriteLine("{0} ({1})", page.Label, page.Id);
+
+                foreach(Section section in page.Sections)
+                {
+                    Console.WriteLine("    {0}", section.Id);
+
+                    foreach(Group group in section.Groups)
+                    {
+                        Console.WriteLine("        {0} ({1})", group.Label, group.Id);
+                    }
+                }
+            }
+
+            return layout;
         }
     }
 }
