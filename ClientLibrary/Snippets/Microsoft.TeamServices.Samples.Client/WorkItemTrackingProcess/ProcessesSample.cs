@@ -237,11 +237,13 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
             WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
 
             Console.Write("Getting layout for '{0}'....", _witRefName);
+
             FormLayout layout = client.GetFormLayoutAsync(processId, _witRefName).Result;
+
             Console.WriteLine("success");
             Console.WriteLine("");
 
-            IList<Page> pages = layout.Pages;
+            List<Page> pages = layout.Pages as List<Page>;
 
             foreach(Page page in pages)
             {
@@ -256,9 +258,54 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
                         Console.WriteLine("        {0} ({1})", group.Label, group.Id);
                     }
                 }
-            }
+            }            
 
             return layout;
+        }
+
+        [ClientSampleMethod]
+        public Group Group_Add()
+        {
+            //get process id stored in cache so we don't have to load it each time
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+          
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            Console.Write("Getting form layout to find all pages, sections, and groups...");
+
+            FormLayout layout = client.GetFormLayoutAsync(processId, _witRefName).Result;
+
+            //searching through the layout page to find the right page, section, and group           
+            Page page = ProcessHelper.getPage(layout, "Details");
+            Group group = ProcessHelper.getGroup(layout, "Details", "Section2", "NewGroup");           
+
+            Console.WriteLine("done");
+            
+            if (group != null)
+            {
+                Console.WriteLine("Group '{0}' already exists on section '{1}' on page '{2}'", group.Label, "Section2", page.Label);
+            }
+            else
+            {
+                Console.Write("Creating new group 'NewGroup'...");
+
+                Group newGroup = new Group()
+                {
+                    Controls = null,
+                    Id = null,
+                    Label = "NewGroup",
+                    Overridden = false,
+                    Visible = true,
+                    Order = 1
+                };
+
+                group = client.AddGroupAsync(newGroup, processId, _witRefName, page.Id, "Section2").Result;
+
+                Console.WriteLine("done");
+            }                      
+
+            return group;
         }
     }
 }

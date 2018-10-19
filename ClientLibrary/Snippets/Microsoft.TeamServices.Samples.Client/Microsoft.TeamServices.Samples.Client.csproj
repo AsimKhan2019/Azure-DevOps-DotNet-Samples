@@ -188,6 +188,7 @@
     <Compile Include="Wiki\WikiPagesSample.cs" />
     <Compile Include="Wiki\WikisSample.cs" />
     <Compile Include="WorkItemTrackingProcess\ProcessesSample.cs" />
+    <Compile Include="WorkItemTrackingProcess\ProcessHelper.cs" />
     <Compile Include="WorkItemTracking\AttachmentsSample.cs" />
     <Compile Include="WorkItemTracking\BatchSample.cs" />
     <Compile Include="WorkItemTracking\ClassificationNodesSample.cs" />
