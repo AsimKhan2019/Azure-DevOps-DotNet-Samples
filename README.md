@@ -1,25 +1,25 @@
-# .NET samples for Visual Studio Team Services
+# .NET samples for Azure DevOps
 
-[![buildstatus](https://mseng.visualstudio.com/_apis/public/build/definitions/b924d696-3eae-4116-8443-9a18392d8544/5045/badge)](https://mseng.visualstudio.com/VSOnline/Open%20ALM/_build/index?context=mine&path=%5C&definitionId=5045&_a=completed)
+[![buildstatus](https://dev.azure.com/mseng/_apis/public/build/definitions/b924d696-3eae-4116-8443-9a18392d8544/5045/badge)](https://dev.azure.com/mseng/AzureDevOps/Open%20ALM/_build/index?context=mine&path=%5C&definitionId=5045&_a=completed)
 
-This repository contains C# samples that show how to integrate with Team Services and Team Foundation Server using our [public client libraries](https://www.nuget.org/profiles/nugetvss), service hooks, and more.
+This repository contains C# samples that show how to integrate with Azure DevOps and Team Foundation Server using our [public client libraries](https://www.nuget.org/profiles/nugetvss), service hooks, and more.
 
 ## Explore the samples
 
-Take a minute to explore the repo. It contains short snippets as well as longer examples that demonstrate how to integrate with Team Services and Team Foundation
+Take a minute to explore the repo. It contains short snippets as well as longer examples that demonstrate how to integrate with Azure DevOps and Team Foundation Server
 
 * **Snippets**: short reusable code blocks demonstrating how to call specific APIs.
 * **Quickstarts**: self-contained programs demonstrating a specific scenario, typically by calling multiple APIs.
 
 ## About the official client libraries
 
-For .NET developers, the primary (and highly recommended) way to integrate with Team Services and Team Foundation Server is via our public .NET client libraries available on Nuget. [Microsoft.TeamFoundationServer.Client](https://www.nuget.org/packages/Microsoft.TeamFoundationServer.Client) is the most popular Nuget package and contains clients for interacting with work item tracking, Git, version control, build, release management and other services.
+For .NET developers, the primary (and highly recommended) way to integrate with Azure DevOps and Team Foundation Server is via our public .NET client libraries available on Nuget. [Microsoft.TeamFoundationServer.Client](https://www.nuget.org/packages/Microsoft.TeamFoundationServer.Client) is the most popular Nuget package and contains clients for interacting with work item tracking, Git, version control, build, release management and other services.
 
-See the [Team Services client library documentation](https://www.visualstudio.com/docs/integrate/get-started/client-libraries/dotnet) for more details.
+See the [Azure DevOps client library documentation](https://docs.microsoft.com/en-us/azure/devops/integrate/concepts/dotnet-client-libraries?view=vsts) for more details.
 
 ### Sample console program
 
-Simple console program that connects to Team Services using a personal access token and displays the field values of a work item.
+Simple console program that connects to Azure DevOps using a personal access token and displays the field values of a work item.
 
 ```cs
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
@@ -37,7 +37,7 @@ namespace ConsoleApp
             if (args.Length == 3)
             {
                 Uri accountUri = new Uri(args[0]);     // Account URL, for example: https://fabrikam.visualstudio.com                
-                String personalAccessToken = args[1];  // See https://www.visualstudio.com/docs/integrate/get-started/authentication/pats                
+                String personalAccessToken = args[1];  // See https://docs.microsoft.com/en-us/azure/devops/integrate/get-started/authentication/pats?view=vsts              
                 int workItemId = int.Parse(args[2]);   // ID of a work item, for example: 12
 
                 // Create a connection to the account
