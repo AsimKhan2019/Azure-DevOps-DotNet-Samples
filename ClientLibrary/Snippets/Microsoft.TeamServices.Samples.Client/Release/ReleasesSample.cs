@@ -7,6 +7,8 @@ using System.Linq;
 using System.Net.Http;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Clients;
 using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Contracts;
+using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Security;
+using Microsoft.VisualStudio.Services.Security.Client;
 using Newtonsoft.Json;
 
 using WebApiRelease = Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.Release;
@@ -42,7 +44,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
                                     Rank = 1,
                                     DeploymentInput = new AgentDeploymentInput()
                                     {
-                                      QueueId = 1
+                                     // QueueId = 1
                                     }
                                 }
                             },
@@ -501,7 +503,6 @@ namespace Microsoft.TeamServices.Samples.Client.Release
         [ClientSampleMethod]
         public IEnumerable<Deployment> ListDeploymentsForAGivenDefinitionId()
         {
-            Debugger.Launch();
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
             // Get a release client instance
@@ -519,20 +520,6 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             return deployments;
         }
 
-        [ClientSampleMethod]
-        public void DeleteReleaseDefinition()
-        {
-            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
-
-            // Get a release client instance
-            VssConnection connection = Context.Connection;
-            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
-
-            // delete release definition
-            releaseClient.DeleteReleaseDefinitionAsync(project: projectName, definitionId: newlyCreatedReleaseDefinitionId).SyncResult();
-
-        }
-        
         [ClientSampleMethod]
         public IEnumerable<Deployment> ListAllDeploymentsForASpecificReleaseDefinitionId()
         {
@@ -573,19 +560,56 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             return deployments;
         }
+       
+        [ClientSampleMethod]
+        public void GetReleaseDefinitionAccessControlLists()
+        {
+            VssConnection connection = Context.Connection;
+            var project = ClientSampleHelpers.FindAnyProject(this.Context);
+
+            // We need the security client to talk to RM service instead of the default TFS to get us the ACLs for release definition 
+            SecurityHttpClient securityHttpClient = connection.GetClient<SecurityHttpClient>(Guid.Parse(ReleaseManagementApiConstants.InstanceType));
+            var acls = securityHttpClient.QueryAccessControlListsAsync(
+                SecurityConstants.ReleaseManagementSecurityNamespaceId,
+                CreateToken(project.Id, newlyCreatedReleaseDefinitionId),
+                null, // all desciptors 
+                true,
+                true).Result;
+        }
+
+        [ClientSampleMethod]
+        public void DeleteReleaseDefinition()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a release client instance
+            VssConnection connection = Context.Connection;
+            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
+
+            // delete release definition
+            releaseClient.DeleteReleaseDefinitionAsync(project: projectName, definitionId: newlyCreatedReleaseDefinitionId).SyncResult();
+
+        }
 
         public static WebApiRelease CreateRelease(ReleaseHttpClient releaseClient, int releaseDefinitionId, string projectName)
         {
-            BuildVersion instanceReference = new BuildVersion { Id = "2" };
-            ArtifactMetadata artifact = new ArtifactMetadata { Alias = "Fabrikam.CI", InstanceReference = instanceReference };
+            //BuildVersion instanceReference = new BuildVersion { Id = "2" };
+            //ArtifactMetadata artifact = new ArtifactMetadata { Alias = "Fabrikam.CI", InstanceReference = instanceReference };
             ReleaseStartMetadata releaseStartMetaData = new ReleaseStartMetadata();
             releaseStartMetaData.DefinitionId = releaseDefinitionId;
             releaseStartMetaData.Description = "Creating Sample release";
-            releaseStartMetaData.Artifacts = new[] { artifact };
+            //releaseStartMetaData.Artifacts = new[] { artifact };
             // Create  a release
             WebApiRelease release =
                 releaseClient.CreateReleaseAsync(project: projectName, releaseStartMetadata: releaseStartMetaData).Result;
             return release;
+        }
+
+        private static string CreateToken(Guid projectId, int releaseDefinitionId)
+        {
+            const string tokenNameFormat = "{0}/{1}";
+
+            return string.Format(tokenNameFormat, projectId, releaseDefinitionId);
         }
     }
 }
