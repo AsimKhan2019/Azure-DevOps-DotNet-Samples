@@ -67,15 +67,13 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
                 Version = new TaskVersion { IsTest = false, Major = 1, Minor = 0, Patch = 0 }
             };
 
-            List<TaskGroup> taskGroups = taskClient.GetTaskGroupsAsync(project: projectName).Result;
-
             // Create task group
-            var addedTg = taskClient.AddTaskGroupAsync(project: projectName, taskGroup: taskGroup).Result;
+            TaskGroup addedTg = taskClient.AddTaskGroupAsync(project: projectName, taskGroup: taskGroup).Result;
 
             this.addedTaskGroupId = addedTg.Id;
 
             // Show the added task group
-            Console.WriteLine("{0} {1}", addedTg.Id.ToString().PadLeft(6), addedTg.Name);
+            Context.Log("{0} {1}", addedTg.Id.ToString().PadLeft(6), addedTg.Name);
 
             return addedTg;
         }
@@ -118,7 +116,7 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
             taskGroup.Tasks.Add(newTask);
             TaskGroup updatedTaskGroup = taskClient.UpdateTaskGroupAsync(project: projectName, taskGroup: taskGroup).Result;
 
-            Console.WriteLine("{0} {1}", updatedTaskGroup.Id.ToString().PadLeft(6), updatedTaskGroup.Comment);
+            Context.Log("{0} {1}", updatedTaskGroup.Id.ToString().PadLeft(6), updatedTaskGroup.Comment);
 
             return updatedTaskGroup;
         }
@@ -143,7 +141,7 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
 
             foreach (TaskGroup taskGroup in taskGroups)
             {
-                Console.WriteLine("{0} {1}", taskGroup.Id.ToString().PadLeft(6), taskGroup.Name);
+                Context.Log("{0} {1}", taskGroup.Id.ToString().PadLeft(6), taskGroup.Name);
             }
 
             return taskGroups;
@@ -169,7 +167,7 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
 
             foreach (TaskGroup taskGroup in taskGroups)
             {
-                Console.WriteLine("{0} {1}", taskGroup.Id.ToString().PadLeft(6), taskGroup.Name);
+                Context.Log("{0} {1}", taskGroup.Id.ToString().PadLeft(6), taskGroup.Name);
             }
 
             return taskGroups;
