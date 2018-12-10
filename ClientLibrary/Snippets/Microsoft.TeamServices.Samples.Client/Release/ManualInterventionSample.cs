@@ -12,7 +12,7 @@ using WebApiRelease = Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.R
 
 namespace Microsoft.TeamServices.Samples.Client.Release
 {
-    [ClientSample(ReleaseManagementApiConstants.ReleaseAreaName, ReleaseManagementApiConstants.ReleasesResource)]
+    //[ClientSample(ReleaseManagementApiConstants.ReleaseAreaName, ReleaseManagementApiConstants.ReleasesResource)]
     public class ManualInterventionSample : ClientSample
     {
         private const string releaseDefinitionName = "Fabrikam-web-with-MI";
@@ -104,8 +104,8 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             this._newlyCreatedRelease1 = ReleasesSample.CreateRelease(releaseClient, _newlyCreatedReleaseDefinitionId, projectName);
             this._newlyCreatedRelease2 = ReleasesSample.CreateRelease(releaseClient, _newlyCreatedReleaseDefinitionId, projectName);
 
-            Console.WriteLine("{0} {1}", _newlyCreatedRelease1.Id.ToString().PadLeft(6), _newlyCreatedRelease1.Name);
-            Console.WriteLine("{0} {1}", _newlyCreatedRelease2.Id.ToString().PadLeft(6), _newlyCreatedRelease2.Name);
+            Context.Log("{0} {1}", _newlyCreatedRelease1.Id.ToString().PadLeft(6), _newlyCreatedRelease1.Name);
+            Context.Log("{0} {1}", _newlyCreatedRelease2.Id.ToString().PadLeft(6), _newlyCreatedRelease2.Name);
         }
 
         [ClientSampleMethod]
@@ -131,7 +131,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             foreach (ManualIntervention manualIntervention in manualInterventions)
             {
-                Console.WriteLine("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
+                Context.Log("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
             }
 
             this._manualInterventions = manualInterventions;
@@ -150,7 +150,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             // Get a manual intervention
             ManualIntervention manualIntervention = releaseClient.GetManualInterventionAsync(project: projectName, releaseId: this._newlyCreatedRelease1.Id, manualInterventionId: this._manualInterventions.FirstOrDefault().Id).Result;
-            Console.WriteLine("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
+            Context.Log("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
 
             return manualIntervention;
         }
@@ -172,7 +172,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             // Update a manual intervention
             ManualIntervention manualIntervention = releaseClient.UpdateManualInterventionAsync(manualInterventionUpdateMetadata: manualInterventionUpdateMetadata, project: projectName, releaseId: this._newlyCreatedRelease1.Id, manualInterventionId: this._manualInterventions.FirstOrDefault().Id).Result;
-            Console.WriteLine("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
+            Context.Log("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
 
             return manualIntervention;
         }
@@ -206,7 +206,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             // Update a manual intervention
             ManualIntervention manualIntervention = releaseClient.UpdateManualInterventionAsync(manualInterventionUpdateMetadata: manualInterventionUpdateMetadata, project: projectName, releaseId: this._newlyCreatedRelease2.Id, manualInterventionId: manualInterventions.FirstOrDefault().Id).Result;
-            Console.WriteLine("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
+            Context.Log("{0} {1}", manualIntervention.Id.ToString().PadLeft(6), manualIntervention.Name);
 
             return manualIntervention;
         }
@@ -221,8 +221,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
             // delete release definition
-            releaseClient.DeleteReleaseDefinitionAsync(project: projectName, definitionId: this._newlyCreatedReleaseDefinitionId).SyncResult();
-
+            releaseClient.DeleteReleaseDefinitionAsync(project: projectName, definitionId: this._newlyCreatedReleaseDefinitionId, forceDelete: true).SyncResult();
         }
     }
 }

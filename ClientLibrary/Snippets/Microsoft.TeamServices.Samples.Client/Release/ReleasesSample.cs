@@ -88,7 +88,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             newlyCreatedReleaseDefinitionId = releaseDefinition.Id;
 
-            Console.WriteLine("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
+            Context.Log("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
 
             return releaseDefinition;
         }
@@ -105,7 +105,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             // Show a release definitions
             ReleaseDefinition releaseDefinition = releaseClient.GetReleaseDefinitionAsync(project: projectName, definitionId: newlyCreatedReleaseDefinitionId).Result;
 
-            Console.WriteLine("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
+            Context.Log("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
 
             return releaseDefinition;
         }
@@ -124,7 +124,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             foreach (ReleaseDefinition releaseDefinition in releaseDefinitions)
             {
-                Console.WriteLine("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
+                Context.Log("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
             }
 
             return releaseDefinitions;
@@ -144,7 +144,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             foreach (ReleaseDefinition releaseDefinition in releaseDefinitions)
             {
-                Console.WriteLine("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
+                Context.Log("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
             }
 
             return releaseDefinitions;
@@ -164,7 +164,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             foreach (ReleaseDefinition releaseDefinition in releaseDefinitions)
             {
-                Console.WriteLine("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
+                Context.Log("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
             }
 
             return releaseDefinitions;
@@ -190,7 +190,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             // update release definition
             ReleaseDefinition updatedReleaseDefinition = releaseClient.UpdateReleaseDefinitionAsync(project: projectName, releaseDefinition: releaseDefinition).Result;
 
-            Console.WriteLine("{0} {1} {2}", updatedReleaseDefinition.Id.ToString().PadLeft(6), updatedReleaseDefinition.Revision, updatedReleaseDefinition.ModifiedOn);
+            Context.Log("{0} {1} {2}", updatedReleaseDefinition.Id.ToString().PadLeft(6), updatedReleaseDefinition.Revision, updatedReleaseDefinition.ModifiedOn);
 
             return releaseDefinition;
         }
@@ -209,7 +209,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             foreach (ReleaseDefinitionRevision revision in revisions)
             {
-                Console.WriteLine("{0} {1} {2} {3}", revision.DefinitionId.ToString().PadLeft(6), revision.Revision, revision.ChangedDate, revision.ChangedBy.DisplayName);
+                Context.Log("{0} {1} {2} {3}", revision.DefinitionId.ToString().PadLeft(6), revision.Revision, revision.ChangedDate, revision.ChangedBy.DisplayName);
             }
 
             return revisions;
@@ -226,7 +226,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             WebApiRelease release = CreateRelease(releaseClient, newlyCreatedReleaseDefinitionId, projectName);
 
-            Console.WriteLine("{0} {1}", release.Id.ToString().PadLeft(6), release.Name);
+            Context.Log("{0} {1}", release.Id.ToString().PadLeft(6), release.Name);
 
             return release;
         }
@@ -247,7 +247,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             // Show a release
             WebApiRelease release = releaseClient.GetReleaseAsync(project: projectName, releaseId: releaseId).Result;
 
-            Console.WriteLine("{0} {1}", release.Id.ToString().PadLeft(6), release.Name);
+            Context.Log("{0} {1}", release.Id.ToString().PadLeft(6), release.Name);
 
             return release;
         }
@@ -266,7 +266,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             // Show the releases
             foreach (WebApiRelease release in releases)
             {
-                Console.WriteLine("{0} {1}", release.Id.ToString().PadLeft(6), release.Status);
+                Context.Log("{0} {1}", release.Id.ToString().PadLeft(6), release.Status);
             }
 
             return releases;
@@ -285,7 +285,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             // Show releases
             foreach (WebApiRelease release in releases)
             {
-                Console.WriteLine("{0} {1} {2}", release.Id.ToString().PadLeft(6), release.Status, release.ReleaseDefinitionReference.Name);
+                Context.Log("{0} {1} {2}", release.Id.ToString().PadLeft(6), release.Status, release.ReleaseDefinitionReference.Name);
             }
 
             return releases;
@@ -311,7 +311,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             // Start deployment to an environment
             ReleaseEnvironment releaseEnvironment = releaseClient.UpdateReleaseEnvironmentAsync(releaseEnvironmentUpdateMetadata, projectName, release.Id, releaseEnvironmentId).Result;
-            Console.WriteLine("{0} {1}", releaseEnvironment.Id.ToString().PadLeft(6), releaseEnvironment.Name);
+            Context.Log("{0} {1}", releaseEnvironment.Id.ToString().PadLeft(6), releaseEnvironment.Name);
 
             return release;
         }
@@ -335,7 +335,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             // Abandon a release
             WebApiRelease updatedRelease = releaseClient.UpdateReleaseResourceAsync(releaseUpdateMetadata, projectName, release.Id).Result;
-            Console.WriteLine("{0} {1}", updatedRelease.Id.ToString().PadLeft(6), updatedRelease.Name);
+            Context.Log("{0} {1}", updatedRelease.Id.ToString().PadLeft(6), updatedRelease.Name);
 
             return release;
         }
@@ -371,7 +371,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             // Show the approvals
             foreach (ReleaseApproval releaseApproval in releaseApprovals)
             {
-                Console.WriteLine("{0} {1}", releaseApproval.Id.ToString().PadLeft(6), releaseApproval.Status);
+                Context.Log("{0} {1}", releaseApproval.Id.ToString().PadLeft(6), releaseApproval.Status);
             }
 
             return releaseApprovals;
@@ -408,7 +408,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             // Show the approvals
             foreach (ReleaseApproval releaseApproval in releaseApprovals)
             {
-                Console.WriteLine("{0} {1}", releaseApproval.Id.ToString().PadLeft(6), releaseApproval.Status);
+                Context.Log("{0} {1}", releaseApproval.Id.ToString().PadLeft(6), releaseApproval.Status);
             }
 
             return releaseApprovals;
@@ -449,7 +449,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             // Show the approvals
             foreach (ReleaseApproval releaseApproval in releaseApprovals)
             {
-                Console.WriteLine("{0} {1}", releaseApproval.Id.ToString().PadLeft(6), releaseApproval.Status);
+                Context.Log("{0} {1}", releaseApproval.Id.ToString().PadLeft(6), releaseApproval.Status);
             }
 
             return releaseApprovals;
@@ -474,7 +474,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             {
                 ReleaseApproval approval = releaseClient.UpdateReleaseApprovalAsync(project: projectName, approval: updateApproval, approvalId: releaseApprovalToApprove.Id).Result;
 
-                Console.WriteLine("{0} {1}", approval.Id.ToString().PadLeft(6), approval.Status);
+                Context.Log("{0} {1}", approval.Id.ToString().PadLeft(6), approval.Status);
             }
         }
 
@@ -492,7 +492,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             // Show the deployments
             foreach (Deployment deployment in deployments)
             {
-                Console.WriteLine("{0} {1}", deployment.Id.ToString().PadLeft(6), deployment.Release.Name);
+                Context.Log("{0} {1}", deployment.Id.ToString().PadLeft(6), deployment.Release.Name);
             }
 
             return deployments;
@@ -513,7 +513,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             // Show the deployments
             foreach (Deployment deployment in deployments)
             {
-                Console.WriteLine("{0} {1}", deployment.Id.ToString().PadLeft(6), deployment.Release.Name);
+                Context.Log("{0} {1}", deployment.Id.ToString().PadLeft(6), deployment.Release.Name);
             }
 
             return deployments;
