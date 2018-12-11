@@ -12,7 +12,7 @@ using WebApiRelease = Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.R
 
 namespace Microsoft.TeamServices.Samples.Client.Release
 {
-    //[ClientSample(ReleaseManagementApiConstants.ReleaseAreaName, ReleaseManagementApiConstants.ReleasesResource)]
+    [ClientSample(ReleaseManagementApiConstants.ReleaseAreaName, ReleaseManagementApiConstants.ReleasesResource)]
     public class ManualInterventionSample : ClientSample
     {
         private const string releaseDefinitionName = "Fabrikam-web-with-MI";
