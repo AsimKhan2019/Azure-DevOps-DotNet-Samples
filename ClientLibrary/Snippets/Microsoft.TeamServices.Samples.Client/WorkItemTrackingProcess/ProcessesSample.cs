@@ -1,5 +1,7 @@
 ﻿using Microsoft.TeamFoundation.WorkItemTracking.Process.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.Process.WebApi.Models;
+using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
+using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using System;
@@ -19,6 +21,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
     {
         private string _refName = "fabrikam.MyNewAgileProcess";
         private string _witRefName = "MyNewAgileProcess.ChangeRequest";
+        private string _fieldRefName = "Custom.Fields.Colors";
 
         [ClientSampleMethod]
         public List<ProcessInfo> Process_List()        
@@ -306,6 +309,111 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
             }                      
 
             return group;
+        }
+
+        [ClientSampleMethod]
+        public PickListMetadata Field_CreatePicklist()
+        {           
+            List<PickListMetadata> pickListMetadata = null;
+            PickList picklist = null;
+            string pickListName = "colorsPicklist";
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+          
+            Console.Write("Searching to see if picklist '{0}' exists....", pickListName);
+               
+            pickListMetadata = client.GetListsMetadataAsync().Result;
+            PickListMetadata item = pickListMetadata.Find(x => x.Name == pickListName);
+                        
+            if (item != null)
+            {
+                Context.SetValue<Guid>("$picklistId", item.Id);
+                Console.WriteLine("picklist found");
+                
+                return item;
+            }
+            else
+            { 
+                Console.WriteLine("picklist not found");
+                Console.Write("Creating new picklist....");
+
+                IList<string> list = new List<string>();
+
+                list.Add("Blue");
+                list.Add("Green");
+                list.Add("Red");
+                list.Add("Purple");
+
+                picklist = new PickList()
+                {
+                    Name = pickListName,
+                    Items = list,
+                    Type = "String",                
+                    IsSuggested = false
+                };               
+
+                PickList result = client.CreateListAsync(picklist).Result;
+                Context.SetValue<Guid>("$picklistId", result.Id);
+
+                Console.WriteLine("done");
+                return result;
+            }           
+        }
+
+        [ClientSampleMethod]
+        public WorkItemField Field_CreateNewField()
+        {
+            //get process id stored in cache so we don't have to load it each time
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+            System.Guid picklistId = Context.GetValue<Guid>("$picklistId");
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
+            WorkItemField field = null;
+
+            Console.Write("Searching to see if field '{0}' exists....", _fieldRefName);
+
+            try
+            {
+                field = client.GetFieldAsync(_fieldRefName).Result;
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException.Message.Contains("TF51535: Cannot find field"))
+                {
+                    field = null;
+                }
+            }            
+
+            if (field == null)
+            {
+                Console.WriteLine("field not found");
+                Console.Write("Creating new field....");
+                                                                                              
+                field = new WorkItemField()
+                {
+                    ReferenceName = _fieldRefName,
+                    Name = "Colors",
+                    Description = "My new field",
+                    Type = TeamFoundation.WorkItemTracking.WebApi.Models.FieldType.String,
+                    IsPicklist = true,
+                    PicklistId = picklistId,
+                    Usage = FieldUsage.WorkItem,
+                    ReadOnly = false,
+                    IsIdentity = false,
+                    IsQueryable = true            
+                };
+
+                WorkItemField newField = client.CreateFieldAsync(field).Result;
+
+                Console.WriteLine("Done");
+                return newField;
+            }             
+           
+            Console.WriteLine("field found");
+           
+            return field;
         }
     }
 }
