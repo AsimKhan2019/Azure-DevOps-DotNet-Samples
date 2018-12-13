@@ -61,17 +61,14 @@
     <Reference Include="Microsoft.TeamFoundation.Core.WebApi, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.16.141.1-preview\lib\net45\Microsoft.TeamFoundation.Core.WebApi.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Dashboards.WebApi, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.16.141.1-preview\lib\net45\Microsoft.TeamFoundation.Dashboards.WebApi.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.TeamFoundation.DistributedTask.Common.Contracts, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.TeamFoundation.DistributedTask.Common.Contracts.16.141.1-preview\lib\net45\Microsoft.TeamFoundation.DistributedTask.Common.Contracts.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.TeamFoundation.DistributedTask.WebApi, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.TeamFoundation.DistributedTask.WebApi.16.141.1-preview\lib\net45\Microsoft.TeamFoundation.DistributedTask.WebApi.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Policy.WebApi, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.16.141.1-preview\lib\net45\Microsoft.TeamFoundation.Policy.WebApi.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.TeamFoundation.DistributedTask.WebApi">
-      <HintPath>..\packages\Microsoft.TeamFoundation.DistributedTask.WebApi.15.122.1-preview\lib\net45\Microsoft.TeamFoundation.DistributedTask.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.SourceControl.WebApi, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.TeamFoundationServer.Client.16.141.1-preview\lib\net45\Microsoft.TeamFoundation.SourceControl.WebApi.dll</HintPath>
@@ -108,6 +105,9 @@
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.Notifications.WebApi, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Services.Notifications.WebApi.16.141.1-preview\lib\net45\Microsoft.VisualStudio.Services.Notifications.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.PoolProvider.Contracts, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.TeamFoundation.DistributedTask.WebApi.16.141.1-preview\lib\net45\Microsoft.VisualStudio.Services.PoolProvider.Contracts.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.ReleaseManagement.WebApi, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Services.Release.Client.16.141.1-preview\lib\net45\Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.dll</HintPath>
