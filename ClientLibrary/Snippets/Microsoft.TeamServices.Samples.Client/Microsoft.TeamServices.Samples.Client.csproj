@@ -165,6 +165,7 @@
     <Compile Include="ClientSampleHelpers.cs" />
     <Compile Include="ClientSampleHttpLogger.cs" />
     <Compile Include="ClientSampleUtils.cs" />
+    <Compile Include="DeploymentGroups\DeploymentGroupsSample.cs" />
     <Compile Include="ExtensionManagement\InstalledExtensionsSample.cs" />
     <Compile Include="Graph\DescriptorsSample.cs" />
     <Compile Include="Graph\MembershipStatesSample.cs" />

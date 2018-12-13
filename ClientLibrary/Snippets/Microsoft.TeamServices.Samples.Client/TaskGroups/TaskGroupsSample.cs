@@ -57,15 +57,15 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
             };
 
             // Task group object
-            TaskGroup taskGroup = new TaskGroup()
+            TaskGroupCreateParameter taskGroup = new TaskGroupCreateParameter()
             {
-                Tasks = new List<TaskGroupStep>() { taskGroupStep },
                 Category = "Deploy",
                 Name = "PowerShell TG1",
-                Visibility = { "Build", "Release" },
                 InstanceNameFormat = "Task group: TG",
                 Version = new TaskVersion { IsTest = false, Major = 1, Minor = 0, Patch = 0 }
             };
+
+            taskGroup.Tasks.Add(taskGroupStep);
 
             // Create task group
             TaskGroup addedTg = taskClient.AddTaskGroupAsync(project: projectName, taskGroup: taskGroup).Result;
@@ -114,7 +114,8 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
             TaskGroup taskGroup = taskGroups.FirstOrDefault();
             taskGroup.Comment = "Updated the task group";
             taskGroup.Tasks.Add(newTask);
-            TaskGroup updatedTaskGroup = taskClient.UpdateTaskGroupAsync(project: projectName, taskGroup: taskGroup).Result;
+            TaskGroupUpdateParameter taskGroupUpdateParams = GetTaskGroupUpdateParameter(taskGroup);
+            TaskGroup updatedTaskGroup = taskClient.UpdateTaskGroupAsync(project: projectName, taskGroupId: taskGroup.Id, taskGroup: taskGroupUpdateParams).Result;
 
             Context.Log("{0} {1}", updatedTaskGroup.Id.ToString().PadLeft(6), updatedTaskGroup.Comment);
 
@@ -186,6 +187,36 @@ namespace Microsoft.TeamServices.Samples.Client.TaskGroups
 
             // Delete the already created task group
             taskClient.DeleteTaskGroupAsync(project: projectName, taskGroupId: this.addedTaskGroupId).SyncResult();
+        }
+
+        private static TaskGroupUpdateParameter GetTaskGroupUpdateParameter(TaskGroup taskGroup)
+        {
+            var taskGroupUpdateParameter = new TaskGroupUpdateParameter
+            {
+                Id = taskGroup.Id,
+                Name = taskGroup.Name,
+                Description = taskGroup.Description,
+                Comment = taskGroup.Comment,
+                ParentDefinitionId = taskGroup.ParentDefinitionId
+            };
+
+            if (taskGroup.Inputs.Any())
+            {
+                foreach (var input in taskGroup.Inputs)
+                {
+                    taskGroupUpdateParameter.Inputs.Add(input);
+                }
+            }
+
+            if (taskGroup.Tasks.Any())
+            {
+                foreach (var task in taskGroup.Tasks)
+                {
+                    taskGroupUpdateParameter.Tasks.Add(task);
+                }
+            }
+
+            return taskGroupUpdateParameter;
         }
     }
 }
