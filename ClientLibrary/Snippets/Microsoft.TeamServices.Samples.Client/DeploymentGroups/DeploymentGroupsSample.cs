@@ -25,7 +25,7 @@ namespace Microsoft.TeamServices.Samples.Client.DeploymentGroups
         [ClientSampleMethod]
         public DeploymentGroup CreateDeploymentGroup()
         {
-            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+            String projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
             // Get a task agent client instance
             VssConnection connection = Context.Connection;
@@ -38,7 +38,7 @@ namespace Microsoft.TeamServices.Samples.Client.DeploymentGroups
                 Description = "This deployment group is created to demnostrate the client usage"
             };
 
-            var addedDeploymentGroup = dgClient.AddDeploymentGroupAsync(projectName, deploymentGroupCreateParameter).Result;
+            DeploymentGroup addedDeploymentGroup = dgClient.AddDeploymentGroupAsync(projectName, deploymentGroupCreateParameter).Result;
             this.addedDeploymentGroupId = addedDeploymentGroup.Id;
             return addedDeploymentGroup;
         }
@@ -52,7 +52,7 @@ namespace Microsoft.TeamServices.Samples.Client.DeploymentGroups
         [ClientSampleMethod]
         public DeploymentGroup GetDeploymentGroupById()
         {
-            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+            String projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
             // Get a task agent client instance
             VssConnection connection = Context.Connection;
@@ -72,7 +72,7 @@ namespace Microsoft.TeamServices.Samples.Client.DeploymentGroups
         [ClientSampleMethod]
         public IList<DeploymentGroup> ListAllDeploymentGroups()
         {
-            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+            String projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
             // Get a task agent client instance
             VssConnection connection = Context.Connection;
@@ -92,7 +92,7 @@ namespace Microsoft.TeamServices.Samples.Client.DeploymentGroups
         [ClientSampleMethod]
         public DeploymentGroup UpdateDeploymentGroup()
         {
-            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+            String projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
             // Get a task agent client instance
             VssConnection connection = Context.Connection;
@@ -118,7 +118,7 @@ namespace Microsoft.TeamServices.Samples.Client.DeploymentGroups
         [ClientSampleMethod]
         public void DeleteDeploymentGroup()
         {
-            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+            String projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
 
             // Get a task agent client instance
             VssConnection connection = Context.Connection;
