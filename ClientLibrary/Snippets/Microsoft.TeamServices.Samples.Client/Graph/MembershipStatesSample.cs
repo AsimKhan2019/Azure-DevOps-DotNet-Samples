@@ -43,6 +43,7 @@ namespace Microsoft.TeamServices.Samples.Client.Graph
             //
             // Part 3: remove the user
             // 
+            ClientSampleHttpLogger.SetOperationName(this.Context, "DeleteUser");
             graphClient.DeleteUserAsync(userDescriptor).SyncResult();
 
             // Try to get the deleted user

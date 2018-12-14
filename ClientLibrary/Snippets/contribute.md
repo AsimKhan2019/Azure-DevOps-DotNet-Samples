@@ -35,14 +35,20 @@
      ```
 
 3. Coding and style
-   * Avoid `var` typed variables
-   * Go out of your way to show types so it is clear from the code what types are being used  
-   * Samples should show catching exceptions for APIs where exceptions are common
+   * Avoid `var` typed variables (show actual types so it is clear from the code what types are being used)
+   * For calls where exceptions are common or expected, show a `try/catch` that uses the expected exception type
    * Use constants from the client libraries for property names, area names, resource names, etc (avoid hard-coded strings)
    * Use line breaks and empty lines to help deliniate important sections or lines that need to stand out
    * Use the same "dummy" data across all samples so it's easier to correlate similar concepts
+   * Use `Context.Log` instead of `Console.WriteLine` for writing messages and data
 
 4. All samples **MUST** be runnable on their own without any input
 
 5. All samples **SHOULD** clean up after themselves
-   * A good pattern to follow: have a sample method create a resource (to demonstrate creation) and have a later sample method delete the previously created resource. In between the creation and deletion, you can show updating the resource (if applicable).
+   * A good pattern to follow:
+     * First sample method creates a resource
+     * Subsequent methods show querying and updating the resource
+     * Final method deletes the resource
+     
+6. Avoid destructive samples that have the potential to destroy real user data
+   * Although a user should only ever run the samples against a test organization,avoid samples that destroy data arbitrarily (for example, a sample that finds the first project in the organization and deletes the first repository it finds). Instead follow the suggested pattern above and only destroy resources that earlier sample methods explicitly created.

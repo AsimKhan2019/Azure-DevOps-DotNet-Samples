@@ -270,14 +270,20 @@ namespace Microsoft.TeamServices.Samples.Client
 
     public class ClientSampleHttpLoggerOutputSuppression : IDisposable
     {
+        private bool OriginalSuppressValue;
+
         public ClientSampleHttpLoggerOutputSuppression()
         {
+            if (!ClientSampleContext.CurrentContext.TryGetValue<bool>(ClientSampleHttpLogger.PropertySuppressOutput, out OriginalSuppressValue))
+            {
+                OriginalSuppressValue = false;
+            }
             ClientSampleHttpLogger.SetSuppressOutput(ClientSampleContext.CurrentContext, true);
         }
 
         public void Dispose()
         {
-            ClientSampleHttpLogger.SetSuppressOutput(ClientSampleContext.CurrentContext, false);
+            ClientSampleHttpLogger.SetSuppressOutput(ClientSampleContext.CurrentContext, OriginalSuppressValue);
         }
     }
 
