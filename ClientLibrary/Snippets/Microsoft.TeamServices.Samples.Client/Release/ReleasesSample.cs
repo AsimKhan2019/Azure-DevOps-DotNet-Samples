@@ -38,7 +38,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             ConfigurationVariableValue sceretVariable = new ConfigurationVariableValue();
             sceretVariable.Value = "SecretValue";
-            sceretVariable.IsSecret = false;
+            sceretVariable.IsSecret = true;
 
             ConfigurationVariableValue nonOverrideVariable = new ConfigurationVariableValue();
             nonOverrideVariable.Value = "NonOverridevariable";
