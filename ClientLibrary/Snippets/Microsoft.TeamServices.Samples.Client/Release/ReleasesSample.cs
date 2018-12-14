@@ -753,7 +753,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
             if (overrideVaraibles != null)
             {
-                // If you want to override varaibles at release create time you should set 'AllowOverride' on variable.
+                // If you want to override varaibles at release create time, 'AllowOverride' on variable should be set while creating RD.
                 // You can override environment level variables using releaseStartMetaData.EnvironmentsMetadata.Variables.
                 releaseStartMetaData.Variables = overrideVaraibles;
             }
