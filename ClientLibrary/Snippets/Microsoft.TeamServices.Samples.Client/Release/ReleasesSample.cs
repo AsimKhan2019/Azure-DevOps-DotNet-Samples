@@ -20,6 +20,7 @@ namespace Microsoft.TeamServices.Samples.Client.Release
     public class ReleasesSample : ClientSample
     {
         private const string releaseDefinitionName = "Fabrikam-web";
+        private const string NonSecretReleaseLevelVaraible = "NonSecretReleaseLevelVaraible";
         private int newlyCreatedReleaseDefinitionId = 0;
         private int completedReleaseId = 0;
 
@@ -29,10 +30,31 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
             string currentUserId = ClientSampleHelpers.GetCurrentUserId(this.Context).ToString();
 
+            // If you want to override varaibles at release create time you should set 'AllowOverride'.
+            ConfigurationVariableValue nonSceretVariable = new ConfigurationVariableValue();
+            nonSceretVariable.Value = "NonSecretValue";
+            nonSceretVariable.IsSecret = false;
+            nonSceretVariable.AllowOverride = true;
+
+            ConfigurationVariableValue sceretVariable = new ConfigurationVariableValue();
+            sceretVariable.Value = "SecretValue";
+            sceretVariable.IsSecret = false;
+
+            ConfigurationVariableValue nonOverrideVariable = new ConfigurationVariableValue();
+            nonOverrideVariable.Value = "NonOverridevariable";
+            nonOverrideVariable.IsSecret = false;
+            nonOverrideVariable.AllowOverride = false;
+
+            Dictionary<string, ConfigurationVariableValue> releaseLevelVariables = new Dictionary<string, ConfigurationVariableValue>();
+            releaseLevelVariables.Add(NonSecretReleaseLevelVaraible, nonSceretVariable);
+            releaseLevelVariables.Add("SecretReleaseLevelVaraible", sceretVariable);
+            releaseLevelVariables.Add("NonOverridevariable", nonOverrideVariable);
+
             ReleaseDefinition definition = new ReleaseDefinition()
             {
                 Name = releaseDefinitionName,
                 Revision = 1,
+                Variables = releaseLevelVariables, // You can add varaibles at environment level also.
                 Environments = new List<ReleaseDefinitionEnvironment>()
                 {
                     new ReleaseDefinitionEnvironment()
@@ -228,7 +250,15 @@ namespace Microsoft.TeamServices.Samples.Client.Release
             VssConnection connection = Context.Connection;
             ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
 
-            WebApiRelease release = CreateRelease(releaseClient, newlyCreatedReleaseDefinitionId, projectName);
+            // Override release level varaible. You can override environment level varaible also.
+            Dictionary<string, ConfigurationVariableValue> overrideReleaseLevelVariables = new Dictionary<string, ConfigurationVariableValue>();
+            ConfigurationVariableValue nonSecretReleaseLevelVaraible = new ConfigurationVariableValue();
+            nonSecretReleaseLevelVaraible.Value = "NonSecretValueChanged";
+            nonSecretReleaseLevelVaraible.IsSecret = false;
+            overrideReleaseLevelVariables.Add(NonSecretReleaseLevelVaraible, nonSecretReleaseLevelVaraible);
+
+            // Create release
+            WebApiRelease release = CreateRelease(releaseClient, newlyCreatedReleaseDefinitionId, projectName, overrideReleaseLevelVariables);
 
             Context.Log("{0} {1}", release.Id.ToString().PadLeft(6), release.Name);
 
@@ -713,13 +743,21 @@ namespace Microsoft.TeamServices.Samples.Client.Release
 
         }
 
-        public static WebApiRelease CreateRelease(ReleaseHttpClient releaseClient, int releaseDefinitionId, string projectName)
+        public static WebApiRelease CreateRelease(ReleaseHttpClient releaseClient, int releaseDefinitionId, string projectName, Dictionary<string, ConfigurationVariableValue> overrideVaraibles = null)
         {
             BuildVersion instanceReference = new BuildVersion { Id = "2" };
             ArtifactMetadata artifact = new ArtifactMetadata { Alias = "Fabrikam.CI", InstanceReference = instanceReference };
             ReleaseStartMetadata releaseStartMetaData = new ReleaseStartMetadata();
             releaseStartMetaData.DefinitionId = releaseDefinitionId;
             releaseStartMetaData.Description = "Creating Sample release";
+
+            if (overrideVaraibles != null)
+            {
+                // If you want to override varaibles at release create time you should set 'AllowOverride' on variable.
+                // You can override environment level variables using releaseStartMetaData.EnvironmentsMetadata.Variables.
+                releaseStartMetaData.Variables = overrideVaraibles;
+            }
+
             releaseStartMetaData.Artifacts = new[] { artifact };
             // Create  a release
             WebApiRelease release =
