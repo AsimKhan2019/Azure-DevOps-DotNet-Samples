@@ -87,5 +87,59 @@ namespace Microsoft.TeamServices.Samples.Client.Wiki
 
             return rootPage.SubPages[0].Path;
         }
+
+        public static int GetAnyWikiPageId(ClientSampleContext context, WikiV2 wiki)
+        {
+            string path = GetAnyWikiPagePath(context, wiki);
+            VssConnection connection = context.Connection;
+            WikiHttpClient wikiClient = connection.GetClient<WikiHttpClient>();
+
+            WikiPage anyPage = wikiClient.GetPageAsync(
+                project: wiki.ProjectId,
+                wikiIdentifier: wiki.Id,
+                path: path,
+                recursionLevel: VersionControlRecursionType.OneLevel).SyncResult().Page;
+
+            if (!anyPage.Id.HasValue)
+            {
+                WikiPageCreateOrUpdateParameters parameters = new WikiPageCreateOrUpdateParameters()
+                {
+                    Content = "Wiki page content"
+                };
+
+                WikiPageResponse wikiPageResponse = wikiClient.CreateOrUpdatePageAsync(
+                parameters,
+                project: wiki.ProjectId,
+                wikiIdentifier: wiki.Id,
+                path: "SamplePage" + new Random().Next(1, 999),
+                Version: null).SyncResult();
+
+                context.Log("Create page '{0}' in wiki '{1}'", wikiPageResponse.Page.Path, wiki.Name);
+
+                anyPage = wikiPageResponse.Page;
+            }
+
+            return anyPage.Id.Value;
+        }
+
+        public static WikiPageResponse CreatePage(ClientSampleContext context, WikiV2 wiki, string path)
+        {
+            VssConnection connection = context.Connection;
+            WikiHttpClient wikiClient = connection.GetClient<WikiHttpClient>();
+
+            WikiPageCreateOrUpdateParameters parameters = new WikiPageCreateOrUpdateParameters()
+            {
+                Content = "Wiki page content"
+            };
+
+            WikiPageResponse wikiPageResponse = wikiClient.CreateOrUpdatePageAsync(
+                parameters,
+                project: wiki.ProjectId,
+                wikiIdentifier: wiki.Id,
+                path: path,
+                Version: null).SyncResult();
+
+            return wikiPageResponse;
+        }
     }
 }
