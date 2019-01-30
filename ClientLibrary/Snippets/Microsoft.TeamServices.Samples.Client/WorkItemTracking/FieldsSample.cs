@@ -40,7 +40,6 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
                 IsIdentity = true,
                 IsPicklist = false,
                 IsPicklistSuggested = false
-
             };
 
             VssConnection connection = Context.Connection;
@@ -49,11 +48,11 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             try
             {
                 result = workItemTrackingClient.CreateFieldAsync(newWorkItemField).Result;
-                Console.WriteLine("Work Item Field Created.");
+                Console.WriteLine("Work Item Field Creat Succeed.");
             }
             catch
             {
-                Console.WriteLine("Work Item Field Failed.");
+                Console.WriteLine("Work Item Field Create Failed.");
             }
 
             return result;
@@ -88,6 +87,23 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             foreach (var workitemField in result.Where(field => field.ReadOnly))
             {
                 Console.WriteLine(" * {0} ({1})", workitemField.Name, workitemField.ReferenceName);
+            }
+        }
+
+        [ClientSampleMethod]
+        public void DeleteWorkItemField()
+        {
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            try
+            {
+                workItemTrackingClient.DeleteFieldAsync("New Work Item Field");
+                Console.WriteLine("Work Item Field Creat Succeed.");
+            }
+            catch
+            {
+                Console.WriteLine("Work Item Field Delete Failed.");
             }
         }
     }

@@ -17,6 +17,8 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
     [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, "workitemssamples")]
     public class WorkItemsSample : ClientSample
     {
+        private Guid templateId = new Guid();
+
         [ClientSampleMethod]
         public WorkItem CreateWorkItem()
         {
@@ -1035,6 +1037,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             {
                 result = client.CreateTemplateAsync(template, teamContext).Result;
                 Console.WriteLine("Create Work Item Template Successed.");
+                templateId = result.Id;
             }
             catch (Exception e)
             {
@@ -1067,20 +1070,18 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             return result;
         }
 
-        /*To make this work, first run create template. Then comment out create template and replace the templateID*/
         [ClientSampleMethod]
         public WorkItemTemplate ReplaceTemplate()
         {
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            Guid templateID = new Guid("d35d406c-32fa-4316-ba6e-76bb564beaaa"); /*Replace template ID from get template*/
             Dictionary<string, string> field = new Dictionary<string, string>
             {
                 { "System.State", "Old" }
             };
 
-            WorkItemTemplate template = new WorkItemTemplate()
+            WorkItemTemplate newTemplate = new WorkItemTemplate()
             {
                 Name = "Test Template",
                 Description = "",
@@ -1092,7 +1093,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
 
             try
             {
-                result = client.ReplaceTemplateAsync(template, teamContext, templateID).Result;
+                result = client.ReplaceTemplateAsync(newTemplate, teamContext, templateId).Result;
                 Console.WriteLine("Replace template successed.");
             }
             catch(Exception e)
@@ -1102,6 +1103,24 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             }
 
             return result;
+        }
+
+        public void DeleteTemplate()
+        {
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
+            TeamContext teamContext = new TeamContext("Test Project", "Test Project Team");
+            List<WorkItemTemplateReference> workitems = this.ListTemplates();
+
+            try
+            {
+                client.DeleteTemplateAsync(teamContext, templateId);
+                Console.WriteLine("Delete template successed.");
+            }
+            catch
+            {
+                Console.WriteLine("Delete template Failded.");
+            }
         }
 
     }

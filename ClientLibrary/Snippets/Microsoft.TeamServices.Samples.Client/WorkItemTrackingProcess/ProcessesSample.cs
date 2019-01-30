@@ -136,10 +136,9 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+            List<ProcessInfo> processes = this.Process_List();
 
-            //extra step to get the process by name
-            //you should not have to do this
-            var processInfo = client.GetProcessByItsIdAsync(OutOfBoxProcessTemplateTypeIds.Agile).Result;
+            var processInfo = client.GetProcessByItsIdAsync(processes[0].TypeId).Result;
 
             return processInfo;
         }
@@ -235,7 +234,6 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
             System.Guid processId = Context.GetValue<Guid>("$processId");
 
             ProcessWorkItemType processWorkItemType = null;
-            ProcessWorkItemType creatProcessWorkItemTypeResult = null;
 
             CreateProcessWorkItemTypeRequest createWorkItemType = new CreateProcessWorkItemTypeRequest()
             {
@@ -264,7 +262,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
                 try
                 {
                     //create new work item type
-                    creatProcessWorkItemTypeResult = client.CreateProcessWorkItemTypeAsync(createWorkItemType, processId).Result;
+                    processWorkItemType = client.CreateProcessWorkItemTypeAsync(createWorkItemType, processId).Result;
 
                     Console.WriteLine("success");
                     Console.WriteLine("{0} : {1}", processWorkItemType.Name, processWorkItemType.ReferenceName);
@@ -283,7 +281,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
 
             Context.SetValue<ProcessWorkItemType>("$newWorkItemType", processWorkItemType);
 
-            return creatProcessWorkItemTypeResult;
+            return processWorkItemType;
         }
 
         [ClientSampleMethod]

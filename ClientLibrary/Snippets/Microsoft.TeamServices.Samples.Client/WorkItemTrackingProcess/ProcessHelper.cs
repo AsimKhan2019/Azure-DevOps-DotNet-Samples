@@ -37,10 +37,4 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
             return group;
         }
     }
-    static class OutOfBoxProcessTemplateTypeIds
-    {
-        public static readonly Guid Agile = new Guid("ADCC42AB-9882-485E-A3ED-7678F01F66BC");
-        public static readonly Guid Scrum = new Guid("6B724908-EF14-45CF-84F8-768B5384DA45");
-        public static readonly Guid Cmmi = new Guid("27450541-8E31-4150-9947-DC59F998FC01");
-    }
 }
