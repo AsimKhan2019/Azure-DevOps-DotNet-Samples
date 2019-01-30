@@ -18,6 +18,46 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
     [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, WitConstants.WorkItemTrackingRestResources.Fields)]
     public class FieldsSample : ClientSample
     {
+        [ClientSampleMethod]
+        public WorkItemField CreateWorkItemField()
+        {
+            WorkItemField result = new WorkItemField();
+
+            WorkItemField newWorkItemField = new WorkItemField()
+            {
+                Name = "New Work Item Field",
+                ReferenceName = "SupportedOperations.GreaterThanEquals",
+                Description = null,
+                Type = FieldType.String,
+                Usage = FieldUsage.WorkItem,
+                ReadOnly = false,
+                CanSortBy = true,
+                IsQueryable = true,
+                SupportedOperations = new List<WorkItemFieldOperation>()
+                {
+                    new WorkItemFieldOperation(){ ReferenceName="SupportedOperations.Equals", Name="="}
+                },
+                IsIdentity = true,
+                IsPicklist = false,
+                IsPicklistSuggested = false
+
+            };
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            try
+            {
+                result = workItemTrackingClient.CreateFieldAsync(newWorkItemField).Result;
+                Console.WriteLine("Work Item Field Created.");
+            }
+            catch
+            {
+                Console.WriteLine("Work Item Field Failed.");
+            }
+
+            return result;
+        }
 
         [ClientSampleMethod]
         public WorkItemField GetFieldDetails()

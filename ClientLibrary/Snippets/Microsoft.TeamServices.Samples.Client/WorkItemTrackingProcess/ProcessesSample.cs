@@ -131,6 +131,20 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
         }
 
         [ClientSampleMethod]
+        public ProcessInfo Process_GetById()
+        {
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            //extra step to get the process by name
+            //you should not have to do this
+            var processInfo = client.GetProcessByItsIdAsync(OutOfBoxProcessTemplateTypeIds.Agile).Result;
+
+            return processInfo;
+        }
+
+        [ClientSampleMethod]
         public List<ProcessWorkItemType> WorkItemTypes_List()
         {
             //get process id stored in cache so we don't have to load it each time
@@ -152,12 +166,76 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
         }
 
         [ClientSampleMethod]
+        public List<ProcessWorkItemType> WorkItemTypes_List_Expand_State()
+        {
+            //get process id stored in cache so we don't have to load it each time
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            Console.Write("Getting list of work item types for '" + processId.ToString() + "'...");
+            List<ProcessWorkItemType> list = client.GetProcessWorkItemTypesAsync(processId, expand:GetWorkItemTypeExpand.States).Result;
+            Console.WriteLine("success");
+
+            foreach (var item in list)
+            {
+                Console.WriteLine("{0} : {1}", item.Name, item.ReferenceName);
+            }
+
+            return list;
+        }
+
+        [ClientSampleMethod]
+        public List<ProcessWorkItemType> WorkItemTypes_List_Expand_Behaviors()
+        {
+            //get process id stored in cache so we don't have to load it each time
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            Console.Write("Getting list of work item types for '" + processId.ToString() + "'...");
+            List<ProcessWorkItemType> list = client.GetProcessWorkItemTypesAsync(processId, expand: GetWorkItemTypeExpand.Behaviors).Result;
+            Console.WriteLine("success");
+
+            foreach (var item in list)
+            {
+                Console.WriteLine("{0} : {1}", item.Name, item.ReferenceName);
+            }
+
+            return list;
+        }
+
+        [ClientSampleMethod]
+        public List<ProcessWorkItemType> WorkItemTypes_List_Expand_Layout()
+        {
+            //get process id stored in cache so we don't have to load it each time
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            Console.Write("Getting list of work item types for '" + processId.ToString() + "'...");
+            List<ProcessWorkItemType> list = client.GetProcessWorkItemTypesAsync(processId, expand: GetWorkItemTypeExpand.Layout).Result;
+            Console.WriteLine("success");
+
+            foreach (var item in list)
+            {
+                Console.WriteLine("{0} : {1}", item.Name, item.ReferenceName);
+            }
+
+            return list;
+        }
+
+        [ClientSampleMethod]
         public ProcessWorkItemType WorkItemTypes_Create()
         {
             //get process id stored in cache so we don't have to load it each time
             System.Guid processId = Context.GetValue<Guid>("$processId");
 
             ProcessWorkItemType processWorkItemType = null;
+            ProcessWorkItemType creatProcessWorkItemTypeResult = null;
 
             CreateProcessWorkItemTypeRequest createWorkItemType = new CreateProcessWorkItemTypeRequest()
             {
@@ -186,7 +264,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
                 try
                 {
                     //create new work item type
-                    processWorkItemType = client.CreateProcessWorkItemTypeAsync(createWorkItemType, processId).Result;
+                    creatProcessWorkItemTypeResult = client.CreateProcessWorkItemTypeAsync(createWorkItemType, processId).Result;
 
                     Console.WriteLine("success");
                     Console.WriteLine("{0} : {1}", processWorkItemType.Name, processWorkItemType.ReferenceName);
@@ -204,6 +282,25 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
             }
 
             Context.SetValue<ProcessWorkItemType>("$newWorkItemType", processWorkItemType);
+
+            return creatProcessWorkItemTypeResult;
+        }
+
+        [ClientSampleMethod]
+        public ProcessWorkItemType WorkItemType_Get()
+        {
+            ProcessWorkItemType processWorkItemType = null;
+
+            //get process id stored in cache so we don't have to load it each time
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            //load the process by id
+            processWorkItemType = client.GetProcessWorkItemTypeAsync(processId, _witRefName).Result;
+
+            Console.WriteLine("Getting work item type for " + _refName);
 
             return processWorkItemType;
         }
@@ -313,28 +410,28 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
 
         [ClientSampleMethod]
         public PickListMetadata Field_CreatePicklist()
-        {           
+        {
             List<PickListMetadata> pickListMetadata = null;
             PickList picklist = null;
             string pickListName = "colorsPicklist";
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
-          
+
             Console.Write("Searching to see if picklist '{0}' exists....", pickListName);
-               
+
             pickListMetadata = client.GetListsMetadataAsync().Result;
             PickListMetadata item = pickListMetadata.Find(x => x.Name == pickListName);
-                        
+
             if (item != null)
             {
                 Context.SetValue<Guid>("$picklistId", item.Id);
                 Console.WriteLine("picklist found");
-                
+
                 return item;
             }
             else
-            { 
+            {
                 Console.WriteLine("picklist not found");
                 Console.Write("Creating new picklist....");
 
@@ -349,16 +446,16 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
                 {
                     Name = pickListName,
                     Items = list,
-                    Type = "String",                
+                    Type = "String",
                     IsSuggested = false
-                };               
+                };
 
                 PickList result = client.CreateListAsync(picklist).Result;
                 Context.SetValue<Guid>("$picklistId", result.Id);
 
                 Console.WriteLine("done");
                 return result;
-            }           
+            }
         }
 
         [ClientSampleMethod]
@@ -415,6 +512,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
             return field;
         }
 
+
         [ClientSampleMethod]
         public ProcessWorkItemTypeField Field_AddFieldToWorkItemType()
         {
@@ -459,6 +557,57 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
 
                 return processWorkItemTypeField;
             }
+        }
+
+        [ClientSampleMethod]
+        public List<ProcessWorkItemTypeField> Field_GetAllWorkItemTypeFieldsAsync()
+        {
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            //get the list of fields on the work item item
+            Console.Write("Loading list of fields on the work item and checking to see if field '{0}' already exists...", _fieldRefName);
+
+            List<ProcessWorkItemTypeField> list = client.GetAllWorkItemTypeFieldsAsync(processId, _witRefName).Result;
+
+            return list;
+        }
+
+        [ClientSampleMethod]
+        public ProcessWorkItemTypeField Field_GetWorkItemTypeField()
+        {
+            ProcessWorkItemTypeField processWorkItemTypeField = null;
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            processWorkItemTypeField = client.GetWorkItemTypeFieldAsync(processId, _witRefName, _fieldRefName).Result;
+
+            return processWorkItemTypeField;
+        }
+
+        [ClientSampleMethod]
+        public ProcessWorkItemTypeField Field_UpdateWorkItemTypeField()
+        {
+            UpdateProcessWorkItemTypeFieldRequest newfieldRequest = new UpdateProcessWorkItemTypeFieldRequest()
+            {
+                ReadOnly = false,
+                Required = false,
+                DefaultValue = "Blue",
+                AllowGroups = false
+            };
+ 
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            ProcessWorkItemTypeField processWorkItemTypeField = client.UpdateWorkItemTypeFieldAsync(newfieldRequest, processId, _witRefName, _fieldRefName).Result;
+
+            return processWorkItemTypeField;
         }
     }
 }
