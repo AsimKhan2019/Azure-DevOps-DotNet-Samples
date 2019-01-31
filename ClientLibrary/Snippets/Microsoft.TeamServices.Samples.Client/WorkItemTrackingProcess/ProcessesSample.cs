@@ -174,49 +174,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
             WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
 
             Console.Write("Getting list of work item types for '" + processId.ToString() + "'...");
-            List<ProcessWorkItemType> list = client.GetProcessWorkItemTypesAsync(processId, expand:GetWorkItemTypeExpand.States).Result;
-            Console.WriteLine("success");
-
-            foreach (var item in list)
-            {
-                Console.WriteLine("{0} : {1}", item.Name, item.ReferenceName);
-            }
-
-            return list;
-        }
-
-        [ClientSampleMethod]
-        public List<ProcessWorkItemType> WorkItemTypes_List_Expand_Behaviors()
-        {
-            //get process id stored in cache so we don't have to load it each time
-            System.Guid processId = Context.GetValue<Guid>("$processId");
-
-            VssConnection connection = Context.Connection;
-            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
-
-            Console.Write("Getting list of work item types for '" + processId.ToString() + "'...");
-            List<ProcessWorkItemType> list = client.GetProcessWorkItemTypesAsync(processId, expand: GetWorkItemTypeExpand.Behaviors).Result;
-            Console.WriteLine("success");
-
-            foreach (var item in list)
-            {
-                Console.WriteLine("{0} : {1}", item.Name, item.ReferenceName);
-            }
-
-            return list;
-        }
-
-        [ClientSampleMethod]
-        public List<ProcessWorkItemType> WorkItemTypes_List_Expand_Layout()
-        {
-            //get process id stored in cache so we don't have to load it each time
-            System.Guid processId = Context.GetValue<Guid>("$processId");
-
-            VssConnection connection = Context.Connection;
-            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
-
-            Console.Write("Getting list of work item types for '" + processId.ToString() + "'...");
-            List<ProcessWorkItemType> list = client.GetProcessWorkItemTypesAsync(processId, expand: GetWorkItemTypeExpand.Layout).Result;
+            List<ProcessWorkItemType> list = client.GetProcessWorkItemTypesAsync(processId, expand: GetWorkItemTypeExpand.States).Result;
             Console.WriteLine("success");
 
             foreach (var item in list)
