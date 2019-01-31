@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
 {
     public static class ProcessHelper
-    {
+    {       
         public static Page getPage(FormLayout layout, string pageName)
         {
             List<Page> pages = layout.Pages as List<Page>;
@@ -18,12 +18,12 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
         }
 
         public static Section getSection(FormLayout layout, string pageName, string sectionName)
-        {
+        {           
             Page page = getPage(layout, pageName);
-
+            
             List<Section> sections = page.Sections as List<Section>;
             Section section = sections.Find(x => x.Id == sectionName);
-
+            
             return section;
         }
 
