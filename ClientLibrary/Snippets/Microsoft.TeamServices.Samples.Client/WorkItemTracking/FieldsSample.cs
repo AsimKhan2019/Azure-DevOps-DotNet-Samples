@@ -36,22 +36,14 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             try
             {
                 newlyCreatedWorkItemField = workItemTrackingClient.CreateFieldAsync(newWorkItemField).Result;
+                Context.SetValue<string>("$newlyCreatedWorkItemFieldName", newlyCreatedWorkItemField.Name);
                 Console.WriteLine("Work Item Field Create Succeeded.");
             }
             catch
             {
                 Console.WriteLine("Work Item Field Create Failed.");
             }
-            //Destroy resource
-            try
-            {
-                workItemTrackingClient.DeleteFieldAsync("New Work Item Field");
-                Console.WriteLine("Work Item Field Delete Succeeded.");
-            }
-            catch
-            {
-                Console.WriteLine("Work Item Field Delete Failed.");
-            }
+
 
             return newlyCreatedWorkItemField;
         }
@@ -94,29 +86,9 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            WorkItemField newWorkItemField = new WorkItemField()
-            {
-                Name = "New Work Item Field",
-                ReferenceName = "SupportedOperations.GreaterThanEquals",
-                Description = "New work item filed for testing",
-                Type = FieldType.String
-            };
-
-            //First create resource
             try
             {
-                workItemTrackingClient.CreateFieldAsync(newWorkItemField);
-                Console.WriteLine("Work Item Field Create Succeeded.");
-            }
-            catch
-            {
-                Console.WriteLine("Work Item Field Create Failed.");
-            }
-
-            //Then test DeleteWorkItemField
-            try
-            {
-                workItemTrackingClient.DeleteFieldAsync("New Work Item Field");
+                workItemTrackingClient.DeleteFieldAsync(Context.GetValue<string>("$newlyCreatedWorkItemFieldName"));
                 Console.WriteLine("Work Item Field Delete Succeeded.");
             }
             catch

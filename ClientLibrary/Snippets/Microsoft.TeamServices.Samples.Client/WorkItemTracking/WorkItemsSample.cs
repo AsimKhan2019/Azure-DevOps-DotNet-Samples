@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Services.WebApi.Patch;
 using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
 {
@@ -87,7 +88,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             
             return newWorkItem;
         }
-                
+
         [ClientSampleMethod]
         public void CreateSampleWorkItemData()
         {
@@ -121,6 +122,39 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             }
 
             return workitems;
+        }
+
+        [ClientSampleMethod]
+        public WorkItemTemplate CreateTemplate()
+        {
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            Dictionary<string, string> field = new Dictionary<string, string>
+            {
+                { "System.State", "New" }
+            };
+
+            WorkItemTemplate newTemplate = new WorkItemTemplate()
+            {
+                Name = "Test Template",
+                Description = "Template to be created",
+                WorkItemTypeName = "Feature",
+                Fields = field
+            };
+            WorkItemTemplate result = null;
+
+            try
+            {
+                result = client.CreateTemplateAsync(newTemplate, getTeamContext()).Result;
+                Context.SetValue<Guid>("$newTemplateId", result.Id);
+                Console.WriteLine("Create template Successed.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Create template Failed:" + e.Message);
+            }
+            return result;
         }
 
         [ClientSampleMethod]
@@ -1004,46 +1038,11 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         {
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
+            
+            // Get the project to create the sample work item in
+            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
 
-            WorkItem result = client.GetWorkItemTemplateAsync("Test Project", "Bug").Result;
-
-            return result;
-        }
-
-        [ClientSampleMethod]
-        public WorkItemTemplate CreateTemplate()
-        {
-            VssConnection connection = Context.Connection;
-            WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
-
-            WorkItemTemplate template = new WorkItemTemplate()
-            {
-                Name = "Test Template",
-                Description = "Template to be created",
-                WorkItemTypeName = "Feature",
-            };
-            TeamContext teamContext = new TeamContext("Test Project", "Test Project Team");
-            WorkItemTemplate result = null;
-
-            try
-            {
-                result = client.CreateTemplateAsync(template, teamContext).Result;
-                Console.WriteLine("Create template Successed.");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Create template Failed:" + e.Message);
-            }
-            //Destroy resource
-            try
-            {
-                client.DeleteTemplateAsync(teamContext, result.Id);
-                Console.WriteLine("Delete template successed.");
-            }
-            catch
-            {
-                Console.WriteLine("Delete template Failded.");
-            }
+            WorkItem result = client.GetWorkItemTemplateAsync(project.Name, "Bug").Result;
 
             return result;
         }
@@ -1051,11 +1050,10 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public List<WorkItemTemplateReference> ListTemplates()
         {
-            TeamContext teamContext = new TeamContext("Test Project", "Test Project Team");
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            List<WorkItemTemplateReference> result = client.GetTemplatesAsync(teamContext).Result;
+            List<WorkItemTemplateReference> result = client.GetTemplatesAsync(getTeamContext()).Result;
 
             return result;
         }
@@ -1065,8 +1063,8 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         {
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
-
-            WorkItem result = client.GetWorkItemTemplateAsync("Test Project", "Feature").Result;
+            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
+            WorkItem result = client.GetWorkItemTemplateAsync(project.Name, "Feature").Result;
 
             return result;
         }
@@ -1077,38 +1075,23 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            WorkItemTemplate oldTemplate = new WorkItemTemplate()
+            Dictionary<string, string> field = new Dictionary<string, string>
             {
-                Name = "Test Template",
-                Description = "Template to be replaced",
-                WorkItemTypeName = "Feature"
+                { "System.State", "Replaced" }
             };
 
             WorkItemTemplate newTemplate = new WorkItemTemplate()
             {
                 Name = "New Test Template",
                 Description = "Replacing template",
-                WorkItemTypeName = "Feature"
+                WorkItemTypeName = "Feature",
+                Fields = field
             };
-
-            TeamContext teamContext = new TeamContext("Test Project", "Test Project Team");
             WorkItemTemplate result = null;
-            
-            //Create resource
-            try
-            {
-                result = client.CreateTemplateAsync(oldTemplate, teamContext).Result;
-                Console.WriteLine("Create template Successed.");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Create template Failed:" + e.Message);
-            }
 
-            //Run replace
             try
             {
-                result = client.ReplaceTemplateAsync(newTemplate, teamContext, result.Id).Result;
+                result = client.ReplaceTemplateAsync(newTemplate, getTeamContext(), Context.GetValue<Guid>("$newTemplateId")).Result;
                 Console.WriteLine("Replace template successed.");
             }
             catch(Exception e)
@@ -1116,49 +1099,18 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
                 result = null;
                 Console.WriteLine("Replace template failed: " + e.Message);
             }
-
-            //Destroy resource
-            try
-            {
-                client.DeleteTemplateAsync(teamContext, result.Id);
-                Console.WriteLine("Delete template successed.");
-            }
-            catch
-            {
-                Console.WriteLine("Delete template Failded.");
-            }
-
             return result;
         }
 
+        [ClientSampleMethod]
         public void DeleteTemplate()
         {
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            WorkItemTemplate template = new WorkItemTemplate()
-            {
-                Name = "Test Template",
-                Description = "Template to be deleted",
-                WorkItemTypeName = "Feature"
-            };
-            TeamContext teamContext = new TeamContext("Test Project", "Test Project Team");
-            WorkItemTemplate result = null;
-
-            //Create resource
             try
             {
-                result = client.CreateTemplateAsync(template, teamContext).Result;
-                Console.WriteLine("Create template Successed.");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Create template Failed:" + e.Message);
-            }
-            //Delete resource
-            try
-            {
-                client.DeleteTemplateAsync(teamContext, result.Id);
+                client.DeleteTemplateAsync(getTeamContext(), Context.GetValue<Guid>("$newTemplateId"));
                 Console.WriteLine("Delete template successed.");
             }
             catch
@@ -1167,5 +1119,12 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             }
         }
 
+        private TeamContext getTeamContext()
+        {
+            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
+            WebApiTeamRef team = ClientSampleHelpers.FindAnyTeam(this.Context, project.Id);
+            TeamContext teamContext = new TeamContext(project.Name, team.Name);
+            return teamContext;
+        }
     }
 }

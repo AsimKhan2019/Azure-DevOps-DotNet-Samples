@@ -138,7 +138,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
             WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
             List<ProcessInfo> processes = this.Process_List();
 
-            var processInfo = client.GetProcessByItsIdAsync(processes[0].TypeId).Result;
+            var processInfo = client.GetProcessByItsIdAsync(Context.GetValue<Guid>("$processId")).Result;
 
             return processInfo;
         }
