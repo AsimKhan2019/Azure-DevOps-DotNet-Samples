@@ -17,8 +17,6 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
     [ClientSample(WitConstants.WorkItemTrackingWebConstants.RestAreaName, "workitemssamples")]
     public class WorkItemsSample : ClientSample
     {
-        private Guid templateId = new Guid();
-
         [ClientSampleMethod]
         public WorkItem CreateWorkItem()
         {
@@ -1026,7 +1024,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             WorkItemTemplate template = new WorkItemTemplate()
             {
                 Name = "Test Template",
-                Description = "",
+                Description = "Template to be created",
                 WorkItemTypeName = "Feature",
                 Fields = field
             };
@@ -1036,12 +1034,21 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             try
             {
                 result = client.CreateTemplateAsync(template, teamContext).Result;
-                Console.WriteLine("Create Work Item Template Successed.");
-                templateId = result.Id;
+                Console.WriteLine("Create template Successed.");
             }
             catch (Exception e)
             {
-                Console.WriteLine("Create Work Item Template Failed:" + e.Message);
+                Console.WriteLine("Create template Failed:" + e.Message);
+            }
+            //Destroy resource
+            try
+            {
+                client.DeleteTemplateAsync(teamContext, result.Id);
+                Console.WriteLine("Delete template successed.");
+            }
+            catch
+            {
+                Console.WriteLine("Delete template Failded.");
             }
 
             return result;
@@ -1076,30 +1083,67 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            Dictionary<string, string> field = new Dictionary<string, string>
+            Dictionary<string, string> oldField = new Dictionary<string, string>
             {
                 { "System.State", "Old" }
             };
 
-            WorkItemTemplate newTemplate = new WorkItemTemplate()
+            WorkItemTemplate oldTemplate = new WorkItemTemplate()
             {
                 Name = "Test Template",
-                Description = "",
+                Description = "Template to be replaced",
                 WorkItemTypeName = "Feature",
-                Fields = field
+                Fields = oldField
             };
+
+            Dictionary<string, string> newField = new Dictionary<string, string>
+            {
+                { "System.State", "New" }
+            };
+
+            WorkItemTemplate newTemplate = new WorkItemTemplate()
+            {
+                Name = "New Test Template",
+                Description = "Replacing template",
+                WorkItemTypeName = "Feature",
+                Fields = newField
+            };
+
             TeamContext teamContext = new TeamContext("Test Project", "Test Project Team");
             WorkItemTemplate result = null;
-
+            
+            //Create resource
             try
             {
-                result = client.ReplaceTemplateAsync(newTemplate, teamContext, templateId).Result;
+                result = client.CreateTemplateAsync(oldTemplate, teamContext).Result;
+                Console.WriteLine("Create template Successed.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Create template Failed:" + e.Message);
+            }
+
+            //Run replace
+            try
+            {
+                result = client.ReplaceTemplateAsync(newTemplate, teamContext, result.Id).Result;
                 Console.WriteLine("Replace template successed.");
             }
             catch(Exception e)
             {
                 result = null;
                 Console.WriteLine("Replace template failed: " + e.Message);
+            }
+
+            //Destroy resource
+            try
+            {
+                client.DeleteTemplateAsync(teamContext, result.Id);
+                Console.WriteLine("Delete template successed.");
+            }
+            catch
+            {
+                Console.WriteLine("Delete template Failded.");
             }
 
             return result;
@@ -1109,12 +1153,36 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         {
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
-            TeamContext teamContext = new TeamContext("Test Project", "Test Project Team");
-            List<WorkItemTemplateReference> workitems = this.ListTemplates();
 
+            Dictionary<string, string> field = new Dictionary<string, string>
+            {
+                { "System.State", "New" }
+            };
+
+            WorkItemTemplate template = new WorkItemTemplate()
+            {
+                Name = "Test Template",
+                Description = "Template to be deleted",
+                WorkItemTypeName = "Feature",
+                Fields = field
+            };
+            TeamContext teamContext = new TeamContext("Test Project", "Test Project Team");
+            WorkItemTemplate result = null;
+
+            //Create resource
             try
             {
-                client.DeleteTemplateAsync(teamContext, templateId);
+                result = client.CreateTemplateAsync(template, teamContext).Result;
+                Console.WriteLine("Create template Successed.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Create template Failed:" + e.Message);
+            }
+            //Delete resource
+            try
+            {
+                client.DeleteTemplateAsync(teamContext, result.Id);
                 Console.WriteLine("Delete template successed.");
             }
             catch

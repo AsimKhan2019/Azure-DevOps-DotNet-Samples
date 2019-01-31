@@ -21,13 +21,12 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         [ClientSampleMethod]
         public WorkItemField CreateWorkItemField()
         {
-            WorkItemField result = new WorkItemField();
+            WorkItemField newlyCreatedWorkItemField = new WorkItemField();
 
             WorkItemField newWorkItemField = new WorkItemField()
             {
                 Name = "New Work Item Field",
-                ReferenceName = "SupportedOperations.GreaterThanEquals",
-                Description = null,
+                Description = "New work item filed for testing",
                 Type = FieldType.String,
                 Usage = FieldUsage.WorkItem,
                 ReadOnly = false,
@@ -47,15 +46,25 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
 
             try
             {
-                result = workItemTrackingClient.CreateFieldAsync(newWorkItemField).Result;
-                Console.WriteLine("Work Item Field Creat Succeed.");
+                newlyCreatedWorkItemField = workItemTrackingClient.CreateFieldAsync(newWorkItemField).Result;
+                Console.WriteLine("Work Item Field Create Succeeded.");
             }
             catch
             {
                 Console.WriteLine("Work Item Field Create Failed.");
             }
+            //Destroy resource
+            try
+            {
+                workItemTrackingClient.DeleteFieldAsync("New Work Item Field");
+                Console.WriteLine("Work Item Field Delete Succeeded.");
+            }
+            catch
+            {
+                Console.WriteLine("Work Item Field Delete Failed.");
+            }
 
-            return result;
+            return newlyCreatedWorkItemField;
         }
 
         [ClientSampleMethod]
@@ -96,10 +105,41 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient workItemTrackingClient = connection.GetClient<WorkItemTrackingHttpClient>();
 
+            WorkItemField newWorkItemField = new WorkItemField()
+            {
+                Name = "New Work Item Field",
+                ReferenceName = "SupportedOperations.GreaterThanEquals",
+                Description = "New work item filed for testing",
+                Type = FieldType.String,
+                Usage = FieldUsage.WorkItem,
+                ReadOnly = false,
+                CanSortBy = true,
+                IsQueryable = true,
+                SupportedOperations = new List<WorkItemFieldOperation>()
+                {
+                    new WorkItemFieldOperation(){ ReferenceName="SupportedOperations.Equals", Name="="}
+                },
+                IsIdentity = true,
+                IsPicklist = false,
+                IsPicklistSuggested = false
+            };
+
+            //First create resource
+            try
+            {
+                workItemTrackingClient.CreateFieldAsync(newWorkItemField);
+                Console.WriteLine("Work Item Field Create Succeeded.");
+            }
+            catch
+            {
+                Console.WriteLine("Work Item Field Create Failed.");
+            }
+
+            //Then test DeleteWorkItemField
             try
             {
                 workItemTrackingClient.DeleteFieldAsync("New Work Item Field");
-                Console.WriteLine("Work Item Field Creat Succeed.");
+                Console.WriteLine("Work Item Field Delete Succeeded.");
             }
             catch
             {
