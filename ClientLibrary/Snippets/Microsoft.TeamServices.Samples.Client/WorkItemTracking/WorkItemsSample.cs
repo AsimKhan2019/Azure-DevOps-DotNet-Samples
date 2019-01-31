@@ -1016,17 +1016,11 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            Dictionary<string, string> field = new Dictionary<string, string>
-            {
-                { "System.State", "New" }
-            };
-
             WorkItemTemplate template = new WorkItemTemplate()
             {
                 Name = "Test Template",
                 Description = "Template to be created",
                 WorkItemTypeName = "Feature",
-                Fields = field
             };
             TeamContext teamContext = new TeamContext("Test Project", "Test Project Team");
             WorkItemTemplate result = null;
@@ -1083,30 +1077,18 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            Dictionary<string, string> oldField = new Dictionary<string, string>
-            {
-                { "System.State", "Old" }
-            };
-
             WorkItemTemplate oldTemplate = new WorkItemTemplate()
             {
                 Name = "Test Template",
                 Description = "Template to be replaced",
-                WorkItemTypeName = "Feature",
-                Fields = oldField
-            };
-
-            Dictionary<string, string> newField = new Dictionary<string, string>
-            {
-                { "System.State", "New" }
+                WorkItemTypeName = "Feature"
             };
 
             WorkItemTemplate newTemplate = new WorkItemTemplate()
             {
                 Name = "New Test Template",
                 Description = "Replacing template",
-                WorkItemTypeName = "Feature",
-                Fields = newField
+                WorkItemTypeName = "Feature"
             };
 
             TeamContext teamContext = new TeamContext("Test Project", "Test Project Team");
@@ -1154,17 +1136,11 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             VssConnection connection = Context.Connection;
             WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
 
-            Dictionary<string, string> field = new Dictionary<string, string>
-            {
-                { "System.State", "New" }
-            };
-
             WorkItemTemplate template = new WorkItemTemplate()
             {
                 Name = "Test Template",
                 Description = "Template to be deleted",
-                WorkItemTypeName = "Feature",
-                Fields = field
+                WorkItemTypeName = "Feature"
             };
             TeamContext teamContext = new TeamContext("Test Project", "Test Project Team");
             WorkItemTemplate result = null;

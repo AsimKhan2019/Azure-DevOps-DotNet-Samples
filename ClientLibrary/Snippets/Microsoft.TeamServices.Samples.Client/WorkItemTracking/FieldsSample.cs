@@ -27,18 +27,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             {
                 Name = "New Work Item Field",
                 Description = "New work item filed for testing",
-                Type = FieldType.String,
-                Usage = FieldUsage.WorkItem,
-                ReadOnly = false,
-                CanSortBy = true,
-                IsQueryable = true,
-                SupportedOperations = new List<WorkItemFieldOperation>()
-                {
-                    new WorkItemFieldOperation(){ ReferenceName="SupportedOperations.Equals", Name="="}
-                },
-                IsIdentity = true,
-                IsPicklist = false,
-                IsPicklistSuggested = false
+                Type = FieldType.String
             };
 
             VssConnection connection = Context.Connection;
@@ -110,18 +99,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
                 Name = "New Work Item Field",
                 ReferenceName = "SupportedOperations.GreaterThanEquals",
                 Description = "New work item filed for testing",
-                Type = FieldType.String,
-                Usage = FieldUsage.WorkItem,
-                ReadOnly = false,
-                CanSortBy = true,
-                IsQueryable = true,
-                SupportedOperations = new List<WorkItemFieldOperation>()
-                {
-                    new WorkItemFieldOperation(){ ReferenceName="SupportedOperations.Equals", Name="="}
-                },
-                IsIdentity = true,
-                IsPicklist = false,
-                IsPicklistSuggested = false
+                Type = FieldType.String
             };
 
             //First create resource
