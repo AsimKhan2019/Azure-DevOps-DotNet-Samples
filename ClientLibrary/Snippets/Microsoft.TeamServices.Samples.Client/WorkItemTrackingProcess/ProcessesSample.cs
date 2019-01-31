@@ -406,30 +406,30 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
             return group;
         }
 
-        [ClientSampleMethod]
+[ClientSampleMethod]
         public PickListMetadata Field_CreatePicklist()
-        {
+        {           
             List<PickListMetadata> pickListMetadata = null;
             PickList picklist = null;
             string pickListName = "colorsPicklist";
 
             VssConnection connection = Context.Connection;
             WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
-
+          
             Console.Write("Searching to see if picklist '{0}' exists....", pickListName);
-
+               
             pickListMetadata = client.GetListsMetadataAsync().Result;
             PickListMetadata item = pickListMetadata.Find(x => x.Name == pickListName);
-
+                        
             if (item != null)
             {
                 Context.SetValue<Guid>("$picklistId", item.Id);
                 Console.WriteLine("picklist found");
-
+                
                 return item;
             }
             else
-            {
+            { 
                 Console.WriteLine("picklist not found");
                 Console.Write("Creating new picklist....");
 
@@ -444,16 +444,16 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
                 {
                     Name = pickListName,
                     Items = list,
-                    Type = "String",
+                    Type = "String",                
                     IsSuggested = false
-                };
+                };               
 
                 PickList result = client.CreateListAsync(picklist).Result;
                 Context.SetValue<Guid>("$picklistId", result.Id);
 
                 Console.WriteLine("done");
                 return result;
-            }
+            }           
         }
 
         [ClientSampleMethod]

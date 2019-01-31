@@ -1001,6 +1001,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             }
         }
 
+
         [ClientSampleMethod]
         public WorkItem GetWorkItemTemplate()
         {
