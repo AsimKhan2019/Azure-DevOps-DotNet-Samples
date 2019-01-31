@@ -406,7 +406,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
             return group;
         }
 
-[ClientSampleMethod]
+        [ClientSampleMethod]
         public PickListMetadata Field_CreatePicklist()
         {           
             List<PickListMetadata> pickListMetadata = null;
