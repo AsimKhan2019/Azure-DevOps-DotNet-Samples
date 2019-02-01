@@ -1,4 +1,5 @@
 ﻿using Microsoft.TeamFoundation.Core.WebApi;
+using Microsoft.TeamFoundation.Core.WebApi.Types;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
@@ -86,7 +87,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             
             return newWorkItem;
         }
-                
+
         [ClientSampleMethod]
         public void CreateSampleWorkItemData()
         {
@@ -120,6 +121,39 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
             }
 
             return workitems;
+        }
+
+        [ClientSampleMethod]
+        public WorkItemTemplate CreateTemplate()
+        {
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            Dictionary<string, string> field = new Dictionary<string, string>
+            {
+                { "System.State", "New" }
+            };
+
+            WorkItemTemplate newTemplate = new WorkItemTemplate()
+            {
+                Name = "Test Template",
+                Description = "Template to be created",
+                WorkItemTypeName = "Feature",
+                Fields = field
+            };
+            WorkItemTemplate result = null;
+
+            try
+            {
+                result = client.CreateTemplateAsync(newTemplate, getTeamContext()).Result;
+                Context.SetValue<Guid>("$newTemplateId", result.Id);
+                Console.WriteLine("Create template Successed.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Create template Failed:" + e.Message);
+            }
+            return result;
         }
 
         [ClientSampleMethod]
@@ -997,6 +1031,99 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
                 WorkItem result = workItemTrackingClient.UpdateWorkItemAsync(patchDocument, workItemReference.Id).Result;
             }
         }
- 
+
+        [ClientSampleMethod]
+        public WorkItem GetWorkItemTemplate()
+        {
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
+            
+            // Get the project to create the sample work item in
+            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
+
+            WorkItem result = client.GetWorkItemTemplateAsync(project.Name, "Bug").Result;
+
+            return result;
+        }
+
+        [ClientSampleMethod]
+        public List<WorkItemTemplateReference> ListTemplates()
+        {
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            List<WorkItemTemplateReference> result = client.GetTemplatesAsync(getTeamContext()).Result;
+
+            return result;
+        }
+
+        [ClientSampleMethod]
+        public WorkItem GetTemplate()
+        {
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
+            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
+            WorkItem result = client.GetWorkItemTemplateAsync(project.Name, "Feature").Result;
+
+            return result;
+        }
+
+        [ClientSampleMethod]
+        public WorkItemTemplate ReplaceTemplate()
+        {
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            Dictionary<string, string> field = new Dictionary<string, string>
+            {
+                { "System.State", "Replaced" }
+            };
+
+            WorkItemTemplate newTemplate = new WorkItemTemplate()
+            {
+                Name = "New Test Template",
+                Description = "Replacing template",
+                WorkItemTypeName = "Feature",
+                Fields = field
+            };
+            WorkItemTemplate result = null;
+
+            try
+            {
+                result = client.ReplaceTemplateAsync(newTemplate, getTeamContext(), Context.GetValue<Guid>("$newTemplateId")).Result;
+                Console.WriteLine("Replace template successed.");
+            }
+            catch(Exception e)
+            {
+                result = null;
+                Console.WriteLine("Replace template failed: " + e.Message);
+            }
+            return result;
+        }
+
+        [ClientSampleMethod]
+        public void DeleteTemplate()
+        {
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient client = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            try
+            {
+                client.DeleteTemplateAsync(getTeamContext(), Context.GetValue<Guid>("$newTemplateId"));
+                Console.WriteLine("Delete template successed.");
+            }
+            catch
+            {
+                Console.WriteLine("Delete template Failded.");
+            }
+        }
+
+        private TeamContext getTeamContext()
+        {
+            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
+            WebApiTeamRef team = ClientSampleHelpers.FindAnyTeam(this.Context, project.Id);
+            TeamContext teamContext = new TeamContext(project.Name, team.Name);
+            return teamContext;
+        }
     }
 }
