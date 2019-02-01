@@ -468,7 +468,6 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
             return field;
         }
 
-
         [ClientSampleMethod]
         public ProcessWorkItemTypeField Field_AddFieldToWorkItemType()
         {
@@ -550,10 +549,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
         {
             UpdateProcessWorkItemTypeFieldRequest newfieldRequest = new UpdateProcessWorkItemTypeFieldRequest()
             {
-                ReadOnly = false,
-                Required = false,
-                DefaultValue = "Blue",
-                AllowGroups = false
+                DefaultValue = "Blue"
             };
  
             System.Guid processId = Context.GetValue<Guid>("$processId");
