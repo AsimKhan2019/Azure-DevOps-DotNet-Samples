@@ -19,7 +19,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
     [ClientSample(Microsoft.TeamFoundation.WorkItemTracking.WebApi.WitConstants.WorkItemTrackingWebConstants.RestAreaName, "process")]
     public class ProcessesSample : ClientSample
     {
-        private string _refName = "fabrikam.MyNewAgileProcess";
+        private string _refName = "fabrikam.MyNewAgileProcessThree";
         private string _witRefName = "MyNewAgileProcess.ChangeRequest";
         private string _fieldRefName = "Custom.Fields.Colors";
 
@@ -63,7 +63,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
             //create process model record object that will be used to create the process
             CreateProcessModel processModel = new CreateProcessModel
             {                
-                Name = "MyNewAgileProcess",
+                Name = "My New Agile Process",
                 ParentProcessTypeId = new System.Guid("adcc42ab-9882-485e-a3ed-7678f01f66bc"),
                 ReferenceName = _refName,
                 Description = "My new process"
@@ -88,7 +88,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
             {               
                 Console.WriteLine("failed");
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex.InnerException.Message);               
+                Console.WriteLine(ex.InnerException.Message);                   
             }       
             finally
             {
@@ -318,52 +318,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
 
             return layout;
         }
-
-        [ClientSampleMethod]
-        public Group Group_Add()
-        {
-            //get process id stored in cache so we don't have to load it each time
-            System.Guid processId = Context.GetValue<Guid>("$processId");
-          
-            VssConnection connection = Context.Connection;
-            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
-
-            Console.Write("Getting form layout to find all pages, sections, and groups...");
-
-            FormLayout layout = client.GetFormLayoutAsync(processId, _witRefName).Result;
-
-            //searching through the layout page to find the right page, section, and group           
-            Page page = ProcessHelper.getPage(layout, "Details");
-            Group group = ProcessHelper.getGroup(layout, "Details", "Section2", "NewGroup");           
-
-            Console.WriteLine("done");
-            
-            if (group != null)
-            {
-                Console.WriteLine("Group '{0}' already exists on section '{1}' on page '{2}'", group.Label, "Section2", page.Label);
-            }
-            else
-            {
-                Console.Write("Creating new group 'NewGroup'...");
-
-                Group newGroup = new Group()
-                {
-                    Controls = null,
-                    Id = null,
-                    Label = "NewGroup",
-                    Overridden = false,
-                    Visible = true,
-                    Order = 1
-                };
-
-                group = client.AddGroupAsync(newGroup, processId, _witRefName, page.Id, "Section2").Result;
-
-                Console.WriteLine("done");
-            }                      
-
-            return group;
-        }
-
+               
         [ClientSampleMethod]
         public PickListMetadata Field_CreatePicklist()
         {           
@@ -512,6 +467,105 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTrackingProcess
 
                 return processWorkItemTypeField;
             }
+        }
+
+        [ClientSampleMethod]
+        public ProcessWorkItemTypeField Field_AddSystemFieldToWorkItemType()
+        {
+            string fieldName = "Microsoft.VSTS.Common.Activity";
+
+            ProcessWorkItemTypeField processWorkItemTypeField = null;
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            //get the list of fields on the work item item
+            Console.Write("Loading list of fields on the work item and checking to see if field '{0}' already exists...", fieldName);
+
+            List<ProcessWorkItemTypeField> list = client.GetAllWorkItemTypeFieldsAsync(processId, _witRefName).Result;
+
+            //check to see if the field already exists on the work item
+            processWorkItemTypeField = list.Find(x => x.ReferenceName == fieldName);
+
+            //field is already on the work item, so just return it
+            if (processWorkItemTypeField != null)
+            {
+                Console.WriteLine("field found");
+                return processWorkItemTypeField;
+            }
+            else
+            {
+                //the field is not on the work item, so we best add it
+                Console.WriteLine("field not found");
+                Console.Write("Adding field to work item...");
+
+                AddProcessWorkItemTypeFieldRequest fieldRequest = new AddProcessWorkItemTypeFieldRequest()
+                {
+                    AllowGroups = false,
+                    DefaultValue = String.Empty,
+                    ReadOnly = false,
+                    ReferenceName = fieldName,
+                    Required = false
+                };
+
+                processWorkItemTypeField = client.AddFieldToWorkItemTypeAsync(fieldRequest, processId, _witRefName).Result;
+
+                Console.WriteLine("done");
+
+                return processWorkItemTypeField;
+            }
+        }
+
+        [ClientSampleMethod]
+        public Group Group_AddWithFields()
+        {
+            //get process id stored in cache so we don't have to load it each time
+            System.Guid processId = Context.GetValue<Guid>("$processId");
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingProcessHttpClient client = connection.GetClient<WorkItemTrackingProcessHttpClient>();
+
+            Console.Write("Getting form layout to find all pages, sections, and groups...");
+
+            FormLayout layout = client.GetFormLayoutAsync(processId, _witRefName).Result;
+
+            //searching through the layout page to find the right page, section, and group           
+            Page page = ProcessHelper.getPage(layout, "Details");
+            Group group = ProcessHelper.getGroup(layout, "Details", "Section2", "NewGroup");
+
+            Console.WriteLine("done");
+
+            if (group != null)
+            {
+                Console.WriteLine("Group '{0}' already exists on section '{1}' on page '{2}'", group.Label, "Section2", page.Label);
+            }
+            else
+            {
+                Console.Write("Creating new group 'NewGroup'...");
+
+                List<Control> controlList = new List<Control>()
+                {
+                    new Control() { Id = _fieldRefName, Order = 1, Label = "Colors", Visible = true, Name = "Colors", Watermark = "Select a color" },
+                    new Control() { Id = "Microsoft.VSTS.Common.Activity", Order = 2, Label = "Activity", Visible = true }
+                };
+
+                Group newGroup = new Group()
+                {
+                    Controls = controlList,
+                    Id = null,
+                    Label = "NewGroup",
+                    Overridden = false,
+                    Visible = true,
+                    Order = 1
+                };
+
+                group = client.AddGroupAsync(newGroup, processId, _witRefName, page.Id, "Section2").Result;
+
+                Console.WriteLine("done");
+            }
+
+            return group;
         }
 
         [ClientSampleMethod]
