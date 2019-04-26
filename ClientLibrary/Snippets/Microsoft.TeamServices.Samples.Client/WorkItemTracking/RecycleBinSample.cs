@@ -130,7 +130,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         }
 
         [ClientSampleMethod]
-        public void PermenentlyDeleteWorkItem()
+        public void PermanentlyDeleteWorkItem()
         {
             int id = _id;
 
@@ -143,7 +143,7 @@ namespace Microsoft.TeamServices.Samples.Client.WorkItemTracking
         }
 
         [ClientSampleMethod]
-        public void PermenentlyDeleteMultipleWorkItems()
+        public void PermanentlyDeleteMultipleWorkItems()
         {
             int[] ids = _ids;
 
