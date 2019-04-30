@@ -75,7 +75,7 @@ namespace Microsoft.Azure.DevOps.ClientSamples.Graph
             {
                 if (membershipState.Active) throw new Exception();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Context.Log("The deleted user is not disabled!");
             }
@@ -124,7 +124,7 @@ namespace Microsoft.Azure.DevOps.ClientSamples.Graph
             {
                 if (membershipState.Active) throw new Exception();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Context.Log("The deleted user is not disabled!");
             }
@@ -188,7 +188,7 @@ namespace Microsoft.Azure.DevOps.ClientSamples.Graph
             {
                 if (membershipState.Active) throw new Exception();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Context.Log("The deleted user is not disabled!");
             }
@@ -203,7 +203,7 @@ namespace Microsoft.Azure.DevOps.ClientSamples.Graph
             {
                 if (membershipState.Active) throw new Exception();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Context.Log("The deleted group is not disabled!");
             }
@@ -252,7 +252,7 @@ namespace Microsoft.Azure.DevOps.ClientSamples.Graph
             {
                 if (membershipState.Active) throw new Exception();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Context.Log("The deleted user is not disabled!");
             }
@@ -302,7 +302,7 @@ namespace Microsoft.Azure.DevOps.ClientSamples.Graph
             {
                 if (membershipState.Active) throw new Exception();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Context.Log("The deleted user is not disabled!");
             }

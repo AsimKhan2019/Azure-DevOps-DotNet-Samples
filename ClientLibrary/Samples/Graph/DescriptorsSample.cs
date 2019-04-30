@@ -46,7 +46,7 @@ namespace Microsoft.Azure.DevOps.ClientSamples.Graph
             {
                 if (descriptor.Value != userDescriptor) throw new Exception();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Context.Log("The descriptors don't match!");
             }
@@ -64,7 +64,7 @@ namespace Microsoft.Azure.DevOps.ClientSamples.Graph
             {
                 if (membershipState.Active) throw new Exception();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Context.Log("The deleted user is not disabled!");
             }
