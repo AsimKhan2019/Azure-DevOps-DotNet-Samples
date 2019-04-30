@@ -167,7 +167,7 @@ namespace Microsoft.Azure.DevOps.ClientSamples.ProjectsAndTeams
 
                 return true;             
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Console.WriteLine("Unable to delete team: " + ex);
                 
