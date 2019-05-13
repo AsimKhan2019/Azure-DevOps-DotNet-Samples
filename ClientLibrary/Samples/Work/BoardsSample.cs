@@ -26,8 +26,8 @@ namespace Microsoft.Azure.DevOps.ClientSamples.Work
 
             Board board = workClient.GetBoardAsync(context, "Stories").Result;
 
-            Console.WriteLine("Columns for 'Stories' Board for Project '{0}' and Team '{1}'", context.Project, context.Team);
-            Console.WriteLine(); 
+            Context.Log("Columns for 'Stories' Board for Project '{0}' and Team '{1}'", context.Project, context.Team);
+            Context.Log(""); 
             
             return board;
         }

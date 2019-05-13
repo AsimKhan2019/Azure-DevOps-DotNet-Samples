@@ -1102,7 +1102,7 @@ namespace Microsoft.Azure.DevOps.ClientSamples.WorkItemTracking
         }
 
         [ClientSampleMethod]
-        public string UpdateWorkItemBoardColumn()
+        public WorkItem UpdateWorkItemBoardColumn()
         {
             string targetColumn = "Testing"; //need to set to match your board
 
@@ -1146,9 +1146,11 @@ namespace Microsoft.Azure.DevOps.ClientSamples.WorkItemTracking
                  }
             );
 
-            var result = witClient.UpdateWorkItemAsync(patchDocument, Convert.ToInt32(workItem.Id)).Result;
+            WorkItem result = witClient.UpdateWorkItemAsync(patchDocument, Convert.ToInt32(workItem.Id)).Result;
 
-            return "";
+            Context.Log("Updated work item to teams board column '" + targetColumn + "'");
+
+            return result;
         }
 
         [ClientSampleMethod]
