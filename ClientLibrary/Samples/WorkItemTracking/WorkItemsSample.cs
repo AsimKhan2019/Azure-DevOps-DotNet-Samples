@@ -1102,6 +1102,58 @@ namespace Microsoft.Azure.DevOps.ClientSamples.WorkItemTracking
         }
 
         [ClientSampleMethod]
+        public WorkItem UpdateWorkItemBoardColumn()
+        {
+            string targetColumn = "Testing"; //need to set to match your board
+
+            VssConnection connection = Context.Connection;
+            WorkItemTrackingHttpClient witClient = connection.GetClient<WorkItemTrackingHttpClient>();
+
+            JsonPatchDocument patchDocument = new JsonPatchDocument();
+
+            //create a work item that drops into the new column by default
+            WorkItem workItem = this.CreateWorkItem("Board Column Test", "User Story");
+                       
+            string wefField = "";
+
+            //find the WEF field
+            //todo: do something smarter rather than loop through all fields to find the WEF
+            foreach (var field in workItem.Fields)
+            {               
+                if (field.Key.Contains("_Kanban.Column"))
+                {
+                    wefField = field.Key.ToString();
+                    break;
+                }
+            }
+
+            //build a patch document to update the WEF field
+            patchDocument.Add(
+               new JsonPatchOperation()
+               {
+                   Operation = Operation.Test,
+                   Path = "/rev",
+                   Value = "1"
+               }
+           );
+
+            patchDocument.Add(
+                 new JsonPatchOperation()
+                 {
+                     Operation = Operation.Add,
+                     Path = "/fields/" + wefField,
+                     Value = targetColumn
+                 }
+            );
+
+            WorkItem result = witClient.UpdateWorkItemAsync(patchDocument, Convert.ToInt32(workItem.Id)).Result;
+
+            Context.Log("Updated work item to teams board column '" + targetColumn + "'");
+
+            return result;
+        }
+
+        [ClientSampleMethod]
         public void DeleteTemplate()
         {
             VssConnection connection = Context.Connection;
