@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Reflection;
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
-using System.Net.Http;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json.Linq;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 
@@ -278,7 +273,12 @@ namespace Microsoft.Azure.DevOps.ClientSamples
                             ClientSampleHttpLogger.SetSuppressOutput(context, false);
                             ClientSampleHttpLogger.ResetOperationName(context);
 
-                            runnableMethod.MethodBase.Invoke(clientSample, null);
+                            object result = runnableMethod.MethodBase.Invoke(clientSample, null);
+                            // if the runnable method is async, then wait for the completion
+                            if (result is Task resultTask)
+                            {
+                                resultTask.SyncResult();
+                            }
                         }
                         catch (Exception ex)
                         {
