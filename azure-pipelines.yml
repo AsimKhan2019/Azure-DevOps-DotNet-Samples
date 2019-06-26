@@ -1,13 +1,8 @@
-# ASP.NET
-# Build and test ASP.NET projects.
-# Add steps that publish symbols, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
-
 pool:
-  vmImage: 'VS2017-Win2016'
+  vmImage: vs2017-win2016
 
 variables:
-  solution: '**/*.sln'
+  solution: './ClientLibrary/Samples/ClientSamples.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -25,7 +20,3 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
