@@ -31,5 +31,30 @@ namespace Microsoft.Azure.DevOps.ClientSamples.Work
             
             return board;
         }
+
+        [ClientSampleMethod]
+        public List<BacklogLevelConfiguration> GetBacklogs()
+        {
+            VssConnection connection = Context.Connection;
+            WorkHttpClient workClient = connection.GetClient<WorkHttpClient>();
+
+            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
+            WebApiTeamRef team = ClientSampleHelpers.FindAnyTeam(this.Context, project.Id);
+
+            TeamContext teamContext = new TeamContext(project.Id, team.Id)
+            {
+                Team = team.Name,
+                Project = project.Name
+            };
+
+            List<BacklogLevelConfiguration> backlogs = workClient.GetBacklogsAsync(teamContext).Result;
+
+            foreach(var backlog in backlogs)
+            {
+                Context.Log("Backlog: '{0}' Type: '{1}'", backlog.Name, backlog.Type);                
+            }
+
+            return backlogs;            
+        }
     }
 }
