@@ -197,6 +197,27 @@ namespace Microsoft.Azure.DevOps.ClientSamples.Release
         }
 
         [ClientSampleMethod]
+        public List<ReleaseDefinition> ListAllReleaseDefinitionsWithEnvironmentsAndArtifactsExpanded()
+        {
+            string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
+
+            // Get a release client instance
+            VssConnection connection = Context.Connection;
+            ReleaseHttpClient releaseClient = connection.GetClient<ReleaseHttpClient>();
+
+            // Show the release definitions
+            ReleaseDefinitionExpands expands = ReleaseDefinitionExpands.Environments | ReleaseDefinitionExpands.Artifacts;
+            List<ReleaseDefinition> releaseDefinitions = releaseClient.GetReleaseDefinitionsAsync(project: projectName, expand: expands).Result;
+
+            foreach (ReleaseDefinition releaseDefinition in releaseDefinitions)
+            {
+                Context.Log("{0} {1}", releaseDefinition.Id.ToString().PadLeft(6), releaseDefinition.Name);
+            }
+
+            return releaseDefinitions;
+        }
+
+        [ClientSampleMethod]
         public ReleaseDefinition UpdateReleaseDefinition()
         {
             string projectName = ClientSampleHelpers.FindAnyProject(this.Context).Name;
