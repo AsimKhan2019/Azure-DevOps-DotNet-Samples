@@ -91,6 +91,46 @@ namespace Microsoft.Azure.DevOps.ClientSamples.Serviceendpoint
         }
 
         [ClientSampleMethod]
+        public ServiceEndpoint CreateAzureRMEndpoint()
+        {
+            TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
+
+            // Get a service endpoint client instance
+            VssConnection connection = Context.Connection;
+            ServiceEndpointHttpClient endpointClient = connection.GetClient<ServiceEndpointHttpClient>();
+
+            // Create a generic service endpoint 
+            ServiceEndpoint endpoint = endpointClient.CreateServiceEndpointAsync(project.Id, new ServiceEndpoint()
+            {
+                Name = "MyNewARMServiceEndpoint",
+                Type = ServiceEndpointTypes.AzureRM,
+                Url = new Uri("https://management.azure.com/"),
+                Data = new Dictionary<string, string>() {
+                    {"subscriptionId", "1272a66f-e2e8-4e88-ab43-487409186c3f" },
+                    {"subscriptionName", "subscriptionName" },
+                    {"environment", "AzureCloud"},
+                    {"scopeLevel", "Subscription"},
+                    {"creationMode", "Manual" }
+                },
+                Authorization = new EndpointAuthorization()
+                {
+                    Scheme = EndpointAuthorizationSchemes.ServicePrincipal,
+                    Parameters = new Dictionary<string, string>()
+                    {
+                        { "tenantid", "1272a66f-e2e8-4e88-ab43-487409186c3f" },
+                        { "serviceprincipalid", "1272a66f-e2e8-4e88-ab43-487409186c3f" },
+                        { "authenticationType", "spnKey" },
+                        { "serviceprincipalkey", "SomePassword" }
+                    }
+                }
+            }).Result;
+
+            Context.Log("Created endpoint: {0} {1} in {2}", endpoint.Id, endpoint.Name, project.Name);
+
+            return endpoint;
+        }
+
+        [ClientSampleMethod]
         public IEnumerable<ServiceEndpoint> ListEndpoints()
         {
             TeamProjectReference project = ClientSampleHelpers.FindAnyProject(this.Context);
